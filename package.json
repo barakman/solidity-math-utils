@@ -1,0 +1,23 @@
+{
+    "name": "solidity-math-utils",
+    "version": "1.0.0",
+    "description": "Solidity Mathematical Utilities",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/barakman/solidity-math-utils.git"
+    },
+    "author": "Barak Manos",
+    "license": "SEE LICENSE IN https://raw.githubusercontent.com/bancorprotocol/contracts-solidity/master/LICENSE",
+    "files": [
+        "project/contracts/*.sol"
+    ],
+    "scripts": {
+        "build": "truffle compile",
+        "test": "truffle test --bail"
+    },
+    "devDependencies": {
+        "decimal.js": "10.2.1",
+        "truffle": "5.3.5",
+        "web3": "1.3.5"
+    }
+}

@@ -1,0 +1,40 @@
+The solution to:
+
+$$x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$$
+
+Can be computed via:
+
+$$x=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{log\big(\frac{a}{b}\big)}$$
+
+Where $W$ is the Lambert W Function.
+
+---
+
+In order to approximate this solution, we split the input domain $z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}$ into:
+
+$$\underbrace{-\infty\ldots-1/e}\bigg|\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots+1/e}\bigg|\underbrace{+1/e\ldots3+1/e}\bigg|\underbrace{3+1/e\ldots+\infty}$$
+
+---
+
+For $z<-1/e$, the value of $W(z)$ is not real.
+
+Respectively, the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$ has no real solution, because $x\cdot\big(\frac{a}{b}\big)^x\leq{e\cdot\log\big(\frac{a}{b}\big)}<\frac{c}{d}$.
+
+---
+
+For $-1/e\leq{z}\leq+1/e$, you may observe that $x=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{log\big(\frac{a}{b}\big)}=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}$:
+
+- For $-1/e\leq{z}\leq0$, which implies that ${a}\leq{b}$, we compute $x=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n-1}$
+- For $0\leq{z}\leq+1/e$, which implies that ${a}\geq{b}$, we compute $x=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}$
+
+As you can see, when $a=b$, both formulas can be reduced to $x=\frac{c}{d}$.
+
+---
+
+For $+1/e<z<3+1/e$, we use a lookup table which maps $128$ uniformly distributed values of $z$.
+
+Then, we calculate $W(z')$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z'}<z_1$.
+
+---
+
+For $z\geq3+1/e$, we rely on the fact that $W(z)\approx\log(z)-\log(\log(z))+\log(\log(z))/\log(z)$.

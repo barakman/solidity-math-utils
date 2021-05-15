@@ -1,0 +1,77 @@
+**Conversion Formula:**
+---
+
+Consider a liquidity pool with two reserve tokens S and R of equal weights, where:
+
+- $s=$ balance of token S
+- $r=$ balance of token R
+
+Converting an amount of S tokens into R tokens is based on $y=r\cdot\big(1−\frac{s}{s+x}\big)$, where:
+
+- $x=$ input amount of token S
+- $y=$ output amount of token R
+
+The conversion formula for any type of weighted-pool is $y=r\cdot\Big(1−\big(\frac{s}{s+x}\big)^{w_1/w_2}\Big)$, where:
+
+- $w_1=$ weight of token S
+- $w_2=$ weight of token R
+
+As you can see, when $w_1=w_2$, the latter formula reduces to the former formula.
+
+---
+
+**Calculating New Weights:**
+---
+
+Let F and G denote the primary reserve token and the secondary reserve token respectively.
+
+Let 'on-chain price' denote the conversion rate between F and G inside the pool (i.e., as determined by the pool).
+
+Let 'off-chain price' denote the conversion rate between F and G outside the pool (i.e., as determined by the market).
+
+Let the following denote:
+
+- $t=$ F staked balance of the pool
+- $s=$ F reserve balance of the pool
+- $r=$ G reserve balance of the pool
+- $q=$ G/F off-chain price numerator
+- $p=$ G/F off-chain price denominator
+
+Where $1$ unit of F is equal to $q/p$ units of G (or $p$ units of F are equal to $q$ units of G).
+
+First, note that the market’s arbitrage incentive is always to convert units of F to units of G or vice-versa, such that the on-chain price of F/G will become equal to the off-chain price of F/G.
+
+Consider the case of $t>s$. Our goal is to set the weights of the pool, such that the arbitrage incentive of equalizing the on-chain price and the off-chain price will subsequently increase $s$ to become equal to $t$. In other words, we want the arbitrager to transfer $t−s$ units of F to the pool, in exchange for units of G.
+
+Suppose that we’ve set the weights:
+- $w_1=$ F reserve weight
+- $w_2=$ G reserve weight
+
+Then:
+
+- A user converting $t−s$ units of F will get $r\cdot\Big(1−\big(\frac{s}{t}\big)^{w_1/w_2}\Big)$ units of G
+- F reserve balance after the arbitrage conversion will be $t$ of course
+- G reserve balance after the arbitrage conversion will be $r-r\cdot\Big(1−\big(\frac{s}{t}\big)^{w_1/w_2}\Big)$
+- F/G on-chain price after the arbitrage conversion will be $\large\frac{t\cdot{w_2}/{w_1}}{r-r\cdot\Big(1−\big(\frac{s}{t}\big)^{w_1/w_2}\Big)}$
+- F/G off-chain price is of course $\frac{p}{q}$ (or $\frac{q}{p}$ if the inverse rates are provided)
+
+When either $t$ or $p/q$ change, we want to recalculate $w_1$ and $w_2$ such that the arbitrage incentive of making the on-chain price equal to the off-chain price will be equivalent to converting $t−s$ units of F to units of G, thus increasing F reserve balance ($s$) to be equal to F staked balance ($t$).
+
+In other words, we want to recalculate $w_1$ and $w_2$ such that $\large\frac{t\cdot{w_2}/{w_1}}{r-r\cdot\Big(1−\big(\frac{s}{t}\big)^{w_1/w_2}\Big)}=\frac{p}{q}$.
+
+Let $x$ denote $w_1/w_2$, then:
+
+$\large\frac{t/x}{r-r\cdot\Big(1−\big(\frac{s}{t}\big)^{x}\Big)}=\frac{p}{q}\rightarrow$
+
+$\large\frac{t/x}{r\cdot\big(\frac{s}{t}\big)^{x}}=\frac{p}{q}\rightarrow$
+
+$\large{x}\cdot\big(\frac{s}{t}\big)^{x}=\frac{tq}{rp}\rightarrow$
+
+$\large{x}=\frac{W\Big(\log\big(\frac{s}{t}\big)\cdot\frac{tq}{rp}\Big)}{log\big(\frac{s}{t}\big)}$, where W is the Lambert W Function.
+
+After computing $x$, we can represent it as a quotient of integers, i.e., $x=a/b$.
+
+Then, since $x=w_1/w_2$ and $w_2=1-w_1$, we can calculate:
+
+- $\large{w_1}=\frac{x}{x+1}=\frac{a/b}{1+a/b}=\frac{a}{a+b}$
+- $\large{w_2}=\frac{1}{x+1}=\frac{1}{1+a/b}=\frac{b}{a+b}$
