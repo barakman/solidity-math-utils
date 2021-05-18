@@ -18,7 +18,9 @@ $$\underbrace{-\infty\ldots-1/e}\bigg|\underbrace{-1/e\ldots0}\bigg|\underbrace{
 
 For $z<-1/e$, the value of $W(z)$ is not real.
 
-Respectively, the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$ has no real solution, because $x\cdot\big(\frac{a}{b}\big)^x\leq{1/e\cdot\log\big(\frac{a}{b}\big)}<\frac{c}{d}$.
+Respectively, the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$ has no real solution.
+
+This is because $x\cdot\big(\frac{a}{b}\big)^x\leq\frac{1}{e\cdot\log\big(\frac{b}{a}\big)}<\frac{c}{d}$ for every real value of $x$.
 
 ---
 
