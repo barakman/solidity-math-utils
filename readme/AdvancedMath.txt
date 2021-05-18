@@ -18,7 +18,7 @@ $$\underbrace{-\infty\ldots-1/e}\bigg|\underbrace{-1/e\ldots0}\bigg|\underbrace{
 
 For $z<-1/e$, the value of $W(z)$ is not real.
 
-Respectively, the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$ has no real solution, because $x\cdot\big(\frac{a}{b}\big)^x\leq{e\cdot\log\big(\frac{a}{b}\big)}<\frac{c}{d}$.
+Respectively, the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$ has no real solution, because $x\cdot\big(\frac{a}{b}\big)^x\leq{1/e\cdot\log\big(\frac{a}{b}\big)}<\frac{c}{d}$.
 
 ---
 
@@ -38,3 +38,5 @@ Then, we calculate $W(z')$ as the weighted-average of $W(z_0)$ and $W(z_1)$, whe
 ---
 
 For $z\geq3+1/e$, we rely on the fact that $W(z)\approx\log(z)-\log(\log(z))+\log(\log(z))/\log(z)$.
+
+Of course, $z$ is ultimately restricted by the maximum input supported in our $\log$ implementation.
