@@ -347,6 +347,10 @@ The dynamic-curve method was conceived by [Bancor](https://github.com/bancorprot
 
 - `yarn test` or `npm run test`
 
+### Verification
+
+- `yarn verify` or `npm run verify`
+
 <br/><br/>
 
 ---
