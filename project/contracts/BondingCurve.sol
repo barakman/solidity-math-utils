@@ -58,7 +58,7 @@ contract BondingCurve is AnalyticMath {
             return mul(amount, balance) / supply;
 
         (uint256 n, uint256 d) = pow(supply, supply - amount, MAX_WEIGHT, weight);
-        return (mul(balance, n) - balance * d) / n;
+        return mul(balance, n - d) / n;
     }}
 
     /**
@@ -82,7 +82,7 @@ contract BondingCurve is AnalyticMath {
             return mul(balance2, amount) / add(balance1, amount);
 
         (uint256 n, uint256 d) = pow(add(balance1, amount), balance1, weight1, weight2);
-        return (mul(balance2, n) - balance2 * d) / n;
+        return mul(balance2, n - d) / n;
     }}
 
     /**
@@ -136,7 +136,7 @@ contract BondingCurve is AnalyticMath {
             return mul(amount, balance) / supply;
 
         (uint256 n, uint256 d) = pow(supply, supply - amount, MAX_WEIGHT, weights);
-        return (mul(balance, n) - balance * d) / n;
+        return mul(balance, n - d) / n;
     }}
 
     /**

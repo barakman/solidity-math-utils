@@ -53,7 +53,7 @@ def sell(supply, balance, weight, amount):
         return mul(amount, balance) // supply;
 
     (n, d) = pow(supply, supply - amount, MAX_WEIGHT, weight);
-    return (mul(balance, n) - balance * d) // n;
+    return mul(balance, n - d) // n;
 
 '''
     @dev Convert reserve tokens of one type to another
@@ -76,7 +76,7 @@ def convert(balance1, weight1, balance2, weight2, amount):
         return mul(balance2, amount) // add(balance1, amount);
 
     (n, d) = pow(add(balance1, amount), balance1, weight1, weight2);
-    return (mul(balance2, n) - balance2 * d) // n;
+    return mul(balance2, n - d) // n;
 
 '''
     @dev Deposit reserve tokens for pool tokens
@@ -128,7 +128,7 @@ def withdraw(supply, balance, weights, amount):
         return mul(amount, balance) // supply;
 
     (n, d) = pow(supply, supply - amount, MAX_WEIGHT, weights);
-    return (mul(balance, n) - balance * d) // n;
+    return mul(balance, n - d) // n;
 
 '''
     @dev Invest reserve tokens for pool tokens
