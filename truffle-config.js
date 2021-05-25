@@ -6,15 +6,6 @@ module.exports = {
     contracts_directory: "./project",
     contracts_build_directory: "./project/artifacts",
     test_directory: "./project/tests",
-    networks: {
-        production: {
-            host: "127.0.0.1",
-            port: 8545,
-            network_id: "*",
-            gasPrice: 20000000000,
-            gas: 6721975
-        }
-    },
     mocha: {
         useColors: true,
         enableTimeouts: false,

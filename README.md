@@ -86,26 +86,6 @@ Function `reducedRatio` computes the nearest ratio whose components (numerator a
 
 Internally, it calls function `normalizedRatio` with the input threshold, but only if one of the components is larger than that threshold.
 
-This function can be particularly useful, for example, when `x` is to be rescaled by `n / d`:
-- When computing `x * n / d`, the expression `x * n` can overflow
-- When computing `x / d * n` or `n / d * x`, the result can be highly innacurate
-
-A quick solution to that can be achieved via:
-```solidity
-function rescale(uint256 x, uint256 n, uint256 d) internal pure returns (uint256) {
-    (n, d) = reducedRatio(n, d, MAX_UINT256 / x);
-    unchecked {
-        return x * n / d;
-    }
-}
-```
-
-A more sophisticated method can do the following:
-1. Compute `(uint256 p1, uint256 q1) = reducedRatio(n, d, MAX_UINT256 / x)`
-2. Compute `(uint256 p2, uint256 q2) = reducedRatio(x, d, MAX_UINT256 / n)`
-3. Apply some heuristic in order to determine which one of them is (potentially) closer to the input ratio
-4. Accordingly return `x * p1 / q1` or `n * p2 / q2` (can be `unchecked`, since the multiplication is safe at this point)
-
 Note that function `reducedRatio` is not meant to replace GCD, nor does it strive to achieve better accuracy.
 
 GCD is not being used here, because the time-complexity of this method depends on the bit-length of the input.
