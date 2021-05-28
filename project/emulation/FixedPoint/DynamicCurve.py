@@ -1,3 +1,4 @@
+from .common.BuiltIn import *
 from .AdvancedMath import *
 from . import FractionMath
 
@@ -56,3 +57,7 @@ def equalize(t, s, r, q, p):
     (xn, xd) = solve(s, t, tq, rp); # solve `x * (s / t) ^ x = tq / rp`
     (w1, w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
     return (w1, w2);
+
+# auxiliary function
+def mul(x, y):
+    return IntegralMath.Uint.safeMul(x, y);

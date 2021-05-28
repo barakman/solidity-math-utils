@@ -63,4 +63,9 @@ contract DynamicCurve is AdvancedMath {
         (uint256 w1, uint256 w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
         return (w1, w2);
     }}
+
+    // auxiliary function
+    function mul(uint256 x, uint256 y) private pure returns (uint256) {
+        return Uint.safeMul(x, y);
+    }
 }

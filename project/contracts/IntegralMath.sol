@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity 0.8.4;
 
+import "./common/Uint.sol";
+
 library IntegralMath {
+    using Uint for *;
+
     /**
       * @dev Compute the nearest integer to the quotient of `n / d`
     */
@@ -57,5 +61,67 @@ library IntegralMath {
     function ceilSqrt(uint256 n) internal pure returns (uint256) { unchecked {
         uint256 x = floorSqrt(n);
         return x * x == n ? x : x + 1;
+    }}
+
+    /**
+      * @dev Compute the largest integer smaller than or equal to `x * y / z`
+    */
+    function mulDivF(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
+        (uint256 xyh, uint256 xyl) = mul512(x, y);
+        if (xyh > 0)
+            return div512(xyh, xyl, z);
+        return xyl / z;
+    }}
+
+    /**
+      * @dev Compute the smallest integer larger than or equal to `x * y / z`
+    */
+    function mulDivC(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
+        uint256 w = mulDivF(x, y, z);
+        if (Uint.mulMod(x, y, z) > 0)
+            return Uint.safeAdd1(w);
+        return w;
+    }}
+
+    /**
+      * @dev Compute the value of `x * y`
+    */
+    function mul512(uint256 x, uint256 y) private pure returns (uint256, uint256) { unchecked {
+        uint256 p = Uint.mulModMax(x, y);
+        uint256 q = Uint.unsafeMul(x, y);
+        if (p >= q)
+            return (p - q, q);
+        return (Uint.unsafeSub(p, q) - 1, q);
+    }}
+
+    /**
+      * @dev Compute the largest integer smaller than or equal to `(2 ^ 256 * xh + xl) / y`
+    */
+    function div512(uint256 xh, uint256 xl, uint256 y) private pure returns (uint256) { unchecked {
+        uint256 result = 0;
+        uint256 length = 255 - floorLog2(y);
+        while (xh > 0) {
+            uint256 bits = floorLog2(xh) + length;
+            result = Uint.safeAdd(result, Uint.safeShl1(bits));
+            (uint256 yh, uint256 yl) = shl512(y, bits);
+            (xh, xl) = sub512(xh, xl, yh, yl);
+        }
+        return Uint.safeAdd(result, xl / y);
+    }}
+
+    /**
+      * @dev Compute the value of `x * 2 ^ y`
+    */
+    function shl512(uint256 x, uint256 y) private pure returns (uint256, uint256) { unchecked {
+        return (x >> (256 - y), Uint.unsafeShl(x, y));
+    }}
+
+    /**
+      * @dev Compute the value of `2 ^ 256 * xh + xl - 2 ^ 256 * yh - yl`
+    */
+    function sub512(uint256 xh, uint256 xl, uint256 yh, uint256 yl) private pure returns (uint256, uint256) { unchecked {
+        if (xl >= yl)
+            return (xh - yh, xl - yl);
+        return (xh - yh - 1, Uint.unsafeSub(xl, yl));
     }}
 }

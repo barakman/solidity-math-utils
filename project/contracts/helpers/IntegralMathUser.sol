@@ -21,4 +21,12 @@ contract IntegralMathUser {
     function ceilSqrt(uint256 n) external pure returns (uint256) {
         return IntegralMath.ceilSqrt(n);
     }
+
+    function mulDivF(uint256 x, uint256 y, uint256 z) external pure returns (uint256) {
+        return IntegralMath.mulDivF(x, y, z);
+    }
+
+    function mulDivC(uint256 x, uint256 y, uint256 z) external pure returns (uint256) {
+        return IntegralMath.mulDivC(x, y, z);
+    }
 }

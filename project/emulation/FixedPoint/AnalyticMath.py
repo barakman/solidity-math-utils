@@ -1,4 +1,4 @@
-from .common.Safe import *
+from .common.BuiltIn import *
 from . import IntegralMath
 
 MIN_PRECISION = 32;
@@ -28,8 +28,8 @@ def init():
 '''
 def pow(a, b, c, d):
     if (a >= b):
-        return fixedExp(mul(fixedLog(mul(FIXED_1, a) // b), c) // d);
-    (q, p) = fixedExp(mul(fixedLog(mul(FIXED_1, b) // a), c) // d);
+        return mulDivExp(mulDivLog(FIXED_1, a, b), c, d);
+    (q, p) = mulDivExp(mulDivLog(FIXED_1, b, a), c, d);
     return (p, q);
 
 '''
@@ -37,13 +37,13 @@ def pow(a, b, c, d):
 '''
 def log(a, b):
     require(a >= b, "log: a < b");
-    return (fixedLog(mul(FIXED_1, a) // b), FIXED_1);
+    return (mulDivLog(FIXED_1, a, b), FIXED_1);
 
 '''
     @dev Compute e ^ (a / b)
 '''
 def exp(a, b):
-    return fixedExp(mul(FIXED_1, a) // b);
+    return mulDivExp(FIXED_1, a, b);
 
 '''
     @dev Compute log(x / FIXED_1) * FIXED_1
@@ -380,3 +380,11 @@ def initMaxExpArray():
     maxExpArray[125] = 0x009131271922eaa6064b73a22d0bd4f2bf;
     maxExpArray[126] = 0x008b380f3558668c46c91c49a2f8e967b9;
     maxExpArray[127] = 0x00857ddf0117efa215952912839f6473e6;
+
+# auxiliary function
+def mulDivLog(x, y, z):
+    return fixedLog(IntegralMath.mulDivF(x, y, z));
+
+# auxiliary function
+def mulDivExp(x, y, z):
+    return fixedExp(IntegralMath.mulDivF(x, y, z));

@@ -26,9 +26,9 @@ contract AdvancedMath is AnalyticMath {
     */
     function solve(uint256 a, uint256 b, uint256 c, uint256 d) internal view returns (uint256, uint256) { unchecked {
         if (a > b)
-            return (mul(lambertPos(mul(fixedLog(mul(FIXED_1, a) / b), c) / d), c), mul(FIXED_1, d));
+            return call(lambertPos, a, b, c, d);
         if (b > a)
-            return (mul(lambertNeg(mul(fixedLog(mul(FIXED_1, b) / a), c) / d), c), mul(FIXED_1, d));
+            return call(lambertNeg, b, a, c, d);
         return (c, d);
     }}
 
@@ -305,5 +305,11 @@ contract AdvancedMath is AnalyticMath {
         lambertArray[125] = 0x2a7fda392d725a44a2c8aeb9ab35430d;
         lambertArray[126] = 0x2a57741b18cde618717792b4faa216db;
         lambertArray[127] = 0x2a2f6c81f5d84dd950a35626d6d5503a;
+    }
+
+    // auxiliary function
+    function call(function (uint256) view returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private view returns (uint256, uint256) {
+        uint256 result = f(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
+        return (Uint.safeMul(result, z), Uint.safeMul(FIXED_1, w));
     }
 }

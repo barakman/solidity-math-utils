@@ -1,3 +1,4 @@
+from .common.BuiltIn import *
 from . import IntegralMath
 
 MAX_EXP_BIT_LEN = 4;
@@ -86,9 +87,9 @@ def accurateRatio(baseN, baseD, scale):
 
     if (baseN != baseD):
         n = baseN * scale;
-        d = baseN + baseD; # can overflow
-        if (d < 2 ** 256):
-            # no overflow in `baseN + baseD`
+        d = IntegralMath.Uint.unsafeAdd(baseN, baseD); # `baseN + baseD` can overflow
+        if (d >= baseN):
+            # `baseN + baseD` did not overflow
             x = IntegralMath.roundDiv(n, d); # we can now safely compute `scale - x`
             y = scale - x;
             return (x, y);

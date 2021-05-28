@@ -1,6 +1,6 @@
 const Decimal = require("decimal.js");
 
-Decimal.set({precision: 100, rounding: Decimal.ROUND_DOWN});
+Decimal.set({precision: 155, rounding: Decimal.ROUND_DOWN});
 
 module.exports = {
     contracts_directory: "./project",
