@@ -26,10 +26,10 @@ contract BondingCurve is AnalyticMath {
             return 0;
 
         if (weight == MAX_WEIGHT)
-            return mul(amount, supply) / balance;
+            return mulDivF(amount, supply, balance);
 
         (uint256 n, uint256 d) = pow(add(balance, amount), balance, weight, MAX_WEIGHT);
-        return mul(supply, n) / d - supply;
+        return mulDivF(supply, n, d) - supply;
     }}
 
     /**
@@ -55,10 +55,10 @@ contract BondingCurve is AnalyticMath {
             return balance;
 
         if (weight == MAX_WEIGHT)
-            return mul(amount, balance) / supply;
+            return mulDivF(amount, balance, supply);
 
         (uint256 n, uint256 d) = pow(supply, supply - amount, MAX_WEIGHT, weight);
-        return mul(balance, n - d) / n;
+        return mulDivF(balance, n - d, n);
     }}
 
     /**
@@ -79,10 +79,10 @@ contract BondingCurve is AnalyticMath {
         require(MIN_WEIGHT <= weight2 && weight2 <= MAX_WEIGHT, "invalid target weight");
 
         if (weight1 == weight2)
-            return mul(balance2, amount) / add(balance1, amount);
+            return mulDivF(balance2, amount, add(balance1, amount));
 
         (uint256 n, uint256 d) = pow(add(balance1, amount), balance1, weight1, weight2);
-        return mul(balance2, n - d) / n;
+        return mulDivF(balance2, n - d, n);
     }}
 
     /**
@@ -104,10 +104,10 @@ contract BondingCurve is AnalyticMath {
             return 0;
 
         if (weights == MAX_WEIGHT)
-            return mul(amount, supply) / balance;
+            return mulDivF(amount, supply, balance);
 
         (uint256 n, uint256 d) = pow(add(balance, amount), balance, weights, MAX_WEIGHT);
-        return mul(supply, n) / d - supply;
+        return mulDivF(supply, n, d) - supply;
     }}
 
     /**
@@ -133,10 +133,10 @@ contract BondingCurve is AnalyticMath {
             return balance;
 
         if (weights == MAX_WEIGHT)
-            return mul(amount, balance) / supply;
+            return mulDivF(amount, balance, supply);
 
         (uint256 n, uint256 d) = pow(supply, supply - amount, MAX_WEIGHT, weights);
-        return mul(balance, n - d) / n;
+        return mulDivF(balance, n - d, n);
     }}
 
     /**
@@ -158,9 +158,24 @@ contract BondingCurve is AnalyticMath {
             return 0;
 
         if (weights == MAX_WEIGHT)
-            return (mul(amount, balance) - 1) / supply + 1;
+            return mulDivC(amount, balance, supply);
 
         (uint256 n, uint256 d) = pow(add(supply, amount), supply, MAX_WEIGHT, weights);
-        return ((mul(balance, n) - 1) / d) + 1 - balance;
+        return mulDivC(balance, n, d) - balance;
     }}
+
+    // auxiliary function
+    function add(uint256 x, uint256 y) private pure returns (uint256) {
+        return Uint.safeAdd(x, y);
+    }
+
+    // auxiliary function
+    function mulDivF(uint256 x, uint256 y, uint256 z) private pure returns (uint256) {
+        return IntegralMath.mulDivF(x, y, z);
+    }
+
+    // auxiliary function
+    function mulDivC(uint256 x, uint256 y, uint256 z) private pure returns (uint256) {
+        return IntegralMath.mulDivC(x, y, z);
+    }
 }

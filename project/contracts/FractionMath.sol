@@ -101,9 +101,9 @@ library FractionMath {
 
         if (baseN != baseD) {
             uint256 n = baseN * scale;
-            uint256 d = baseN + baseD; // can overflow
+            uint256 d = Uint.unsafeAdd(baseN, baseD); // `baseN + baseD` can overflow
             if (d >= baseN) {
-                // no overflow in `baseN + baseD`
+                // `baseN + baseD` did not overflow
                 uint256 x = IntegralMath.roundDiv(n, d); // we can now safely compute `scale - x`
                 uint256 y = scale - x;
                 return (x, y);

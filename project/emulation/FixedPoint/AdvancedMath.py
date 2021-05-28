@@ -1,3 +1,4 @@
+from .common.BuiltIn import *
 from .AnalyticMath import *
 
 # Auto-generated via 'PrintLambertFactors.py'
@@ -21,9 +22,9 @@ def init():
 '''
 def solve(a, b, c, d):
     if (a > b):
-        return (mul(lambertPos(mul(fixedLog(mul(FIXED_1, a) // b), c) // d), c), mul(FIXED_1, d));
+        return call(lambertPos, a, b, c, d);
     if (b > a):
-        return (mul(lambertNeg(mul(fixedLog(mul(FIXED_1, b) // a), c) // d), c), mul(FIXED_1, d));
+        return call(lambertNeg, b, a, c, d);
     return (c, d);
 
 '''
@@ -293,3 +294,8 @@ def initLambertArray():
     lambertArray[125] = 0x2a7fda392d725a44a2c8aeb9ab35430d;
     lambertArray[126] = 0x2a57741b18cde618717792b4faa216db;
     lambertArray[127] = 0x2a2f6c81f5d84dd950a35626d6d5503a;
+
+# auxiliary function
+def call(f, x, y, z, w):
+    result = f(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
+    return (IntegralMath.Uint.safeMul(result, z), IntegralMath.Uint.safeMul(FIXED_1, w));

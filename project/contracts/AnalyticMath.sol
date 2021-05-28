@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity 0.8.4;
 
-import "./common/Safe.sol";
 import "./IntegralMath.sol";
 
-contract AnalyticMath is Safe {
+contract AnalyticMath {
     using IntegralMath for *;
 
     uint8 internal constant MIN_PRECISION = 32;
@@ -35,8 +34,8 @@ contract AnalyticMath is Safe {
     */
     function pow(uint256 a, uint256 b, uint256 c, uint256 d) internal view returns (uint256, uint256) { unchecked {
         if (a >= b)
-            return fixedExp(mul(fixedLog(mul(FIXED_1, a) / b), c) / d);
-        (uint256 q, uint256 p) = fixedExp(mul(fixedLog(mul(FIXED_1, b) / a), c) / d);
+            return mulDivExp(mulDivLog(FIXED_1, a, b), c, d);
+        (uint256 q, uint256 p) = mulDivExp(mulDivLog(FIXED_1, b, a), c, d);
         return (p, q);
     }}
 
@@ -45,14 +44,14 @@ contract AnalyticMath is Safe {
     */
     function log(uint256 a, uint256 b) internal pure returns (uint256, uint256) { unchecked {
         require(a >= b, "log: a < b");
-        return (fixedLog(mul(FIXED_1, a) / b), FIXED_1);
+        return (mulDivLog(FIXED_1, a, b), FIXED_1);
     }}
 
     /**
       * @dev Compute e ^ (a / b)
     */
     function exp(uint256 a, uint256 b) internal view returns (uint256, uint256) { unchecked {
-        return fixedExp(mul(FIXED_1, a) / b);
+        return mulDivExp(FIXED_1, a, b);
     }}
 
     /**
@@ -413,5 +412,15 @@ contract AnalyticMath is Safe {
         maxExpArray[125] = 0x009131271922eaa6064b73a22d0bd4f2bf;
         maxExpArray[126] = 0x008b380f3558668c46c91c49a2f8e967b9;
         maxExpArray[127] = 0x00857ddf0117efa215952912839f6473e6;
+    }
+
+    // auxiliary function
+    function mulDivLog(uint256 x, uint256 y, uint256 z) private pure returns (uint256) {
+        return fixedLog(IntegralMath.mulDivF(x, y, z));
+    }
+
+    // auxiliary function
+    function mulDivExp(uint256 x, uint256 y, uint256 z) private view returns (uint256, uint256) {
+        return fixedExp(IntegralMath.mulDivF(x, y, z));
     }
 }

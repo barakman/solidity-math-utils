@@ -44,6 +44,22 @@ This module implements the following interface:
 - `function floorLog2(uint256 n)` => `(uint8)`
 - `function floorSqrt(uint256 n)` => `(uint256)`
 - `function ceilSqrt(uint256 n)` => `(uint256)`
+- `function muldivF(uint256 x, uint256 y, uint256 z)` => `(uint256)`
+- `function muldivC(uint256 x, uint256 y, uint256 z)` => `(uint256)`
+
+Function `roundDiv(n, d)` computes the nearest integer to the quotient of `n / d`.
+
+Function `floorLog2(n)` computes the largest integer smaller than or equal to the binary logarithm of `n`.
+
+Function `floorSqrt(n)` computes the largest integer smaller than or equal to the square root of `n`.
+
+Function `ceilSqrt(n)` computes the smallest integer larger than or equal to the square root of `n`.
+
+Function `muldivF(x, y, z)` computes the largest integer smaller than or equal to `x * y / z`.
+
+Function `muldivC(x, y, z)` computes the smallest integer larger than or equal to `x * y / z`.
+
+Note that function `muldivF` and function `muldivC` revert when the **actual** result is larger than 256 bits.
 
 Note that function `floorSqrt` and function `ceilSqrt` are guaranteed to return the correct output for every input.
 
