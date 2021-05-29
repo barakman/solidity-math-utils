@@ -103,7 +103,7 @@ library IntegralMath {
         uint256 length = 255 - floorLog2(y);
         while (xh > 0) {
             uint256 bits = floorLog2(xh) + length;
-            result += Uint.unsafeShl(1, bits);
+            result += 1 << bits;
             (uint256 yh, uint256 yl) = shl512(y, bits);
             (xh, xl) = sub512(xh, xl, yh, yl);
         }

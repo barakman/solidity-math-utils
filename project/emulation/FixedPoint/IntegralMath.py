@@ -84,7 +84,7 @@ def div512(xh, xl, y):
     length = 255 - floorLog2(y);
     while (xh > 0):
         bits = floorLog2(xh) + length;
-        result += Uint.unsafeShl(1, bits);
+        result += 1 << bits;
         (yh, yl) = shl512(y, bits);
         (xh, xl) = sub512(xh, xl, yh, yl);
     return result + xl // y;
