@@ -7,6 +7,25 @@ MAX_UINT128 = 2 ** 128 - 1;
 MAX_UINT256 = 2 ** 256 - 1;
 
 '''
+    @dev Compute the product of two given ratios
+    
+    @param xn The 1st ratio numerator
+    @param yn The 2nd ratio numerator
+    @param xd The 1st ratio denominator
+    @param yd The 2nd ratio denominator
+    
+    @return The product ratio numerator
+    @return The product ratio denominator
+'''
+def productRatio(xn, yn, xd, yd):
+    n = IntegralMath.mulDivC(xn, yn, MAX_UINT256);
+    d = IntegralMath.mulDivC(xd, yd, MAX_UINT256);
+    z = n if n > d else d;
+    if (z > 1):
+        return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
+    return (xn * yn, xd * yd);
+
+'''
     @dev Compute the power of a given ratio
     
     @param baseN The ratio numerator

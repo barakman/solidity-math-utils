@@ -2,8 +2,11 @@
 pragma solidity 0.8.4;
 
 import "./AnalyticMath.sol";
+import "./FractionMath.sol";
 
 contract AdvancedMath is AnalyticMath {
+    using FractionMath for *;
+
     // Auto-generated via 'PrintLambertFactors.py'
     uint256 internal constant LAMBERT_CONV_RADIUS = 0x002f16ac6c59de6f8d5d6f63c1482a7c86;
     uint256 internal constant LAMBERT_POS2_SAMPLE = 0x0003060c183060c183060c183060c18306;
@@ -310,6 +313,6 @@ contract AdvancedMath is AnalyticMath {
     // auxiliary function
     function call(function (uint256) view returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private view returns (uint256, uint256) {
         uint256 result = f(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
-        return (Uint.safeMul(result, z), Uint.safeMul(FIXED_1, w));
+        return FractionMath.productRatio(result, z, FIXED_1, w);
     }
 }

@@ -1,5 +1,6 @@
 from .common.BuiltIn import *
 from .AnalyticMath import *
+from . import FractionMath
 
 # Auto-generated via 'PrintLambertFactors.py'
 LAMBERT_CONV_RADIUS = 0x002f16ac6c59de6f8d5d6f63c1482a7c86;
@@ -298,4 +299,4 @@ def initLambertArray():
 # auxiliary function
 def call(f, x, y, z, w):
     result = f(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
-    return (IntegralMath.Uint.safeMul(result, z), IntegralMath.Uint.safeMul(FIXED_1, w));
+    return FractionMath.productRatio(result, z, FIXED_1, w);
