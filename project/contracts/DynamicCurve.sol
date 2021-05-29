@@ -2,11 +2,8 @@
 pragma solidity 0.8.4;
 
 import "./AdvancedMath.sol";
-import "./FractionMath.sol";
 
 contract DynamicCurve is AdvancedMath {
-    using FractionMath for *;
-
     uint256 private constant MAX_WEIGHT = 1000000;
 
     /**
@@ -28,8 +25,8 @@ contract DynamicCurve is AdvancedMath {
       *
       * Output:
       * - Solve the equation x * (s / t) ^ x = (t / r) * (q / p)
-      * - Return x / (1 + x) as the weight of the primary reserve token
-      * - Return 1 / (1 + x) as the weight of the secondary reserve token
+      * - Return x / (x + 1) as the weight of the primary reserve token
+      * - Return 1 / (x + 1) as the weight of the secondary reserve token
       *
       * If the rate-provider provides the rates for a common unit, for example:
       * - P = 2 ==> 2 primary reserve tokens = 1 ether
@@ -58,13 +55,10 @@ contract DynamicCurve is AdvancedMath {
             require(t > 0 && s > 0 && r > 0, "invalid balance");
         require(q > 0 && p > 0, "invalid rate");
 
-        uint256 tq = Uint.safeMul(t, q);
-        uint256 rp = Uint.safeMul(r, p);
-
-        // solve `x * (s / t) ^ x = (t * q) / (r * p)`
+        (uint256 tq, uint256 rp) = FractionMath.productRatio(t, q, r, p);
         (uint256 xn, uint256 xd) = solve(s, t, tq, rp);
+        (uint256 w1, uint256 w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
 
-        // scale `x / (x + 1)` and `1 / (x + 1)` by `MAX_WEIGHT`
-        return FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
+        return (w1, w2);
     }}
 }

@@ -1,6 +1,5 @@
 from .common.BuiltIn import *
 from .AdvancedMath import *
-from . import FractionMath
 
 MAX_WEIGHT = 1000000;
 
@@ -23,8 +22,8 @@ MAX_WEIGHT = 1000000;
     
     Output:
     - Solve the equation x * (s / t) ^ x = (t / r) * (q / p)
-    - Return x / (1 + x) as the weight of the primary reserve token
-    - Return 1 / (1 + x) as the weight of the secondary reserve token
+    - Return x / (x + 1) as the weight of the primary reserve token
+    - Return 1 / (x + 1) as the weight of the secondary reserve token
     
     If the rate-provider provides the rates for a common unit, for example:
     - P = 2 ==> 2 primary reserve tokens = 1 ether
@@ -53,11 +52,8 @@ def equalize(t, s, r, q, p):
         require(t > 0 and s > 0 and r > 0, "invalid balance");
     require(q > 0 and p > 0, "invalid rate");
 
-    tq = IntegralMath.Uint.safeMul(t, q);
-    rp = IntegralMath.Uint.safeMul(r, p);
-
-    # solve `x * (s / t) ^ x = (t * q) / (r * p)`
+    (tq, rp) = FractionMath.productRatio(t, q, r, p);
     (xn, xd) = solve(s, t, tq, rp);
+    (w1, w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
 
-    # scale `x / (x + 1)` and `1 / (x + 1)` by `MAX_WEIGHT`
-    return FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
+    return (w1, w2);

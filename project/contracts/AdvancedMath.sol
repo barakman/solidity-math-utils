@@ -2,8 +2,11 @@
 pragma solidity 0.8.4;
 
 import "./AnalyticMath.sol";
+import "./FractionMath.sol";
 
 contract AdvancedMath is AnalyticMath {
+    using FractionMath for *;
+
     // Auto-generated via 'PrintLambertFactors.py'
     uint256 internal constant LAMBERT_CONV_RADIUS = 0x002f16ac6c59de6f8d5d6f63c1482a7c86;
     uint256 internal constant LAMBERT_POS2_SAMPLE = 0x0003060c183060c183060c183060c18306;
@@ -26,9 +29,9 @@ contract AdvancedMath is AnalyticMath {
     */
     function solve(uint256 a, uint256 b, uint256 c, uint256 d) internal view returns (uint256, uint256) { unchecked {
         if (a > b)
-            return scale(lambertPos(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, a, b)), c, d)), c, d);
+            return call(lambertPos, a, b, c, d);
         if (b > a)
-            return scale(lambertNeg(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, b, a)), c, d)), c, d);
+            return call(lambertNeg, b, a, c, d);
         return (c, d);
     }}
 
@@ -308,12 +311,8 @@ contract AdvancedMath is AnalyticMath {
     }
 
     // auxiliary function
-    function scale(uint256 wOutput, uint256 c, uint256 d) private pure returns (uint256, uint256) { unchecked {
-        uint256 p = IntegralMath.mulDivC(wOutput, c, type(uint256).max);
-        uint256 q = IntegralMath.mulDivC(FIXED_1, d, type(uint256).max);
-        uint256 r = p > q ? p : q;
-        if (r > 1)
-            return (IntegralMath.mulDivC(wOutput, c, r), IntegralMath.mulDivC(FIXED_1, d, r));
-        return (wOutput * c, FIXED_1 * d);
-    }}
+    function call(function (uint256) view returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private view returns (uint256, uint256) {
+        uint256 result = f(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
+        return FractionMath.productRatio(result, z, FIXED_1, w);
+    }
 }

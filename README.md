@@ -10,19 +10,17 @@ This package consists of the following modules:
 
 ### Class Hierarchy
 ```
-IntegralMath < - - - -|
-      ∧               |
-      |               |
-      |         FractionMath < - - - -|
-      |                               |
-      |                               |
-AnalyticMath < - - - -|               |
-      ∧               |               |
-      |               |               |
-      |         AdvancedMath < - - - -|
-      |                               |
-      |                               |
-BodningCurve                    DynamicCurve
+IntegralMath < - - - - FractionMath
+      ∧                      ∧
+      |                      |
+      |                      |
+      |                      |
+AnalyticMath < - - - - AdvancedMath
+      ∧                      ∧
+      |                      |
+      |                      |
+      |                      |
+BodningCurve           DynamicCurve
 ```
 
 Note that some of these modules are implemented as `library`, while others are implemented as `contract`.
@@ -79,6 +77,7 @@ This module implements the following interface:
 - `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
 - `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
 - `function poweredRatio(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
+- `function productRatio(uint256 n1, uint256 n2, uint256 d1, uint256 d2)` => `(uint256, uint256)`
 
 ### Normalized Ratio
 
@@ -123,6 +122,10 @@ Note that this function uses `reducedRatio(n, d, MAX_UINT128)` internally, in or
 Subsequently, the larger the input exponent is, the lower the accuracy of the output is.
 
 This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
+
+### Product Ratio
+
+Function `productRatio` computes the product of two ratios as a single ratio.
 
 <br/><br/>
 
@@ -299,8 +302,8 @@ Where p primary tokens are equal to q secondary tokens
 
 Output:
 - Solve the equation x * (s / t) ^ x = (t / r) * (q / p)
-- Return x / (1 + x) as the weight of the primary reserve token
-- Return 1 / (1 + x) as the weight of the secondary reserve token
+- Return x / (x + 1) as the weight of the primary reserve token
+- Return 1 / (x + 1) as the weight of the secondary reserve token
 
 A detailed reasoning of this method can be found [here](readme/DynamicCurve.pdf).
 

@@ -6,6 +6,7 @@ const MAX_EXP     = Decimal(2).pow(4).sub(1);
 const MAX_UINT128 = Decimal(2).pow(128).sub(1);
 const MAX_UINT256 = Decimal(2).pow(256).sub(1);
 
+const productRatio    = (xn, yn, xd, yd) => [Decimal(xn).mul(yn), Decimal(xd).mul(yd)];
 const poweredRatio    = (n, d, exp) => [n, d].map(x => x.pow(exp));
 const reducedRatio    = (n, d, max) => normalizedRatio(n, d, Decimal.min(n.add(d), max));
 const normalizedRatio = (n, d, scale) => [n, d].map(x => x.mul(scale).div(n.add(d)));
@@ -16,6 +17,16 @@ contract("FractionMath", () => {
     before(async () => {
         fractionMath = await FractionMath.new();
     });
+
+    for (const xn of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
+        for (const yn of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
+            for (const xd of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
+                for (const yd of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
+                    test(productRatio, "0", "0.00000000000000000000000000000000000001", xn.toHex(), xd.toHex(), yn.toHex(), yd.toHex());
+                }
+            }
+        }
+    }
 
     for (let exp = 0; exp <= MAX_EXP; exp++) {
         for (let n = 0; n < 10; n++) {

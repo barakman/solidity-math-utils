@@ -12,6 +12,26 @@ library FractionMath {
     uint256 internal constant MAX_UINT256 = 2 ** 256 - 1;
 
     /**
+      * @dev Compute the product of two given ratios
+      *
+      * @param xn The 1st ratio numerator
+      * @param yn The 2nd ratio numerator
+      * @param xd The 1st ratio denominator
+      * @param yd The 2nd ratio denominator
+      *
+      * @return The product ratio numerator
+      * @return The product ratio denominator
+    */
+    function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd) internal pure returns (uint256, uint256) { unchecked {
+        uint256 n = IntegralMath.mulDivC(xn, yn, MAX_UINT256);
+        uint256 d = IntegralMath.mulDivC(xd, yd, MAX_UINT256);
+        uint256 z = n > d ? n : d;
+        if (z > 1)
+            return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
+        return (xn * yn, xd * yd);
+    }}
+
+    /**
       * @dev Compute the power of a given ratio
       *
       * @param baseN The ratio numerator
