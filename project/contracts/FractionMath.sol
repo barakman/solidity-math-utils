@@ -61,6 +61,7 @@ library FractionMath {
             }
         }
 
+        // TODO: improve `productRatio` and use it here instead of `reducedRatio`
         return (n, d);
     }}
 

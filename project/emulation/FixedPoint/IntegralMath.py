@@ -1,3 +1,4 @@
+from .common.BuiltIn import *
 from .common import Uint
 
 '''
@@ -61,7 +62,7 @@ def mulDivF(x, y, z):
 def mulDivC(x, y, z):
     w = mulDivF(x, y, z);
     if (Uint.mulMod(x, y, z) > 0):
-        return Uint.safeAdd1(w);
+        return Uint.safeAdd(w, 1);
     return w;
 
 '''
@@ -78,14 +79,15 @@ def mul512(x, y):
     @dev Compute the largest integer smaller than or equal to `(2 ^ 256 * xh + xl) / y`
 '''
 def div512(xh, xl, y):
+    require(xh < y);
     result = 0;
     length = 255 - floorLog2(y);
     while (xh > 0):
         bits = floorLog2(xh) + length;
-        result = Uint.safeAdd(result, Uint.safeShl1(bits));
+        result += 1 << bits;
         (yh, yl) = shl512(y, bits);
         (xh, xl) = sub512(xh, xl, yh, yl);
-    return Uint.safeAdd(result, xl // y);
+    return result + xl // y;
 
 '''
     @dev Compute the value of `x * 2 ^ y`

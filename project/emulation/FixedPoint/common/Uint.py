@@ -1,5 +1,4 @@
-BIT_LEN = 256
-MAX_VAL = (1 << BIT_LEN) - 1
+MAX_VAL = (1 << 256) - 1
 
 # reverts on overflow
 def safeAdd(x, y):
@@ -10,16 +9,6 @@ def safeAdd(x, y):
 def safeMul(x, y):
     assert x * y <= MAX_VAL
     return x * y
-
-# reverts on overflow
-def safeAdd1(x):
-    assert x < MAX_VAL
-    return x + 1
-
-# reverts on overflow
-def safeShl1(x):
-    assert x < BIT_LEN
-    return 1 << x
 
 # does not revert on overflow
 def unsafeAdd(x, y):
