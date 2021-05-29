@@ -79,7 +79,7 @@ library IntegralMath {
     function mulDivC(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
         if (Uint.mulMod(x, y, z) > 0)
-            return Uint.safeAdd1(w);
+            return Uint.safeAdd(w, 1);
         return w;
     }}
 
@@ -98,15 +98,16 @@ library IntegralMath {
       * @dev Compute the largest integer smaller than or equal to `(2 ^ 256 * xh + xl) / y`
     */
     function div512(uint256 xh, uint256 xl, uint256 y) private pure returns (uint256) { unchecked {
+        require(xh < y);
         uint256 result = 0;
         uint256 length = 255 - floorLog2(y);
         while (xh > 0) {
             uint256 bits = floorLog2(xh) + length;
-            result = Uint.safeAdd(result, Uint.safeShl1(bits));
+            result += Uint.unsafeShl(1, bits);
             (uint256 yh, uint256 yl) = shl512(y, bits);
             (xh, xl) = sub512(xh, xl, yh, yl);
         }
-        return Uint.safeAdd(result, xl / y);
+        return result += xl / y;
     }}
 
     /**

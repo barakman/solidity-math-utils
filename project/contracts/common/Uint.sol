@@ -12,18 +12,6 @@ library Uint {
         return x * y;
     }
 
-    // reverts on overflow
-    function safeAdd1(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x < type(uint256).max);
-        return x + 1;
-    }}
-
-    // reverts on overflow
-    function safeShl1(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x < 256);
-        return 1 << x;
-    }}
-
     // does not revert on overflow
     function unsafeAdd(uint256 x, uint256 y) internal pure returns (uint256) { unchecked {
         return x + y;
