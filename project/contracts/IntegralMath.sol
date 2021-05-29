@@ -107,7 +107,7 @@ library IntegralMath {
             (uint256 yh, uint256 yl) = shl512(y, bits);
             (xh, xl) = sub512(xh, xl, yh, yl);
         }
-        return result += xl / y;
+        return result + xl / y;
     }}
 
     /**
