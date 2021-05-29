@@ -53,11 +53,11 @@ def equalize(t, s, r, q, p):
         require(t > 0 and s > 0 and r > 0, "invalid balance");
     require(q > 0 and p > 0, "invalid rate");
 
-    (tq, rp) = FractionMath.reducedRatio(mul(t, q), mul(r, p), FIXED_2);
-    (xn, xd) = solve(s, t, tq, rp); # solve `x * (s / t) ^ x = tq / rp`
-    (w1, w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
-    return (w1, w2);
+    tq = IntegralMath.Uint.safeMul(t, q);
+    rp = IntegralMath.Uint.safeMul(r, p);
 
-# auxiliary function
-def mul(x, y):
-    return IntegralMath.Uint.safeMul(x, y);
+    # solve `x * (s / t) ^ x = (t * q) / (r * p)`
+    (xn, xd) = solve(s, t, tq, rp);
+
+    # scale `x / (x + 1)` and `1 / (x + 1)` by `MAX_WEIGHT`
+    return FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);

@@ -26,9 +26,9 @@ contract AdvancedMath is AnalyticMath {
     */
     function solve(uint256 a, uint256 b, uint256 c, uint256 d) internal view returns (uint256, uint256) { unchecked {
         if (a > b)
-            return call(lambertPos, a, b, c, d);
+            return scale(lambertPos(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, a, b)), c, d)), c, d);
         if (b > a)
-            return call(lambertNeg, b, a, c, d);
+            return scale(lambertNeg(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, b, a)), c, d)), c, d);
         return (c, d);
     }}
 
@@ -308,8 +308,12 @@ contract AdvancedMath is AnalyticMath {
     }
 
     // auxiliary function
-    function call(function (uint256) view returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private view returns (uint256, uint256) {
-        uint256 result = f(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
-        return (Uint.safeMul(result, z), Uint.safeMul(FIXED_1, w));
-    }
+    function scale(uint256 wOutput, uint256 c, uint256 d) private pure returns (uint256, uint256) { unchecked {
+        uint256 p = IntegralMath.mulDivC(wOutput, c, type(uint256).max);
+        uint256 q = IntegralMath.mulDivC(FIXED_1, d, type(uint256).max);
+        uint256 r = p > q ? p : q;
+        if (r > 1)
+            return (IntegralMath.mulDivC(wOutput, c, r), IntegralMath.mulDivC(FIXED_1, d, r));
+        return (wOutput * c, FIXED_1 * d);
+    }}
 }

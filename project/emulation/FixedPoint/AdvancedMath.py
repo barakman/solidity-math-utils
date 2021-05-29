@@ -22,9 +22,9 @@ def init():
 '''
 def solve(a, b, c, d):
     if (a > b):
-        return call(lambertPos, a, b, c, d);
+        return scale(lambertPos(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, a, b)), c, d)), c, d);
     if (b > a):
-        return call(lambertNeg, b, a, c, d);
+        return scale(lambertNeg(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, b, a)), c, d)), c, d);
     return (c, d);
 
 '''
@@ -296,6 +296,10 @@ def initLambertArray():
     lambertArray[127] = 0x2a2f6c81f5d84dd950a35626d6d5503a;
 
 # auxiliary function
-def call(f, x, y, z, w):
-    result = f(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
-    return (IntegralMath.Uint.safeMul(result, z), IntegralMath.Uint.safeMul(FIXED_1, w));
+def scale(wOutput, c, d):
+    p = IntegralMath.mulDivC(wOutput, c, IntegralMath.Uint.MAX_VAL);
+    q = IntegralMath.mulDivC(FIXED_1, d, IntegralMath.Uint.MAX_VAL);
+    r = p if p > q else q;
+    if (r > 1):
+        return (IntegralMath.mulDivC(wOutput, c, r), IntegralMath.mulDivC(FIXED_1, d, r));
+    return (wOutput * c, FIXED_1 * d);

@@ -58,14 +58,13 @@ contract DynamicCurve is AdvancedMath {
             require(t > 0 && s > 0 && r > 0, "invalid balance");
         require(q > 0 && p > 0, "invalid rate");
 
-        (uint256 tq, uint256 rp) = FractionMath.reducedRatio(mul(t, q), mul(r, p), FIXED_2);
-        (uint256 xn, uint256 xd) = solve(s, t, tq, rp); // solve `x * (s / t) ^ x = tq / rp`
-        (uint256 w1, uint256 w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
-        return (w1, w2);
-    }}
+        uint256 tq = Uint.safeMul(t, q);
+        uint256 rp = Uint.safeMul(r, p);
 
-    // auxiliary function
-    function mul(uint256 x, uint256 y) private pure returns (uint256) {
-        return Uint.safeMul(x, y);
-    }
+        // solve `x * (s / t) ^ x = (t * q) / (r * p)`
+        (uint256 xn, uint256 xd) = solve(s, t, tq, rp);
+
+        // scale `x / (x + 1)` and `1 / (x + 1)` by `MAX_WEIGHT`
+        return FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
+    }}
 }
