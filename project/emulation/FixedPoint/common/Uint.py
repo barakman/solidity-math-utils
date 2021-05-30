@@ -5,11 +5,6 @@ def safeAdd(x, y):
     assert x + y <= MAX_VAL
     return x + y
 
-# reverts on overflow
-def safeMul(x, y):
-    assert x * y <= MAX_VAL
-    return x * y
-
 # does not revert on overflow
 def unsafeAdd(x, y):
     return (x + y) & MAX_VAL

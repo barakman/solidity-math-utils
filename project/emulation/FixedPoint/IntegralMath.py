@@ -1,5 +1,5 @@
 from .common.BuiltIn import *
-from .common import Uint
+from .common.Uint import *
 
 '''
     @dev Compute the nearest integer to the quotient of `n / d`
@@ -61,19 +61,19 @@ def mulDivF(x, y, z):
 '''
 def mulDivC(x, y, z):
     w = mulDivF(x, y, z);
-    if (Uint.mulMod(x, y, z) > 0):
-        return Uint.safeAdd(w, 1);
+    if (mulMod(x, y, z) > 0):
+        return safeAdd(w, 1);
     return w;
 
 '''
     @dev Compute the value of `x * y`
 '''
 def mul512(x, y):
-    p = Uint.mulModMax(x, y);
-    q = Uint.unsafeMul(x, y);
+    p = mulModMax(x, y);
+    q = unsafeMul(x, y);
     if (p >= q):
         return (p - q, q);
-    return (Uint.unsafeSub(p, q) - 1, q);
+    return (unsafeSub(p, q) - 1, q);
 
 '''
     @dev Compute the largest integer smaller than or equal to `(2 ^ 256 * xh + xl) / y`
@@ -93,7 +93,7 @@ def div512(xh, xl, y):
     @dev Compute the value of `x * 2 ^ y`
 '''
 def shl512(x, y):
-    return (x >> (256 - y), Uint.unsafeShl(x, y));
+    return (x >> (256 - y), unsafeShl(x, y));
 
 '''
     @dev Compute the value of `2 ^ 256 * xh + xl - 2 ^ 256 * yh - yl`
@@ -101,4 +101,4 @@ def shl512(x, y):
 def sub512(xh, xl, yh, yl):
     if (xl >= yl):
         return (xh - yh, xl - yl);
-    return (xh - yh - 1, Uint.unsafeSub(xl, yl));
+    return (xh - yh - 1, unsafeSub(xl, yl));

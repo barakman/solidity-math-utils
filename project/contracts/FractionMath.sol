@@ -61,7 +61,6 @@ library FractionMath {
             }
         }
 
-        // TODO: improve `productRatio` and use it here instead of `reducedRatio`
         return (n, d);
     }}
 
@@ -122,7 +121,7 @@ library FractionMath {
 
         if (baseN != baseD) {
             uint256 n = baseN * scale;
-            uint256 d = Uint.unsafeAdd(baseN, baseD); // `baseN + baseD` can overflow
+            uint256 d = unsafeAdd(baseN, baseD); // `baseN + baseD` can overflow
             if (d >= baseN) {
                 // `baseN + baseD` did not overflow
                 uint256 x = IntegralMath.roundDiv(n, d); // we can now safely compute `scale - x`

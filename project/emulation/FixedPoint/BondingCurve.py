@@ -1,4 +1,5 @@
 from .common.BuiltIn import *
+from .common.Uint import *
 from .AnalyticMath import *
 
 MIN_WEIGHT = 1;
@@ -23,10 +24,10 @@ def buy(supply, balance, weight, amount):
         return 0;
 
     if (weight == MAX_WEIGHT):
-        return mulDivF(amount, supply, balance);
+        return IntegralMath.mulDivF(amount, supply, balance);
 
-    (n, d) = pow(add(balance, amount), balance, weight, MAX_WEIGHT);
-    return mulDivF(supply, n, d) - supply;
+    (n, d) = pow(safeAdd(balance, amount), balance, weight, MAX_WEIGHT);
+    return IntegralMath.mulDivF(supply, n, d) - supply;
 
 '''
     @dev Sell pool tokens for reserve tokens
@@ -51,10 +52,10 @@ def sell(supply, balance, weight, amount):
         return balance;
 
     if (weight == MAX_WEIGHT):
-        return mulDivF(amount, balance, supply);
+        return IntegralMath.mulDivF(amount, balance, supply);
 
     (n, d) = pow(supply, supply - amount, MAX_WEIGHT, weight);
-    return mulDivF(balance, n - d, n);
+    return IntegralMath.mulDivF(balance, n - d, n);
 
 '''
     @dev Convert reserve tokens of one type to another
@@ -74,10 +75,10 @@ def convert(balance1, weight1, balance2, weight2, amount):
     require(MIN_WEIGHT <= weight2 and weight2 <= MAX_WEIGHT, "invalid target weight");
 
     if (weight1 == weight2):
-        return mulDivF(balance2, amount, add(balance1, amount));
+        return IntegralMath.mulDivF(balance2, amount, safeAdd(balance1, amount));
 
-    (n, d) = pow(add(balance1, amount), balance1, weight1, weight2);
-    return mulDivF(balance2, n - d, n);
+    (n, d) = pow(safeAdd(balance1, amount), balance1, weight1, weight2);
+    return IntegralMath.mulDivF(balance2, n - d, n);
 
 '''
     @dev Deposit reserve tokens for pool tokens
@@ -98,10 +99,10 @@ def deposit(supply, balance, weights, amount):
         return 0;
 
     if (weights == MAX_WEIGHT):
-        return mulDivF(amount, supply, balance);
+        return IntegralMath.mulDivF(amount, supply, balance);
 
-    (n, d) = pow(add(balance, amount), balance, weights, MAX_WEIGHT);
-    return mulDivF(supply, n, d) - supply;
+    (n, d) = pow(safeAdd(balance, amount), balance, weights, MAX_WEIGHT);
+    return IntegralMath.mulDivF(supply, n, d) - supply;
 
 '''
     @dev Withdraw reserve tokens with pool tokens
@@ -126,10 +127,10 @@ def withdraw(supply, balance, weights, amount):
         return balance;
 
     if (weights == MAX_WEIGHT):
-        return mulDivF(amount, balance, supply);
+        return IntegralMath.mulDivF(amount, balance, supply);
 
     (n, d) = pow(supply, supply - amount, MAX_WEIGHT, weights);
-    return mulDivF(balance, n - d, n);
+    return IntegralMath.mulDivF(balance, n - d, n);
 
 '''
     @dev Invest reserve tokens for pool tokens
@@ -150,19 +151,7 @@ def invest(supply, balance, weights, amount):
         return 0;
 
     if (weights == MAX_WEIGHT):
-        return mulDivC(amount, balance, supply);
+        return IntegralMath.mulDivC(amount, balance, supply);
 
-    (n, d) = pow(add(supply, amount), supply, MAX_WEIGHT, weights);
-    return mulDivC(balance, n, d) - balance;
-
-# auxiliary function
-def add(x, y):
-    return IntegralMath.Uint.safeAdd(x, y);
-
-# auxiliary function
-def mulDivF(x, y, z):
-    return IntegralMath.mulDivF(x, y, z);
-
-# auxiliary function
-def mulDivC(x, y, z):
-    return IntegralMath.mulDivC(x, y, z);
+    (n, d) = pow(safeAdd(supply, amount), supply, MAX_WEIGHT, weights);
+    return IntegralMath.mulDivC(balance, n, d) - balance;
