@@ -4,8 +4,6 @@ pragma solidity 0.8.4;
 import "./common/Uint.sol";
 
 library IntegralMath {
-    using Uint for *;
-
     /**
       * @dev Compute the nearest integer to the quotient of `n / d`
     */
@@ -78,8 +76,8 @@ library IntegralMath {
     */
     function mulDivC(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
-        if (Uint.mulMod(x, y, z) > 0)
-            return Uint.safeAdd(w, 1);
+        if (mulMod(x, y, z) > 0)
+            return safeAdd(w, 1);
         return w;
     }}
 
@@ -87,11 +85,11 @@ library IntegralMath {
       * @dev Compute the value of `x * y`
     */
     function mul512(uint256 x, uint256 y) private pure returns (uint256, uint256) { unchecked {
-        uint256 p = Uint.mulModMax(x, y);
-        uint256 q = Uint.unsafeMul(x, y);
+        uint256 p = mulModMax(x, y);
+        uint256 q = unsafeMul(x, y);
         if (p >= q)
             return (p - q, q);
-        return (Uint.unsafeSub(p, q) - 1, q);
+        return (unsafeSub(p, q) - 1, q);
     }}
 
     /**
@@ -114,7 +112,7 @@ library IntegralMath {
       * @dev Compute the value of `x * 2 ^ y`
     */
     function shl512(uint256 x, uint256 y) private pure returns (uint256, uint256) { unchecked {
-        return (x >> (256 - y), Uint.unsafeShl(x, y));
+        return (x >> (256 - y), unsafeShl(x, y));
     }}
 
     /**
@@ -123,6 +121,6 @@ library IntegralMath {
     function sub512(uint256 xh, uint256 xl, uint256 yh, uint256 yl) private pure returns (uint256, uint256) { unchecked {
         if (xl >= yl)
             return (xh - yh, xl - yl);
-        return (xh - yh - 1, Uint.unsafeSub(xl, yl));
+        return (xh - yh - 1, unsafeSub(xl, yl));
     }}
 }
