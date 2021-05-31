@@ -71,12 +71,31 @@ contract("IntegralMath", () => {
         for (const px of [64, 128, 192, 256]) {
             for (const py of [64, 128, 192, 256]) {
                 for (const pz of [64, 128, 192, 256]) {
-                    for (const ax of [px >> 1, 0]) {
-                        for (const ay of [py >> 1, 0]) {
-                            for (const az of [pz >> 1, 0]) {
-                                const x = Decimal(2).pow(px).sub(Decimal(2).pow(ax));
-                                const y = Decimal(2).pow(py).sub(Decimal(2).pow(ay));
-                                const z = Decimal(2).pow(pz).sub(Decimal(2).pow(az));
+                    for (const ax of [Decimal(2).pow(px >> 1), 1]) {
+                        for (const ay of [Decimal(2).pow(py >> 1), 1]) {
+                            for (const az of [Decimal(2).pow(pz >> 1), 1]) {
+                                const x = Decimal(2).pow(px).sub(ax);
+                                const y = Decimal(2).pow(py).sub(ay);
+                                const z = Decimal(2).pow(pz).sub(az);
+                                test(method, x.toHex(), y.toHex(), z.toHex());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for (const method of [mulDivF, mulDivC]) {
+        for (const px of [128, 192, 256]) {
+            for (const py of [128, 192, 256]) {
+                for (const pz of [128, 192, 256]) {
+                    for (const ax of [3, 5, 7]) {
+                        for (const ay of [3, 5, 7]) {
+                            for (const az of [3, 5, 7]) {
+                                const x = Decimal(2).pow(px).divToInt(ax);
+                                const y = Decimal(2).pow(py).divToInt(ay);
+                                const z = Decimal(2).pow(pz).divToInt(az);
                                 test(method, x.toHex(), y.toHex(), z.toHex());
                             }
                         }

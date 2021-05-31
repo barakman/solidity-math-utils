@@ -36,6 +36,16 @@ contract("FractionMath", () => {
         }
     }
 
+    for (let exp = 0; exp <= MAX_EXP; exp++) {
+        for (let i = 1; i <= 10; i++) {
+            const n = MAX_UINT256.sub(MAX_UINT128).divToInt(i);
+            for (let j = 1; j <= 10; j++) {
+                const d = MAX_UINT256.sub(MAX_UINT128).divToInt(j);
+                test(poweredRatio, "0", "0.00000000000000000000000000000000000000000000000000000000000001", n.toFixed(), d.toFixed(), exp);
+            }
+        }
+    }
+
     for (const xn of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
         for (const yn of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
             for (const xd of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
