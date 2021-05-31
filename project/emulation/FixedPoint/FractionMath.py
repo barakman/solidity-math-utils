@@ -83,21 +83,21 @@ def reducedRatio(baseN, baseD, max):
 '''
 def normalizedRatio(baseN, baseD, scale):
     if (baseN <= baseD):
-        return accurateRatio(baseN, baseD, scale);
-    (d, n) = accurateRatio(baseD, baseN, scale);
+        return estimatedRatio(baseN, baseD, scale);
+    (d, n) = estimatedRatio(baseD, baseN, scale);
     return (n, d);
 
 '''
-    @dev Compute a normalized ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n <= d`
+    @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n <= d`
     
     @param baseN The ratio numerator
     @param baseD The ratio denominator
     @param scale The desired scale
     
-    @return The normalized ratio numerator
-    @return The normalized ratio denominator
+    @return The estimated ratio numerator
+    @return The estimated ratio denominator
 '''
-def accurateRatio(baseN, baseD, scale):
+def estimatedRatio(baseN, baseD, scale):
     maxN = MAX_VAL // scale; # `MAX_VAL >= scale` hence `maxN >= 1`
     if (maxN < baseN):
         # `maxN < baseN <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe

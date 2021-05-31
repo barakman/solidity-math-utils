@@ -6,12 +6,12 @@ import "../FractionMath.sol";
 contract FractionMathUser {
     using FractionMath for *;
 
-    function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd) external pure returns (uint256, uint256) {
-        return FractionMath.productRatio(xn, yn, xd, yd);
-    }
-
     function poweredRatio(uint256 baseN, uint256 baseD, uint256 exp, bool fast) external pure returns (uint256, uint256) {
         return FractionMath.poweredRatio(baseN, baseD, exp, fast);
+    }
+
+    function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd) external pure returns (uint256, uint256) {
+        return FractionMath.productRatio(xn, yn, xd, yd);
     }
 
     function reducedRatio(uint256 baseN, uint256 baseD, uint256 max) external pure returns (uint256, uint256) {

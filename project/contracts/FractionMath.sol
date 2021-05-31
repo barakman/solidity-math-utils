@@ -94,23 +94,23 @@ library FractionMath {
     */
     function normalizedRatio(uint256 baseN, uint256 baseD, uint256 scale) internal pure returns (uint256, uint256) { unchecked {
         if (baseN <= baseD) {
-            return accurateRatio(baseN, baseD, scale);
+            return estimatedRatio(baseN, baseD, scale);
         }
-        (uint256 d, uint256 n) = accurateRatio(baseD, baseN, scale);
+        (uint256 d, uint256 n) = estimatedRatio(baseD, baseN, scale);
         return (n, d);
     }}
 
     /**
-      * @dev Compute a normalized ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n <= d`
+      * @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n <= d`
       *
       * @param baseN The ratio numerator
       * @param baseD The ratio denominator
       * @param scale The desired scale
       *
-      * @return The normalized ratio numerator
-      * @return The normalized ratio denominator
+      * @return The estimated ratio numerator
+      * @return The estimated ratio denominator
     */
-    function accurateRatio(uint256 baseN, uint256 baseD, uint256 scale) private pure returns (uint256, uint256) { unchecked {
+    function estimatedRatio(uint256 baseN, uint256 baseD, uint256 scale) private pure returns (uint256, uint256) { unchecked {
         uint256 maxN = MAX_VAL / scale; // `MAX_VAL >= scale` hence `maxN >= 1`
         if (maxN < baseN) {
             // `maxN < baseN <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
