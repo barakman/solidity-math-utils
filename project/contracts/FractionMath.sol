@@ -8,6 +8,7 @@ library FractionMath {
 
     uint256 internal constant MAX_EXP_BIT_LEN = 4;
     uint256 internal constant MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
+    uint256 internal constant MAX_UINT128 = type(uint128).max;
 
     /**
       * @dev Compute the power of a given ratio
@@ -149,7 +150,7 @@ library FractionMath {
       * @return The product ratio denominator
     */
     function mulRatio128(uint256 xn, uint256 yn, uint256 xd, uint256 yd) private pure returns (uint256, uint256) { unchecked {
-        return reducedRatio(xn * yn, xd * yd, type(uint128).max);
+        return reducedRatio(xn * yn, xd * yd, MAX_UINT128);
     }}
 
     /**

@@ -4,6 +4,7 @@ from . import IntegralMath
 
 MAX_EXP_BIT_LEN = 4;
 MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
+MAX_UINT128 = 2 ** 128 - 1;
 
 '''
     @dev Compute the power of a given ratio
@@ -131,7 +132,7 @@ def estimatedRatio(baseN, baseD, scale):
     @return The product ratio denominator
 '''
 def mulRatio128(xn, yn, xd, yd):
-    return reducedRatio(xn * yn, xd * yd, type().max);
+    return reducedRatio(xn * yn, xd * yd, MAX_UINT128);
 
 '''
     @dev Compute the product of two ratios and reduce the components of the result to 256 bits
