@@ -77,7 +77,7 @@ This module implements the following interface:
 - `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
 - `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
 - `function productRatio(uint256 n1, uint256 n2, uint256 d1, uint256 d2)` => `(uint256, uint256)`
-- `function poweredRatio(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
+- `function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast)` => `(uint256, uint256)`
 
 ### Normalized Ratio
 
@@ -115,15 +115,19 @@ However, without knowing specific characteristics of that ratio (e.g., each one 
 
 ### Product Ratio
 
-Function `productRatio` computes the product of two ratios as a single ratio.
+Function `productRatio` computes the product of two ratios as a single ratio whose components are not larger than 256 bits.
+
+If either one of the intermediate components is larger than 256 bits, then both of them are reduced based on the larger one.
 
 ### Powered Ratio
 
 Function `poweredRatio` computes the power of a given ratio by a given exponent.
 
-Note that it relies on function `productRatio` in order to avoid multiplication overflow.
+In order to avoid multiplication overflow, it may truncate the intermediate result on each iteration.
 
 Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
+
+The input argument `fast` allows to opt for either accuracy (using `false`) or performance (using `true`).
 
 This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
 
