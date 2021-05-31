@@ -15,19 +15,22 @@ library FractionMath {
       * @param baseN The ratio numerator
       * @param baseD The ratio denominator
       * @param exp   The exponentiation value
+      * @param fast  Opt for accuracy or performance
       *
       * @return The powered ratio numerator
       * @return The powered ratio denominator
     */
-    function poweredRatio(uint256 baseN, uint256 baseD, uint256 exp) internal pure returns (uint256, uint256) { unchecked {
+    function poweredRatio(uint256 baseN, uint256 baseD, uint256 exp, bool fast) internal pure returns (uint256, uint256) { unchecked {
         require(exp <= MAX_EXP, "exp too large");
+
+        function (uint256, uint256, uint256, uint256) pure returns (uint256, uint256) safeRatio = fast ? mulRatio128 : mulRatio256;
 
         uint256[MAX_EXP_BIT_LEN] memory ns;
         uint256[MAX_EXP_BIT_LEN] memory ds;
 
-        (ns[0], ds[0]) = (baseN, baseD);
+        (ns[0], ds[0]) = safeRatio(baseN, 1, baseD, 1);
         for (uint256 i = 0; (exp >> i) > 1; ++i) {
-            (ns[i + 1], ds[i + 1]) = productRatio(ns[i], ns[i], ds[i], ds[i]);
+            (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
         }
 
         uint256 n = 1;
@@ -35,7 +38,7 @@ library FractionMath {
 
         for (uint256 i = 0; (exp >> i) > 0; ++i) {
             if (((exp >> i) & 1) > 0) {
-                (n, d) = productRatio(n, ns[i], d, ds[i]);
+                (n, d) = safeRatio(n, ns[i], d, ds[i]);
             }
         }
 
@@ -132,5 +135,35 @@ library FractionMath {
             return (1, scale - 1); // `(baseN + baseD) / 2 < baseN * scale < MAX_VAL < baseN + baseD`
         }
         return (scale / 2, scale - scale / 2); // reflect the fact that initially `baseN <= baseD`
+    }}
+
+    /**
+      * @dev Compute the product of two ratios and reduce the components of the result to 128 bits
+      *
+      * @param xn The 1st ratio numerator
+      * @param yn The 2nd ratio numerator
+      * @param xd The 1st ratio denominator
+      * @param yd The 2nd ratio denominator
+      *
+      * @return The product ratio numerator
+      * @return The product ratio denominator
+    */
+    function mulRatio128(uint256 xn, uint256 yn, uint256 xd, uint256 yd) private pure returns (uint256, uint256) { unchecked {
+        return reducedRatio(xn * yn, xd * yd, type(uint128).max);
+    }}
+
+    /**
+      * @dev Compute the product of two ratios and reduce the components of the result to 256 bits
+      *
+      * @param xn The 1st ratio numerator
+      * @param yn The 2nd ratio numerator
+      * @param xd The 1st ratio denominator
+      * @param yd The 2nd ratio denominator
+      *
+      * @return The product ratio numerator
+      * @return The product ratio denominator
+    */
+    function mulRatio256(uint256 xn, uint256 yn, uint256 xd, uint256 yd) private pure returns (uint256, uint256) { unchecked {
+        return productRatio(xn, yn, xd, yd);
     }}
 }
