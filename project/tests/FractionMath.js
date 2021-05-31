@@ -41,7 +41,7 @@ contract("FractionMath", () => {
             const n = MAX_UINT128.mul(i).add(1);
             for (let j = 1; j <= 10; j++) {
                 const d = MAX_UINT128.mul(j).add(1);
-                test(poweredRatio, "0", "0.000000000000000000000001", n.toFixed(), d.toFixed(), exp);
+                test(poweredRatio, "0", "0.00000000000000000000000000000000000000000000000000000000000001", n.toFixed(), d.toFixed(), exp);
             }
         }
     }

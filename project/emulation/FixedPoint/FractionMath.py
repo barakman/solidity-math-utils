@@ -4,8 +4,6 @@ from . import IntegralMath
 
 MAX_EXP_BIT_LEN = 4;
 MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
-MAX_UINT128 = 2 ** 128 - 1;
-MAX_UINT256 = 2 ** 256 - 1;
 
 '''
     @dev Compute the product of two given ratios
@@ -19,8 +17,8 @@ MAX_UINT256 = 2 ** 256 - 1;
     @return The product ratio denominator
 '''
 def productRatio(xn, yn, xd, yd):
-    n = IntegralMath.mulDivC(xn, yn, MAX_UINT256);
-    d = IntegralMath.mulDivC(xd, yd, MAX_UINT256);
+    n = IntegralMath.mulDivC(xn, yn, MAX_VAL);
+    d = IntegralMath.mulDivC(xd, yd, MAX_VAL);
     z = n if n > d else d;
     if (z > 1):
         return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
@@ -42,16 +40,16 @@ def poweredRatio(baseN, baseD, exp):
     ns = [0] * MAX_EXP_BIT_LEN;
     ds = [0] * MAX_EXP_BIT_LEN;
 
-    (ns[0], ds[0]) = reducedRatio(baseN, baseD, MAX_UINT128);
+    (ns[0], ds[0]) = (baseN, baseD);
     for i in range(len(bin(exp))):
-        (ns[i + 1], ds[i + 1]) = reducedRatio(ns[i] ** 2, ds[i] ** 2, MAX_UINT128);
+        (ns[i + 1], ds[i + 1]) = productRatio(ns[i], ns[i], ds[i], ds[i]);
 
     n = 1;
     d = 1;
 
     for i in range(len(bin(exp)) + 1):
         if (((exp >> i) & 1) > 0):
-            (n, d) = reducedRatio(n * ns[i], d * ds[i], MAX_UINT128);
+            (n, d) = productRatio(n, ns[i], d, ds[i]);
 
     return (n, d);
 
@@ -97,11 +95,11 @@ def normalizedRatio(baseN, baseD, scale):
     @return The normalized ratio denominator
 '''
 def accurateRatio(baseN, baseD, scale):
-    maxVal = MAX_UINT256 // scale; # `MAX_UINT256 >= scale` hence `maxVal >= 1`
-    if (maxVal < baseN):
-        # `maxVal < baseN <= MAX_UINT256` hence `maxVal < MAX_UINT256` hence `maxVal + 1` is safe
-        # `maxVal + 1 >= 2` hence `baseN / (maxVal + 1) < MAX_UINT256` hence `baseN / (maxVal + 1) + 1` is safe
-        c = baseN // (maxVal + 1) + 1;
+    maxN = MAX_VAL // scale; # `MAX_VAL >= scale` hence `maxN >= 1`
+    if (maxN < baseN):
+        # `maxN < baseN <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
+        # `maxN + 1 >= 2` hence `baseN / (maxN + 1) < MAX_VAL` hence `baseN / (maxN + 1) + 1` is safe
+        c = baseN // (maxN + 1) + 1;
         baseN //= c; # we can now safely compute `baseN * scale`
         baseD //= c;
 
@@ -114,6 +112,6 @@ def accurateRatio(baseN, baseD, scale):
             y = scale - x;
             return (x, y);
         if (n < baseD - (baseD - baseN) // 2):
-            return (0, scale); # `baseN * scale < (baseN + baseD) / 2 < MAX_UINT256 < baseN + baseD`
-        return (1, scale - 1); # `(baseN + baseD) / 2 < baseN * scale < MAX_UINT256 < baseN + baseD`
-    return (scale // 2, scale - scale // 2); # reflect the fact that `baseN <= baseD` at the beginning
+            return (0, scale); # `baseN * scale < (baseN + baseD) / 2 < MAX_VAL < baseN + baseD`
+        return (1, scale - 1); # `(baseN + baseD) / 2 < baseN * scale < MAX_VAL < baseN + baseD`
+    return (scale // 2, scale - scale // 2); # reflect the fact that initially `baseN <= baseD`

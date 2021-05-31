@@ -52,9 +52,18 @@ def ceilSqrt(n):
 '''
 def mulDivF(x, y, z):
     (xyh, xyl) = mul512(x, y);
-    if (xyh > 0):
-        return div512(xyh, xyl, z);
-    return xyl // z;
+    if (xyh == 0): # `x * y < 2 ^ 256`
+        return xyl // z;
+    if (xyh < z): # `x * y / z < 2 ^ 256`
+        m = mulMod(x, y, z);            # `m = x * y % z`
+        (nh, nl) = sub512(xyh, xyl, m); # `n = x * y - m` hence `n / z = floor(x * y / z)`
+        if (nh == 0): # `n < 2 ^ 256`
+            return nl // z;
+        p = unsafeSub(0, z) & z; # `p` is the largest power of 2 which `z` is divisible by
+        q = div512(nh, nl, p);   # `n` is divisible by `p` because `n` is divisible by `z` and `z` is divisible by `p`
+        r = inv256(z // p);      # `z / p = 1 mod 2` hence `inverse(z / p) = 1 mod 2 ^ 256`
+        return unsafeMul(q, r);  # `q * r = (n / p) * inverse(z / p) = n / z`
+    revert(); # `x * y / z >= 2 ^ 256`
 
 '''
     @dev Compute the smallest integer larger than or equal to `x * y / z`
@@ -76,29 +85,25 @@ def mul512(x, y):
     return (unsafeSub(p, q) - 1, q);
 
 '''
-    @dev Compute the largest integer smaller than or equal to `(2 ^ 256 * xh + xl) / y`
+    @dev Compute the value of `2 ^ 256 * xh + xl - y`, where `2 ^ 256 * xh + xl >= y`
 '''
-def div512(xh, xl, y):
-    require(xh < y);
-    result = 0;
-    length = 255 - floorLog2(y);
-    while (xh > 0):
-        bits = floorLog2(xh) + length;
-        result += 1 << bits;
-        (yh, yl) = shl512(y, bits);
-        (xh, xl) = sub512(xh, xl, yh, yl);
-    return result + xl // y;
+def sub512(xh, xl, y):
+    if (xl >= y):
+        return (xh, xl - y);
+    return (xh - 1, unsafeSub(xl, y));
 
 '''
-    @dev Compute the value of `x * 2 ^ y`
+    @dev Compute the value of `(2 ^ 256 * xh + xl) / pow2n`, where `xl` is divisible by `pow2n`
 '''
-def shl512(x, y):
-    return (x >> (256 - y), unsafeShl(x, y));
+def div512(xh, xl, pow2n):
+    pow2nInv = unsafeAdd(unsafeSub(0, pow2n) // pow2n, 1);
+    return unsafeMul(xh, pow2nInv) | (xl // pow2n);
 
 '''
-    @dev Compute the value of `2 ^ 256 * xh + xl - 2 ^ 256 * yh - yl`
+    @dev Compute the inverse of `x` modulo `2 ^ 256`, where `x` is congruent to `1` modulo `2`
 '''
-def sub512(xh, xl, yh, yl):
-    if (xl >= yl):
-        return (xh - yh, xl - yl);
-    return (xh - yh - 1, unsafeSub(xl, yl));
+def inv256(x):
+    inv = 1;
+    for i in range(8):
+        inv = unsafeMul(inv, unsafeSub(2, unsafeMul(inv, x)));
+    return inv;

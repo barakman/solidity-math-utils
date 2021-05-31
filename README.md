@@ -117,9 +117,9 @@ However, without knowing specific characteristics of that ratio (e.g., each one 
 
 Function `poweredRatio` computes the power of a given ratio by a given exponent.
 
-Note that this function uses `reducedRatio(n, d, MAX_UINT128)` internally, in order to avoid multiplication overflow.
+Note that it relies on function `productRatio` in order to avoid multiplication overflow.
 
-Subsequently, the larger the input exponent is, the lower the accuracy of the output is.
+Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
 
 This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
 

@@ -8,8 +8,6 @@ library FractionMath {
 
     uint256 internal constant MAX_EXP_BIT_LEN = 4;
     uint256 internal constant MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
-    uint256 internal constant MAX_UINT128 = 2 ** 128 - 1;
-    uint256 internal constant MAX_UINT256 = 2 ** 256 - 1;
 
     /**
       * @dev Compute the product of two given ratios
@@ -23,8 +21,8 @@ library FractionMath {
       * @return The product ratio denominator
     */
     function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd) internal pure returns (uint256, uint256) { unchecked {
-        uint256 n = IntegralMath.mulDivC(xn, yn, MAX_UINT256);
-        uint256 d = IntegralMath.mulDivC(xd, yd, MAX_UINT256);
+        uint256 n = IntegralMath.mulDivC(xn, yn, MAX_VAL);
+        uint256 d = IntegralMath.mulDivC(xd, yd, MAX_VAL);
         uint256 z = n > d ? n : d;
         if (z > 1)
             return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
@@ -47,9 +45,9 @@ library FractionMath {
         uint256[MAX_EXP_BIT_LEN] memory ns;
         uint256[MAX_EXP_BIT_LEN] memory ds;
 
-        (ns[0], ds[0]) = reducedRatio(baseN, baseD, MAX_UINT128);
+        (ns[0], ds[0]) = (baseN, baseD);
         for (uint256 i = 0; (exp >> i) > 1; ++i) {
-            (ns[i + 1], ds[i + 1]) = reducedRatio(ns[i] ** 2, ds[i] ** 2, MAX_UINT128);
+            (ns[i + 1], ds[i + 1]) = productRatio(ns[i], ns[i], ds[i], ds[i]);
         }
 
         uint256 n = 1;
@@ -57,7 +55,7 @@ library FractionMath {
 
         for (uint256 i = 0; (exp >> i) > 0; ++i) {
             if (((exp >> i) & 1) > 0) {
-                (n, d) = reducedRatio(n * ns[i], d * ds[i], MAX_UINT128);
+                (n, d) = productRatio(n, ns[i], d, ds[i]);
             }
         }
 
@@ -110,11 +108,11 @@ library FractionMath {
       * @return The normalized ratio denominator
     */
     function accurateRatio(uint256 baseN, uint256 baseD, uint256 scale) private pure returns (uint256, uint256) { unchecked {
-        uint256 maxVal = MAX_UINT256 / scale; // `MAX_UINT256 >= scale` hence `maxVal >= 1`
-        if (maxVal < baseN) {
-            // `maxVal < baseN <= MAX_UINT256` hence `maxVal < MAX_UINT256` hence `maxVal + 1` is safe
-            // `maxVal + 1 >= 2` hence `baseN / (maxVal + 1) < MAX_UINT256` hence `baseN / (maxVal + 1) + 1` is safe
-            uint256 c = baseN / (maxVal + 1) + 1;
+        uint256 maxN = MAX_VAL / scale; // `MAX_VAL >= scale` hence `maxN >= 1`
+        if (maxN < baseN) {
+            // `maxN < baseN <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
+            // `maxN + 1 >= 2` hence `baseN / (maxN + 1) < MAX_VAL` hence `baseN / (maxN + 1) + 1` is safe
+            uint256 c = baseN / (maxN + 1) + 1;
             baseN /= c; // we can now safely compute `baseN * scale`
             baseD /= c;
         }
@@ -129,10 +127,10 @@ library FractionMath {
                 return (x, y);
             }
             if (n < baseD - (baseD - baseN) / 2) {
-                return (0, scale); // `baseN * scale < (baseN + baseD) / 2 < MAX_UINT256 < baseN + baseD`
+                return (0, scale); // `baseN * scale < (baseN + baseD) / 2 < MAX_VAL < baseN + baseD`
             }
-            return (1, scale - 1); // `(baseN + baseD) / 2 < baseN * scale < MAX_UINT256 < baseN + baseD`
+            return (1, scale - 1); // `(baseN + baseD) / 2 < baseN * scale < MAX_VAL < baseN + baseD`
         }
-        return (scale / 2, scale - scale / 2); // reflect the fact that `baseN <= baseD` at the beginning
+        return (scale / 2, scale - scale / 2); // reflect the fact that initially `baseN <= baseD`
     }}
 }
