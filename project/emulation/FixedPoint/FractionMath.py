@@ -11,26 +11,29 @@ MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
     @param baseN The ratio numerator
     @param baseD The ratio denominator
     @param exp   The exponentiation value
+    @param fast  Opt for accuracy or performance
     
     @return The powered ratio numerator
     @return The powered ratio denominator
 '''
-def poweredRatio(baseN, baseD, exp):
+def poweredRatio(baseN, baseD, exp, fast):
     require(exp <= MAX_EXP, "exp too large");
+
+    safeRatio = mulRatio128 if fast else mulRatio256;
 
     ns = [0] * MAX_EXP_BIT_LEN;
     ds = [0] * MAX_EXP_BIT_LEN;
 
-    (ns[0], ds[0]) = (baseN, baseD);
+    (ns[0], ds[0]) = safeRatio(baseN, 1, baseD, 1);
     for i in range(len(bin(exp))):
-        (ns[i + 1], ds[i + 1]) = productRatio(ns[i], ns[i], ds[i], ds[i]);
+        (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
 
     n = 1;
     d = 1;
 
     for i in range(len(bin(exp)) + 1):
         if (((exp >> i) & 1) > 0):
-            (n, d) = productRatio(n, ns[i], d, ds[i]);
+            (n, d) = safeRatio(n, ns[i], d, ds[i]);
 
     return (n, d);
 
@@ -115,3 +118,31 @@ def accurateRatio(baseN, baseD, scale):
             return (0, scale); # `baseN * scale < (baseN + baseD) / 2 < MAX_VAL < baseN + baseD`
         return (1, scale - 1); # `(baseN + baseD) / 2 < baseN * scale < MAX_VAL < baseN + baseD`
     return (scale // 2, scale - scale // 2); # reflect the fact that initially `baseN <= baseD`
+
+'''
+    @dev Compute the product of two ratios and reduce the components of the result to 128 bits
+    
+    @param xn The 1st ratio numerator
+    @param yn The 2nd ratio numerator
+    @param xd The 1st ratio denominator
+    @param yd The 2nd ratio denominator
+    
+    @return The product ratio numerator
+    @return The product ratio denominator
+'''
+def mulRatio128(xn, yn, xd, yd):
+    return reducedRatio(xn * yn, xd * yd, type().max);
+
+'''
+    @dev Compute the product of two ratios and reduce the components of the result to 256 bits
+    
+    @param xn The 1st ratio numerator
+    @param yn The 2nd ratio numerator
+    @param xd The 1st ratio denominator
+    @param yd The 2nd ratio denominator
+    
+    @return The product ratio numerator
+    @return The product ratio denominator
+'''
+def mulRatio256(xn, yn, xd, yd):
+    return productRatio(xn, yn, xd, yd);

@@ -10,8 +10,8 @@ contract FractionMathUser {
         return FractionMath.productRatio(xn, yn, xd, yd);
     }
 
-    function poweredRatio(uint256 baseN, uint256 baseD, uint256 exp) external pure returns (uint256, uint256) {
-        return FractionMath.poweredRatio(baseN, baseD, exp);
+    function poweredRatio(uint256 baseN, uint256 baseD, uint256 exp, bool fast) external pure returns (uint256, uint256) {
+        return FractionMath.poweredRatio(baseN, baseD, exp, fast);
     }
 
     function reducedRatio(uint256 baseN, uint256 baseD, uint256 max) external pure returns (uint256, uint256) {

@@ -18,30 +18,38 @@ contract("FractionMath", () => {
         fractionMath = await FractionMath.new();
     });
 
-    for (let exp = 0; exp <= MAX_EXP; exp++) {
-        for (let n = 0; n < 10; n++) {
-            for (let d = 1; d <= 10; d++) {
-                test(poweredRatio, "0", "0", n, d, exp);
+    for (const fast of [0, 1]) {
+        for (let exp = 0; exp <= MAX_EXP; exp++) {
+            for (let n = 0; n < 10; n++) {
+                for (let d = 1; d <= 10; d++) {
+                    test(poweredRatio, "0", "0", n, d, exp, fast);
+                }
             }
         }
     }
 
-    for (let exp = 0; exp <= MAX_EXP; exp++) {
-        for (let i = 1; i <= 10; i++) {
-            const n = MAX_UINT128.mul(i).add(1);
-            for (let j = 1; j <= 10; j++) {
-                const d = MAX_UINT128.mul(j).add(1);
-                test(poweredRatio, "0", "0.00000000000000000000000000000000000000000000000000000000000001", n.toFixed(), d.toFixed(), exp);
+    for (const fast of [0, 1]) {
+        const maxRelativeError = fast ? "0.000000000000000000000001" : "0.00000000000000000000000000000000000000000000000000000000000001";
+        for (let exp = 0; exp <= MAX_EXP; exp++) {
+            for (let i = 1; i <= 10; i++) {
+                const n = MAX_UINT128.mul(i).add(1);
+                for (let j = 1; j <= 10; j++) {
+                    const d = MAX_UINT128.mul(j).add(1);
+                    test(poweredRatio, "0", maxRelativeError, n.toFixed(), d.toFixed(), exp, fast);
+                }
             }
         }
     }
 
-    for (let exp = 0; exp <= MAX_EXP; exp++) {
-        for (let i = 1; i <= 10; i++) {
-            const n = MAX_UINT256.sub(MAX_UINT128).divToInt(i);
-            for (let j = 1; j <= 10; j++) {
-                const d = MAX_UINT256.sub(MAX_UINT128).divToInt(j);
-                test(poweredRatio, "0", "0.00000000000000000000000000000000000000000000000000000000000001", n.toFixed(), d.toFixed(), exp);
+    for (const fast of [0, 1]) {
+        const maxRelativeError = fast ? "0.000000000000000000000001" : "0.00000000000000000000000000000000000000000000000000000000000001";
+        for (let exp = 0; exp <= MAX_EXP; exp++) {
+            for (let i = 1; i <= 10; i++) {
+                const n = MAX_UINT256.sub(MAX_UINT128).divToInt(i);
+                for (let j = 1; j <= 10; j++) {
+                    const d = MAX_UINT256.sub(MAX_UINT128).divToInt(j);
+                    test(poweredRatio, "0", maxRelativeError, n.toFixed(), d.toFixed(), exp, fast);
+                }
             }
         }
     }
