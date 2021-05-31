@@ -126,7 +126,7 @@ library IntegralMath {
     */
     function inv256(uint256 x) private pure returns (uint256) { unchecked {
         uint256 inv = 1;
-        for (uint256 i = 0; i < 8; i++)
+        for (uint256 i = 0; i < 8; ++i)
             inv = unsafeMul(inv, unsafeSub(2, unsafeMul(inv, x)));
         return inv;
     }}
