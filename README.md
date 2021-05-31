@@ -76,8 +76,8 @@ For example, `floorSqrt(3)` returns 1, but the actual square root of 3 is ~1.73,
 This module implements the following interface:
 - `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
 - `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
-- `function poweredRatio(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
 - `function productRatio(uint256 n1, uint256 n2, uint256 d1, uint256 d2)` => `(uint256, uint256)`
+- `function poweredRatio(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
 
 ### Normalized Ratio
 
@@ -113,6 +113,10 @@ Reducing an input ratio by its GCD in advance (at your own expense) can most cer
 
 However, without knowing specific characteristics of that ratio (e.g., each one of its components is a multiple of `0x1000`), doing so is generally useless.
 
+### Product Ratio
+
+Function `productRatio` computes the product of two ratios as a single ratio.
+
 ### Powered Ratio
 
 Function `poweredRatio` computes the power of a given ratio by a given exponent.
@@ -122,10 +126,6 @@ Note that it relies on function `productRatio` in order to avoid multiplication 
 Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
 
 This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
-
-### Product Ratio
-
-Function `productRatio` computes the product of two ratios as a single ratio.
 
 <br/><br/>
 

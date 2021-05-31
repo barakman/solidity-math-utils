@@ -6,25 +6,6 @@ MAX_EXP_BIT_LEN = 4;
 MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
 
 '''
-    @dev Compute the product of two given ratios
-    
-    @param xn The 1st ratio numerator
-    @param yn The 2nd ratio numerator
-    @param xd The 1st ratio denominator
-    @param yd The 2nd ratio denominator
-    
-    @return The product ratio numerator
-    @return The product ratio denominator
-'''
-def productRatio(xn, yn, xd, yd):
-    n = IntegralMath.mulDivC(xn, yn, MAX_VAL);
-    d = IntegralMath.mulDivC(xd, yd, MAX_VAL);
-    z = n if n > d else d;
-    if (z > 1):
-        return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
-    return (xn * yn, xd * yd);
-
-'''
     @dev Compute the power of a given ratio
     
     @param baseN The ratio numerator
@@ -52,6 +33,25 @@ def poweredRatio(baseN, baseD, exp):
             (n, d) = productRatio(n, ns[i], d, ds[i]);
 
     return (n, d);
+
+'''
+    @dev Compute the product of two given ratios
+    
+    @param xn The 1st ratio numerator
+    @param yn The 2nd ratio numerator
+    @param xd The 1st ratio denominator
+    @param yd The 2nd ratio denominator
+    
+    @return The product ratio numerator
+    @return The product ratio denominator
+'''
+def productRatio(xn, yn, xd, yd):
+    n = IntegralMath.mulDivC(xn, yn, MAX_VAL);
+    d = IntegralMath.mulDivC(xd, yd, MAX_VAL);
+    z = n if n > d else d;
+    if (z > 1):
+        return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
+    return (xn * yn, xd * yd);
 
 '''
     @dev Reduce the components of a given ratio
