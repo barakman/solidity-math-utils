@@ -61,8 +61,9 @@ library FractionMath {
         uint256 n = IntegralMath.mulDivC(xn, yn, MAX_VAL);
         uint256 d = IntegralMath.mulDivC(xd, yd, MAX_VAL);
         uint256 z = n > d ? n : d;
-        if (z > 1)
+        if (z > 1) {
             return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
+        }
         return (xn * yn, xd * yd);
     }}
 
