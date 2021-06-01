@@ -122,7 +122,7 @@ def estimatedRatio(baseN, baseD, scale):
 
 '''
     @dev Compute the product of two ratios and reduce the components of the result to 128 bits,
-    under the implicit assumption that the components of the product are not larger than 256 bits 
+    under the implicit assumption that the components of the product are not larger than 256 bits
     
     @param xn The 1st ratio numerator
     @param yn The 2nd ratio numerator
