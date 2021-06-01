@@ -20,7 +20,7 @@ MAX_UINT128 = 2 ** 128 - 1;
 def poweredRatio(baseN, baseD, exp, fast):
     require(exp <= MAX_EXP, "exp too large");
 
-    safeRatio = mulRatio128 if fast else mulRatio256;
+    safeRatio = mulRatio128 if fast else productRatio;
 
     ns = [0] * MAX_EXP_BIT_LEN;
     ds = [0] * MAX_EXP_BIT_LEN;
@@ -121,7 +121,8 @@ def estimatedRatio(baseN, baseD, scale):
     return (scale // 2, scale - scale // 2); # reflect the fact that initially `baseN <= baseD`
 
 '''
-    @dev Compute the product of two ratios and reduce the components of the result to 128 bits
+    @dev Compute the product of two ratios and reduce the components of the result to 128 bits,
+    under the implicit assumption that the components of the product are not larger than 256 bits 
     
     @param xn The 1st ratio numerator
     @param yn The 2nd ratio numerator
@@ -133,17 +134,3 @@ def estimatedRatio(baseN, baseD, scale):
 '''
 def mulRatio128(xn, yn, xd, yd):
     return reducedRatio(xn * yn, xd * yd, MAX_UINT128);
-
-'''
-    @dev Compute the product of two ratios and reduce the components of the result to 256 bits
-    
-    @param xn The 1st ratio numerator
-    @param yn The 2nd ratio numerator
-    @param xd The 1st ratio denominator
-    @param yd The 2nd ratio denominator
-    
-    @return The product ratio numerator
-    @return The product ratio denominator
-'''
-def mulRatio256(xn, yn, xd, yd):
-    return productRatio(xn, yn, xd, yd);
