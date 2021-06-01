@@ -96,14 +96,15 @@ def sub512(xh, xl, y):
     @dev Compute the value of `(2 ^ 256 * xh + xl) / pow2n`, where `xl` is divisible by `pow2n`
 '''
 def div512(xh, xl, pow2n):
-    pow2nInv = unsafeAdd(unsafeSub(0, pow2n) // pow2n, 1);
-    return unsafeMul(xh, pow2nInv) | (xl // pow2n);
+    pow2nInv = unsafeAdd(unsafeSub(0, pow2n) // pow2n, 1); # `1 << (256 - n)`
+    return unsafeMul(xh, pow2nInv) | (xl // pow2n); # `(xh << (256 - n)) | (xl >> n)`
 
 '''
-    @dev Compute the inverse of `x` modulo `2 ^ 256`, where `x` is congruent to `1` modulo `2`
+    @dev Compute the inverse of `d` modulo `2 ^ 256`, where `d` is congruent to `1` modulo `2`
 '''
-def inv256(x):
-    inv = 1;
+def inv256(d):
+    # use newton–raphson convergence method in order to find the root of `f(x) = 1 / x - d`
+    x = 1;
     for i in range(8):
-        inv = unsafeMul(inv, unsafeSub(2, unsafeMul(inv, x)));
-    return inv;
+        x = unsafeMul(x, unsafeSub(2, unsafeMul(x, d))); # `x = x * (2 - x * d) mod 2 ^ 256`
+    return x;
