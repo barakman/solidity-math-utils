@@ -17,10 +17,6 @@ def unsafeSub(x, y):
 def unsafeMul(x, y):
     return (x * y) & MAX_VAL
 
-# does not revert on overflow
-def unsafeShl(x, y):
-    return (x << y) & MAX_VAL
-
 # does not overflow
 def mulModMax(x, y):
     return (x * y) % MAX_VAL

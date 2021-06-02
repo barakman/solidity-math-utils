@@ -5,13 +5,6 @@ import "./common/Uint.sol";
 
 library IntegralMath {
     /**
-      * @dev Compute the nearest integer to the quotient of `n / d`
-    */
-    function roundDiv(uint256 n, uint256 d) internal pure returns (uint256) { unchecked {
-        return n / d + (n % d) / (d - d / 2);
-    }}
-
-    /**
       * @dev Compute the largest integer smaller than or equal to the binary logarithm of `n`
     */
     function floorLog2(uint256 n) internal pure returns (uint8) { unchecked {
@@ -62,13 +55,32 @@ library IntegralMath {
     }}
 
     /**
+      * @dev Compute the nearest integer to the quotient of `n` and `d` (or `n / d`)
+    */
+    function roundDiv(uint256 n, uint256 d) internal pure returns (uint256) { unchecked {
+        return n / d + (n % d) / (d - d / 2);
+    }}
+
+    /**
       * @dev Compute the largest integer smaller than or equal to `x * y / z`
     */
     function mulDivF(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         (uint256 xyh, uint256 xyl) = mul512(x, y);
-        if (xyh > 0)
-            return div512(xyh, xyl, z);
-        return xyl / z;
+        if (xyh == 0) { // `x * y < 2 ^ 256`
+            return xyl / z;
+        }
+        if (xyh < z) { // `x * y / z < 2 ^ 256`
+            uint256 m = mulMod(x, y, z);                    // `m = x * y % z`
+            (uint256 nh, uint256 nl) = sub512(xyh, xyl, m); // `n = x * y - m` hence `n / z = floor(x * y / z)`
+            if (nh == 0) { // `n < 2 ^ 256`
+                return nl / z;
+            }
+            uint256 p = unsafeSub(0, z) & z; // `p` is the largest power of 2 which `z` is divisible by
+            uint256 q = div512(nh, nl, p);   // `n` is divisible by `p` because `n` is divisible by `z` and `z` is divisible by `p`
+            uint256 r = inv256(z / p);       // `z / p = 1 mod 2` hence `inverse(z / p) = 1 mod 2 ^ 256`
+            return unsafeMul(q, r);          // `q * r = (n / p) * inverse(z / p) = n / z`
+        }
+        revert(); // `x * y / z >= 2 ^ 256`
     }}
 
     /**
@@ -93,34 +105,30 @@ library IntegralMath {
     }}
 
     /**
-      * @dev Compute the largest integer smaller than or equal to `(2 ^ 256 * xh + xl) / y`
+      * @dev Compute the value of `2 ^ 256 * xh + xl - y`, where `2 ^ 256 * xh + xl >= y`
     */
-    function div512(uint256 xh, uint256 xl, uint256 y) private pure returns (uint256) { unchecked {
-        require(xh < y);
-        uint256 result = 0;
-        uint256 length = 255 - floorLog2(y);
-        while (xh > 0) {
-            uint256 bits = floorLog2(xh) + length;
-            result += 1 << bits;
-            (uint256 yh, uint256 yl) = shl512(y, bits);
-            (xh, xl) = sub512(xh, xl, yh, yl);
-        }
-        return result + xl / y;
+    function sub512(uint256 xh, uint256 xl, uint256 y) private pure returns (uint256, uint256) { unchecked {
+        if (xl >= y)
+            return (xh, xl - y);
+        return (xh - 1, unsafeSub(xl, y));
     }}
 
     /**
-      * @dev Compute the value of `x * 2 ^ y`
+      * @dev Compute the value of `(2 ^ 256 * xh + xl) / pow2n`, where `xl` is divisible by `pow2n`
     */
-    function shl512(uint256 x, uint256 y) private pure returns (uint256, uint256) { unchecked {
-        return (x >> (256 - y), unsafeShl(x, y));
+    function div512(uint256 xh, uint256 xl, uint256 pow2n) private pure returns (uint256) { unchecked {
+        uint256 pow2nInv = unsafeAdd(unsafeSub(0, pow2n) / pow2n, 1); // `1 << (256 - n)`
+        return unsafeMul(xh, pow2nInv) | (xl / pow2n); // `(xh << (256 - n)) | (xl >> n)`
     }}
 
     /**
-      * @dev Compute the value of `2 ^ 256 * xh + xl - 2 ^ 256 * yh - yl`
+      * @dev Compute the inverse of `d` modulo `2 ^ 256`, where `d` is congruent to `1` modulo `2`
     */
-    function sub512(uint256 xh, uint256 xl, uint256 yh, uint256 yl) private pure returns (uint256, uint256) { unchecked {
-        if (xl >= yl)
-            return (xh - yh, xl - yl);
-        return (xh - yh - 1, unsafeSub(xl, yl));
+    function inv256(uint256 d) private pure returns (uint256) { unchecked {
+        // approximate the root of `f(x) = 1 / x - d` using the newton–raphson convergence method
+        uint256 x = 1;
+        for (uint256 i = 0; i < 8; ++i)
+            x = unsafeMul(x, unsafeSub(2, unsafeMul(x, d))); // `x = x * (2 - x * d) mod 2 ^ 256`
+        return x;
     }}
 }

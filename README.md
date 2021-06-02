@@ -38,20 +38,20 @@ A library cannot utilize non-constant state variables, nor can it extend (inheri
 ## IntegralMath
 
 This module implements the following interface:
-- `function roundDiv(uint256 n, uint256 d)` => `(uint256)`
 - `function floorLog2(uint256 n)` => `(uint8)`
 - `function floorSqrt(uint256 n)` => `(uint256)`
 - `function ceilSqrt(uint256 n)` => `(uint256)`
+- `function roundDiv(uint256 n, uint256 d)` => `(uint256)`
 - `function muldivF(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 - `function muldivC(uint256 x, uint256 y, uint256 z)` => `(uint256)`
-
-Function `roundDiv(n, d)` computes the nearest integer to the quotient of `n / d`.
 
 Function `floorLog2(n)` computes the largest integer smaller than or equal to the binary logarithm of `n`.
 
 Function `floorSqrt(n)` computes the largest integer smaller than or equal to the square root of `n`.
 
 Function `ceilSqrt(n)` computes the smallest integer larger than or equal to the square root of `n`.
+
+Function `roundDiv(n, d)` computes the nearest integer to the quotient of `n` and `d` (or `n / d`).
 
 Function `muldivF(x, y, z)` computes the largest integer smaller than or equal to `x * y / z`.
 
@@ -76,8 +76,8 @@ For example, `floorSqrt(3)` returns 1, but the actual square root of 3 is ~1.73,
 This module implements the following interface:
 - `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
 - `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
-- `function poweredRatio(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
 - `function productRatio(uint256 n1, uint256 n2, uint256 d1, uint256 d2)` => `(uint256, uint256)`
+- `function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast)` => `(uint256, uint256)`
 
 ### Normalized Ratio
 
@@ -113,19 +113,23 @@ Reducing an input ratio by its GCD in advance (at your own expense) can most cer
 
 However, without knowing specific characteristics of that ratio (e.g., each one of its components is a multiple of `0x1000`), doing so is generally useless.
 
+### Product Ratio
+
+Function `productRatio` computes the product of two ratios as a single ratio whose components are not larger than 256 bits.
+
+If either one of the intermediate components is larger than 256 bits, then both of them are reduced based on the larger one.
+
 ### Powered Ratio
 
 Function `poweredRatio` computes the power of a given ratio by a given exponent.
 
-Note that this function uses `reducedRatio(n, d, MAX_UINT128)` internally, in order to avoid multiplication overflow.
+In order to avoid multiplication overflow, it may truncate the intermediate result on each iteration.
 
-Subsequently, the larger the input exponent is, the lower the accuracy of the output is.
+Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
+
+The input argument `fast` allows to opt for either accuracy (using `false`) or performance (using `true`).
 
 This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
-
-### Product Ratio
-
-Function `productRatio` computes the product of two ratios as a single ratio.
 
 <br/><br/>
 
