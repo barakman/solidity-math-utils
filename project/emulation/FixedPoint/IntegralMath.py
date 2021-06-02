@@ -103,7 +103,7 @@ def div512(xh, xl, pow2n):
     @dev Compute the inverse of `d` modulo `2 ^ 256`, where `d` is congruent to `1` modulo `2`
 '''
 def inv256(d):
-    # use newton–raphson convergence method in order to find the root of `f(x) = 1 / x - d`
+    # approximate the root of `f(x) = 1 / x - d` using the newton–raphson convergence method
     x = 1;
     for i in range(8):
         x = unsafeMul(x, unsafeSub(2, unsafeMul(x, d))); # `x = x * (2 - x * d) mod 2 ^ 256`
