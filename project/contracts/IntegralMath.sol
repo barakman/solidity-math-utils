@@ -5,13 +5,6 @@ import "./common/Uint.sol";
 
 library IntegralMath {
     /**
-      * @dev Compute the nearest integer to the quotient of `n / d`
-    */
-    function roundDiv(uint256 n, uint256 d) internal pure returns (uint256) { unchecked {
-        return n / d + (n % d) / (d - d / 2);
-    }}
-
-    /**
       * @dev Compute the largest integer smaller than or equal to the binary logarithm of `n`
     */
     function floorLog2(uint256 n) internal pure returns (uint8) { unchecked {
@@ -59,6 +52,13 @@ library IntegralMath {
     function ceilSqrt(uint256 n) internal pure returns (uint256) { unchecked {
         uint256 x = floorSqrt(n);
         return x * x == n ? x : x + 1;
+    }}
+
+    /**
+      * @dev Compute the nearest integer to the quotient of `n` and `d` (or `n / d`)
+    */
+    function roundDiv(uint256 n, uint256 d) internal pure returns (uint256) { unchecked {
+        return n / d + (n % d) / (d - d / 2);
     }}
 
     /**

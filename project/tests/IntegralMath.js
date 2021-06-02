@@ -6,10 +6,10 @@ const Decimal = require("decimal.js");
 
 const MAX_UINT256 = Decimal(2).pow(256).sub(1);
 
-const roundDiv  = (n, d) => n.div(d).add(0.5).floor();
 const floorLog2 = (n) => n.log(2).floor();
 const floorSqrt = (n) => n.sqrt().floor();
 const ceilSqrt  = (n) => n.sqrt().ceil();
+const roundDiv  = (n, d) => n.div(d).add(0.5).floor();
 const mulDivF   = (x, y, z) => x.mul(y).div(z).floor();
 const mulDivC   = (x, y, z) => x.mul(y).div(z).ceil();
 
@@ -19,16 +19,6 @@ contract("IntegralMath", () => {
     before(async () => {
         integralMath = await IntegralMath.new();
     });
-
-    for (let i = 0; i < 10; i++) {
-        const x = Decimal(2).pow(256).sub(i + 1).toHex();
-        for (let j = 1; j <= 10; j++) {
-            const y = Decimal(2).pow(256).sub(j).toHex();
-            for (const [n, d] of [[i, j], [x, j], [i, y], [x, y]]) {
-                test(roundDiv, n, d);
-            }
-        }
-    }
 
     for (let n = 1; n <= 256; n++) {
         for (const k of n < 256 ? [-1, 0, +1] : [-1]) {
@@ -45,6 +35,16 @@ contract("IntegralMath", () => {
     for (let n = 1; n <= 256; n++) {
         for (const k of n < 256 ? [-1, 0, +1] : [-1]) {
             test(ceilSqrt, Decimal(2).pow(n).add(k).toHex());
+        }
+    }
+
+    for (let i = 0; i < 10; i++) {
+        const x = Decimal(2).pow(256).sub(i + 1).toHex();
+        for (let j = 1; j <= 10; j++) {
+            const y = Decimal(2).pow(256).sub(j).toHex();
+            for (const [n, d] of [[i, j], [x, j], [i, y], [x, y]]) {
+                test(roundDiv, n, d);
+            }
         }
     }
 

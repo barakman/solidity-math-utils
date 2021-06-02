@@ -2,12 +2,6 @@ from .common.BuiltIn import *
 from .common.Uint import *
 
 '''
-    @dev Compute the nearest integer to the quotient of `n / d`
-'''
-def roundDiv(n, d):
-    return n // d + (n % d) // (d - d // 2);
-
-'''
     @dev Compute the largest integer smaller than or equal to the binary logarithm of `n`
 '''
 def floorLog2(n):
@@ -46,6 +40,12 @@ def floorSqrt(n):
 def ceilSqrt(n):
     x = floorSqrt(n);
     return x if x * x == n else x + 1;
+
+'''
+    @dev Compute the nearest integer to the quotient of `n` and `d` (or `n / d`)
+'''
+def roundDiv(n, d):
+    return n // d + (n % d) // (d - d // 2);
 
 '''
     @dev Compute the largest integer smaller than or equal to `x * y / z`
