@@ -44,8 +44,8 @@ This module implements the following interface:
 - `function floorCbrt(uint256 n)` => `(uint256)`
 - `function ceilCbrt(uint256 n)` => `(uint256)`
 - `function roundDiv(uint256 n, uint256 d)` => `(uint256)`
-- `function muldivF(uint256 x, uint256 y, uint256 z)` => `(uint256)`
-- `function muldivC(uint256 x, uint256 y, uint256 z)` => `(uint256)`
+- `function mulDivF(uint256 x, uint256 y, uint256 z)` => `(uint256)`
+- `function mulDivC(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 
 Function `floorLog2(n)` computes the largest integer smaller than or equal to the binary logarithm of `n`.
 
@@ -59,11 +59,11 @@ Function `ceilCbrt(n)` computes the smallest integer larger than or equal to the
 
 Function `roundDiv(n, d)` computes the nearest integer to the quotient of `n` and `d` (or `n / d`).
 
-Function `muldivF(x, y, z)` computes the largest integer smaller than or equal to `x * y / z`.
+Function `mulDivF(x, y, z)` computes the largest integer smaller than or equal to `x * y / z`.
 
-Function `muldivC(x, y, z)` computes the smallest integer larger than or equal to `x * y / z`.
+Function `mulDivC(x, y, z)` computes the smallest integer larger than or equal to `x * y / z`.
 
-Note that function `muldivF` and function `muldivC` revert when the **actual** result is larger than 256 bits.
+Note that function `mulDivF` and function `mulDivC` revert when the **actual** result is larger than 256 bits.
 
 Note that function `floorSqrt` and function `ceilSqrt` are guaranteed to return the correct output for every input.
 
