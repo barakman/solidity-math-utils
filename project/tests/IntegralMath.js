@@ -9,6 +9,8 @@ const MAX_UINT256 = Decimal(2).pow(256).sub(1);
 const floorLog2 = (n) => n.log(2).floor();
 const floorSqrt = (n) => n.sqrt().floor();
 const ceilSqrt  = (n) => n.sqrt().ceil();
+const floorCbrt = (n) => n.cbrt().floor();
+const ceilCbrt  = (n) => n.cbrt().ceil();
 const roundDiv  = (n, d) => n.div(d).add(0.5).floor();
 const mulDivF   = (x, y, z) => x.mul(y).div(z).floor();
 const mulDivC   = (x, y, z) => x.mul(y).div(z).ceil();
@@ -35,6 +37,30 @@ contract("IntegralMath", () => {
     for (let n = 1; n <= 256; n++) {
         for (const k of n < 256 ? [-1, 0, +1] : [-1]) {
             test(ceilSqrt, Decimal(2).pow(n).add(k).toHex());
+        }
+    }
+
+    for (let n = 1; n <= 256; n++) {
+        for (const k of n < 256 ? [-1, 0, +1] : [-1]) {
+            test(floorCbrt, Decimal(2).pow(n).add(k).toHex());
+        }
+    }
+
+    for (let n = 1; n <= 256; n++) {
+        for (const k of n < 256 ? [-1, 0, +1] : [-1]) {
+            test(ceilCbrt, Decimal(2).pow(n).add(k).toHex());
+        }
+    }
+
+    for (let n = 1; n <= 85; n++) {
+        for (let k = -3; k <= 3; k++) {
+            test(floorCbrt, Decimal(3).pow(n).add(k).toHex());
+        }
+    }
+
+    for (let n = 1; n <= 85; n++) {
+        for (let k = -3; k <= 3; k++) {
+            test(ceilCbrt, Decimal(3).pow(n).add(k).toHex());
         }
     }
 

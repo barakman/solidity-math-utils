@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.4;
+pragma solidity 0.8.6;
 
 import "../IntegralMath.sol";
 
@@ -16,6 +16,14 @@ contract IntegralMathUser {
 
     function ceilSqrt(uint256 n) external pure returns (uint256) {
         return IntegralMath.ceilSqrt(n);
+    }
+
+    function floorCbrt(uint256 n) external pure returns (uint256) {
+        return IntegralMath.floorCbrt(n);
+    }
+
+    function ceilCbrt(uint256 n) external pure returns (uint256) {
+        return IntegralMath.ceilCbrt(n);
     }
 
     function roundDiv(uint256 n, uint256 d) external pure returns (uint256) {
