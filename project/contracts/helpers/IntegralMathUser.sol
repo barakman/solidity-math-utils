@@ -18,6 +18,14 @@ contract IntegralMathUser {
         return IntegralMath.ceilSqrt(n);
     }
 
+    function floorCbrt(uint256 n) external pure returns (uint256) {
+        return IntegralMath.floorCbrt(n);
+    }
+
+    function ceilCbrt(uint256 n) external pure returns (uint256) {
+        return IntegralMath.ceilCbrt(n);
+    }
+
     function roundDiv(uint256 n, uint256 d) external pure returns (uint256) {
         return IntegralMath.roundDiv(n, d);
     }

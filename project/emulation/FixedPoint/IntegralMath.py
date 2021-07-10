@@ -39,7 +39,27 @@ def floorSqrt(n):
 '''
 def ceilSqrt(n):
     x = floorSqrt(n);
-    return x if x * x == n else x + 1;
+    return x if x ** 2 == n else x + 1;
+
+'''
+    @dev Compute the largest integer smaller than or equal to the cubic root of `n`
+'''
+def floorCbrt(n):
+    x = 0;
+    for y in [1 << k for k in range(255, -1, -3)]:
+        x <<= 1;
+        z = 3 * x * (x + 1) + 1;
+        if (n // y >= z):
+            n -= y * z;
+            x += 1;
+    return x;
+
+'''
+    @dev Compute the smallest integer larger than or equal to the cubic root of `n`
+'''
+def ceilCbrt(n):
+    x = floorCbrt(n);
+    return x if x ** 3 == n else x + 1;
 
 '''
     @dev Compute the nearest integer to the quotient of `n` and `d` (or `n / d`)

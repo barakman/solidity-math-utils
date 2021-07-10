@@ -41,6 +41,8 @@ This module implements the following interface:
 - `function floorLog2(uint256 n)` => `(uint8)`
 - `function floorSqrt(uint256 n)` => `(uint256)`
 - `function ceilSqrt(uint256 n)` => `(uint256)`
+- `function floorCbrt(uint256 n)` => `(uint256)`
+- `function ceilCbrt(uint256 n)` => `(uint256)`
 - `function roundDiv(uint256 n, uint256 d)` => `(uint256)`
 - `function muldivF(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 - `function muldivC(uint256 x, uint256 y, uint256 z)` => `(uint256)`
@@ -50,6 +52,10 @@ Function `floorLog2(n)` computes the largest integer smaller than or equal to th
 Function `floorSqrt(n)` computes the largest integer smaller than or equal to the square root of `n`.
 
 Function `ceilSqrt(n)` computes the smallest integer larger than or equal to the square root of `n`.
+
+Function `floorCbrt(n)` computes the largest integer smaller than or equal to the cubic root of `n`.
+
+Function `ceilCbrt(n)` computes the smallest integer larger than or equal to the cubic root of `n`.
 
 Function `roundDiv(n, d)` computes the nearest integer to the quotient of `n` and `d` (or `n / d`).
 
@@ -64,6 +70,12 @@ Note that function `floorSqrt` and function `ceilSqrt` are guaranteed to return 
 However, when compared with the **actual** square root, smaller input generally yields relatively lower accuracy of the output.
 
 For example, `floorSqrt(3)` returns 1, but the actual square root of 3 is ~1.73, which yields a relative accuracy of only ~57%.
+
+Note that function `floorCbrt` and function `ceilCbrt` are guaranteed to return the correct output for every input.
+
+However, when compared with the **actual** cubic root, smaller input generally yields relatively lower accuracy of the output.
+
+For example, `floorCbrt(7)` returns 1, but the actual cubic root of 7 is ~1.91, which yields a relative accuracy of only ~52%.
 
 <br/><br/>
 
