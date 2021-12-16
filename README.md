@@ -86,26 +86,28 @@ For example, `floorCbrt(7)` returns 1, but the actual cubic root of 7 is ~1.91, 
 ## FractionMath
 
 This module implements the following interface:
-- `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
-- `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
-- `function productRatio(uint256 n1, uint256 n2, uint256 d1, uint256 d2)` => `(uint256, uint256)`
 - `function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast)` => `(uint256, uint256)`
+- `function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd)` => `(uint256, uint256)`
+- `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
+- `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
 
-### Normalized Ratio
+### Powered Ratio
 
-Function `normalizedRatio` computes the nearest ratio whose sum of components (numerator + denominator) equals the input scale.
+Function `poweredRatio` computes the power of a given ratio by a given exponent.
 
-Note that the output ratio can be larger than the input ratio in some cases, and smaller than the input ratio in other cases.
+In order to avoid multiplication overflow, it may truncate the intermediate result on each iteration.
 
-For example:
-- `normalizedRatio(12, 34, 100)` returns `(26 74)`; the output ratio is smaller than the input ratio (26 / 74 = 0.351 < 0.352 = 12 / 34)
-- `normalizedRatio(1234, 5678, 100)` returns `(18 82)`; the output ratio is larger than the input ratio (18 / 82 = 0.219 > 0.217 = 1234 / 5678)
+Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
 
-Keep in mind that it is an important consideration to take when choosing to use this function.
+The input argument `fast` allows to opt for either performance (using `true`) or accuracy (using `false`).
 
-For example, when designing a sustainable financial model, it is imperative to never entitle more than the actual entitlement.
+This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
 
-The same consideration applies for all the other functions in this module, since each one of them uses this function internally.
+### Product Ratio
+
+Function `productRatio` computes the product of two ratios as a single ratio whose components are not larger than 256 bits.
+
+If either one of the intermediate components is larger than 256 bits, then both of them are reduced based on the larger one.
 
 ### Reduced Ratio
 
@@ -123,23 +125,21 @@ Reducing an input ratio by its GCD in advance (at your own expense) can most cer
 
 However, without knowing specific characteristics of that ratio (e.g., each one of its components is a multiple of `0x1000`), doing so is generally useless.
 
-### Product Ratio
+### Normalized Ratio
 
-Function `productRatio` computes the product of two ratios as a single ratio whose components are not larger than 256 bits.
+Function `normalizedRatio` computes the nearest ratio whose sum of components (numerator + denominator) equals the input scale.
 
-If either one of the intermediate components is larger than 256 bits, then both of them are reduced based on the larger one.
+Note that the output ratio can be larger than the input ratio in some cases, and smaller than the input ratio in other cases.
 
-### Powered Ratio
+For example:
+- `normalizedRatio(12, 34, 100)` returns `(26 74)`; the output ratio is smaller than the input ratio (26 / 74 = 0.351 < 0.352 = 12 / 34)
+- `normalizedRatio(1234, 5678, 100)` returns `(18 82)`; the output ratio is larger than the input ratio (18 / 82 = 0.219 > 0.217 = 1234 / 5678)
 
-Function `poweredRatio` computes the power of a given ratio by a given exponent.
+Keep in mind that it is an important consideration to take when choosing to use this function.
 
-In order to avoid multiplication overflow, it may truncate the intermediate result on each iteration.
+For example, when designing a sustainable financial model, it is imperative to never entitle more than the actual entitlement.
 
-Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
-
-The input argument `fast` allows to opt for either accuracy (using `false`) or performance (using `true`).
-
-This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
+The same consideration applies for all the other functions in this module.
 
 <br/><br/>
 

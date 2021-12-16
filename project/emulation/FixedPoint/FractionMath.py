@@ -12,7 +12,7 @@ MAX_UINT128 = 2 ** 128 - 1;
     @param baseN The ratio numerator
     @param baseD The ratio denominator
     @param exp   The exponentiation value
-    @param fast  Opt for accuracy or performance
+    @param fast  Opt for performance over accuracy
     
     @return The powered ratio numerator
     @return The powered ratio denominator
