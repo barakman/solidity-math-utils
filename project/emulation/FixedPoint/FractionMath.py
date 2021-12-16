@@ -26,13 +26,13 @@ def poweredRatio(baseN, baseD, exp, fast):
     ds = [0] * MAX_EXP_BIT_LEN;
 
     (ns[0], ds[0]) = safeRatio(baseN, 1, baseD, 1);
-    for i in range(len(bin(exp))):
+    for i in range(len(bin(exp)) - 3):
         (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
 
     n = 1;
     d = 1;
 
-    for i in range(len(bin(exp)) + 1):
+    for i in range(len(bin(exp)) - 2):
         if (((exp >> i) & 1) > 0):
             (n, d) = safeRatio(n, ns[i], d, ds[i]);
 
@@ -68,9 +68,8 @@ def productRatio(xn, yn, xd, yd):
     @return The reduced ratio denominator
 '''
 def reducedRatio(baseN, baseD, max):
-    if (baseN > max or baseD > max):
-        return normalizedRatio(baseN, baseD, max);
-    return (baseN, baseD);
+    scale = ((baseN if baseN > baseD else baseD) - 1) // max + 1;
+    return (baseN // scale, baseD // scale);
 
 '''
     @dev Compute a normalized ratio as `scale * n / (n + d)` and `scale * d / (n + d)`
@@ -108,14 +107,13 @@ def estimatedRatio(baseN, baseD, scale):
         baseD //= c;
 
     if (baseN != baseD):
-        n = baseN * scale;
-        d = unsafeAdd(baseN, baseD); # `baseN + baseD` can overflow
-        if (d >= baseN):
+        p = baseN * scale;
+        q = unsafeAdd(baseN, baseD); # `baseN + baseD` can overflow
+        if (q >= baseN):
             # `baseN + baseD` did not overflow
-            x = IntegralMath.roundDiv(n, d); # we can now safely compute `scale - x`
-            y = scale - x;
-            return (x, y);
-        if (n < baseD - (baseD - baseN) // 2):
+            r = IntegralMath.roundDiv(p, q);
+            return (r, scale - r);
+        if (p < baseD - (baseD - baseN) // 2):
             return (0, scale); # `baseN * scale < (baseN + baseD) / 2 < MAX_VAL < baseN + baseD`
         return (1, scale - 1); # `(baseN + baseD) / 2 < baseN * scale < MAX_VAL < baseN + baseD`
     return (scale // 2, scale - scale // 2); # reflect the fact that initially `baseN <= baseD`

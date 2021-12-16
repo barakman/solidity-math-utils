@@ -111,8 +111,6 @@ The same consideration applies for all the other functions in this module, since
 
 Function `reducedRatio` computes the nearest ratio whose components (numerator and denominator) are not larger than the input threshold.
 
-Internally, it calls function `normalizedRatio` with the input threshold, but only if one of the components is larger than that threshold.
-
 Note that function `reducedRatio` is not meant to replace GCD, nor does it strive to achieve better accuracy.
 
 GCD is not being used here, because the time-complexity of this method depends on the bit-length of the input.

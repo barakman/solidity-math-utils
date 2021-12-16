@@ -78,10 +78,8 @@ library FractionMath {
       * @return The reduced ratio denominator
     */
     function reducedRatio(uint256 baseN, uint256 baseD, uint256 max) internal pure returns (uint256, uint256) { unchecked {
-        if (baseN > max || baseD > max) {
-            return normalizedRatio(baseN, baseD, max);
-        }
-        return (baseN, baseD);
+        uint256 scale = ((baseN > baseD ? baseN : baseD) - 1) / max + 1;
+        return (baseN / scale, baseD / scale);
     }}
 
     /**
@@ -123,15 +121,14 @@ library FractionMath {
         }
 
         if (baseN != baseD) {
-            uint256 n = baseN * scale;
-            uint256 d = unsafeAdd(baseN, baseD); // `baseN + baseD` can overflow
-            if (d >= baseN) {
+            uint256 p = baseN * scale;
+            uint256 q = unsafeAdd(baseN, baseD); // `baseN + baseD` can overflow
+            if (q >= baseN) {
                 // `baseN + baseD` did not overflow
-                uint256 x = IntegralMath.roundDiv(n, d); // we can now safely compute `scale - x`
-                uint256 y = scale - x;
-                return (x, y);
+                uint256 r = IntegralMath.roundDiv(p, q);
+                return (r, scale - r);
             }
-            if (n < baseD - (baseD - baseN) / 2) {
+            if (p < baseD - (baseD - baseN) / 2) {
                 return (0, scale); // `baseN * scale < (baseN + baseD) / 2 < MAX_VAL < baseN + baseD`
             }
             return (1, scale - 1); // `(baseN + baseD) / 2 < baseN * scale < MAX_VAL < baseN + baseD`
