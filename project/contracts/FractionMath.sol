@@ -111,22 +111,22 @@ library FractionMath {
       * @return The estimated ratio denominator
     */
     function estimatedRatio(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
-        uint256 maxN = MAX_VAL / scale; // `MAX_VAL >= scale` hence `maxN >= 1`
-        if (maxN < n) {
-            // `maxN < n <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
-            // `maxN + 1 >= 2` hence `n / (maxN + 1) < MAX_VAL` hence `n / (maxN + 1) + 1` is safe
-            uint256 c = n / (maxN + 1) + 1;
-            n /= c; // we can now safely compute `n * scale`
-            d /= c;
+        uint256 x = MAX_VAL / scale; // `MAX_VAL >= scale` hence `x >= 1`
+        if (x < n) {
+            // `x < n <= MAX_VAL` hence `x < MAX_VAL` hence `x + 1` is safe
+            // `x >= 1` hence `n / (x + 1) < MAX_VAL` hence `n / (x + 1) + 1` is safe
+            uint256 y = n / (x + 1) + 1;
+            n /= y; // we can now safely compute `n * scale`
+            d /= y;
         }
 
-        if (n != d) {
+        if (n < d) {
             uint256 p = n * scale;
             uint256 q = unsafeAdd(n, d); // `n + d` can overflow
             if (q >= n) {
                 // `n + d` did not overflow
                 uint256 r = IntegralMath.roundDiv(p, q);
-                return (r, scale - r);
+                return (r, scale - r); // `r = n * scale / (n + d) < scale`
             }
             if (p < d - (d - n) / 2) {
                 return (0, scale); // `n * scale < (n + d) / 2 < MAX_VAL < n + d`

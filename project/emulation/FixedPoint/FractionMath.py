@@ -98,21 +98,21 @@ def normalizedRatio(n, d, scale):
     @return The estimated ratio denominator
 '''
 def estimatedRatio(n, d, scale):
-    maxN = MAX_VAL // scale; # `MAX_VAL >= scale` hence `maxN >= 1`
-    if (maxN < n):
-        # `maxN < n <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
-        # `maxN + 1 >= 2` hence `n / (maxN + 1) < MAX_VAL` hence `n / (maxN + 1) + 1` is safe
-        c = n // (maxN + 1) + 1;
-        n //= c; # we can now safely compute `n * scale`
-        d //= c;
+    x = MAX_VAL // scale; # `MAX_VAL >= scale` hence `x >= 1`
+    if (x < n):
+        # `x < n <= MAX_VAL` hence `x < MAX_VAL` hence `x + 1` is safe
+        # `x >= 1` hence `n / (x + 1) < MAX_VAL` hence `n / (x + 1) + 1` is safe
+        y = n // (x + 1) + 1;
+        n //= y; # we can now safely compute `n * scale`
+        d //= y;
 
-    if (n != d):
+    if (n < d):
         p = n * scale;
         q = unsafeAdd(n, d); # `n + d` can overflow
         if (q >= n):
             # `n + d` did not overflow
             r = IntegralMath.roundDiv(p, q);
-            return (r, scale - r);
+            return (r, scale - r); # `r = n * scale / (n + d) < scale`
         if (p < d - (d - n) // 2):
             return (0, scale); # `n * scale < (n + d) / 2 < MAX_VAL < n + d`
         return (1, scale - 1); # `(n + d) / 2 < n * scale < MAX_VAL < n + d`
