@@ -13,15 +13,15 @@ library FractionMath {
     /**
       * @dev Compute the power of a given ratio
       *
-      * @param baseN The ratio numerator
-      * @param baseD The ratio denominator
-      * @param exp   The exponentiation value
-      * @param fast  Opt for performance over accuracy
+      * @param n The ratio numerator
+      * @param d The ratio denominator
+      * @param exp The exponentiation value
+      * @param fast Opt for performance over accuracy
       *
       * @return The powered ratio numerator
       * @return The powered ratio denominator
     */
-    function poweredRatio(uint256 baseN, uint256 baseD, uint256 exp, bool fast) internal pure returns (uint256, uint256) { unchecked {
+    function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast) internal pure returns (uint256, uint256) { unchecked {
         require(exp <= MAX_EXP, "exp too large");
 
         function (uint256, uint256, uint256, uint256) pure returns (uint256, uint256) safeRatio = fast ? mulRatio128 : productRatio;
@@ -29,13 +29,13 @@ library FractionMath {
         uint256[MAX_EXP_BIT_LEN] memory ns;
         uint256[MAX_EXP_BIT_LEN] memory ds;
 
-        (ns[0], ds[0]) = safeRatio(baseN, 1, baseD, 1);
+        (ns[0], ds[0]) = safeRatio(n, 1, d, 1);
         for (uint256 i = 0; (exp >> i) > 1; ++i) {
             (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
         }
 
-        uint256 n = 1;
-        uint256 d = 1;
+        n = 1;
+        d = 1;
 
         for (uint256 i = 0; (exp >> i) > 0; ++i) {
             if (((exp >> i) & 1) > 0) {
@@ -70,70 +70,70 @@ library FractionMath {
     /**
       * @dev Reduce the components of a given ratio
       *
-      * @param baseN The ratio numerator
-      * @param baseD The ratio denominator
-      * @param max   The maximum desired value
+      * @param n The ratio numerator
+      * @param d The ratio denominator
+      * @param max The maximum desired value
       *
       * @return The reduced ratio numerator
       * @return The reduced ratio denominator
     */
-    function reducedRatio(uint256 baseN, uint256 baseD, uint256 max) internal pure returns (uint256, uint256) { unchecked {
-        uint256 scale = ((baseN > baseD ? baseN : baseD) - 1) / max + 1;
-        return (baseN / scale, baseD / scale);
+    function reducedRatio(uint256 n, uint256 d, uint256 max) internal pure returns (uint256, uint256) { unchecked {
+        uint256 scale = ((n > d ? n : d) - 1) / max + 1;
+        return (n / scale, d / scale);
     }}
 
     /**
       * @dev Compute a normalized ratio as `scale * n / (n + d)` and `scale * d / (n + d)`
       *
-      * @param baseN The ratio numerator
-      * @param baseD The ratio denominator
+      * @param n The ratio numerator
+      * @param d The ratio denominator
       * @param scale The desired scale
       *
       * @return The normalized ratio numerator
       * @return The normalized ratio denominator
     */
-    function normalizedRatio(uint256 baseN, uint256 baseD, uint256 scale) internal pure returns (uint256, uint256) { unchecked {
-        if (baseN <= baseD) {
-            return estimatedRatio(baseN, baseD, scale);
+    function normalizedRatio(uint256 n, uint256 d, uint256 scale) internal pure returns (uint256, uint256) { unchecked {
+        if (n <= d) {
+            return estimatedRatio(n, d, scale);
         }
-        (uint256 d, uint256 n) = estimatedRatio(baseD, baseN, scale);
+        (d, n) = estimatedRatio(d, n, scale);
         return (n, d);
     }}
 
     /**
       * @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n <= d`
       *
-      * @param baseN The ratio numerator
-      * @param baseD The ratio denominator
+      * @param n The ratio numerator
+      * @param d The ratio denominator
       * @param scale The desired scale
       *
       * @return The estimated ratio numerator
       * @return The estimated ratio denominator
     */
-    function estimatedRatio(uint256 baseN, uint256 baseD, uint256 scale) private pure returns (uint256, uint256) { unchecked {
+    function estimatedRatio(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
         uint256 maxN = MAX_VAL / scale; // `MAX_VAL >= scale` hence `maxN >= 1`
-        if (maxN < baseN) {
-            // `maxN < baseN <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
-            // `maxN + 1 >= 2` hence `baseN / (maxN + 1) < MAX_VAL` hence `baseN / (maxN + 1) + 1` is safe
-            uint256 c = baseN / (maxN + 1) + 1;
-            baseN /= c; // we can now safely compute `baseN * scale`
-            baseD /= c;
+        if (maxN < n) {
+            // `maxN < n <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
+            // `maxN + 1 >= 2` hence `n / (maxN + 1) < MAX_VAL` hence `n / (maxN + 1) + 1` is safe
+            uint256 c = n / (maxN + 1) + 1;
+            n /= c; // we can now safely compute `n * scale`
+            d /= c;
         }
 
-        if (baseN != baseD) {
-            uint256 p = baseN * scale;
-            uint256 q = unsafeAdd(baseN, baseD); // `baseN + baseD` can overflow
-            if (q >= baseN) {
-                // `baseN + baseD` did not overflow
+        if (n != d) {
+            uint256 p = n * scale;
+            uint256 q = unsafeAdd(n, d); // `n + d` can overflow
+            if (q >= n) {
+                // `n + d` did not overflow
                 uint256 r = IntegralMath.roundDiv(p, q);
                 return (r, scale - r);
             }
-            if (p < baseD - (baseD - baseN) / 2) {
-                return (0, scale); // `baseN * scale < (baseN + baseD) / 2 < MAX_VAL < baseN + baseD`
+            if (p < d - (d - n) / 2) {
+                return (0, scale); // `n * scale < (n + d) / 2 < MAX_VAL < n + d`
             }
-            return (1, scale - 1); // `(baseN + baseD) / 2 < baseN * scale < MAX_VAL < baseN + baseD`
+            return (1, scale - 1); // `(n + d) / 2 < n * scale < MAX_VAL < n + d`
         }
-        return (scale / 2, scale - scale / 2); // reflect the fact that initially `baseN <= baseD`
+        return (scale / 2, scale - scale / 2); // reflect the fact that initially `n <= d`
     }}
 
     /**

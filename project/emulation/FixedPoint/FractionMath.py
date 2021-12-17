@@ -9,15 +9,15 @@ MAX_UINT128 = 2 ** 128 - 1;
 '''
     @dev Compute the power of a given ratio
     
-    @param baseN The ratio numerator
-    @param baseD The ratio denominator
-    @param exp   The exponentiation value
-    @param fast  Opt for performance over accuracy
+    @param n The ratio numerator
+    @param d The ratio denominator
+    @param exp The exponentiation value
+    @param fast Opt for performance over accuracy
     
     @return The powered ratio numerator
     @return The powered ratio denominator
 '''
-def poweredRatio(baseN, baseD, exp, fast):
+def poweredRatio(n, d, exp, fast):
     require(exp <= MAX_EXP, "exp too large");
 
     safeRatio = mulRatio128 if fast else productRatio;
@@ -25,7 +25,7 @@ def poweredRatio(baseN, baseD, exp, fast):
     ns = [0] * MAX_EXP_BIT_LEN;
     ds = [0] * MAX_EXP_BIT_LEN;
 
-    (ns[0], ds[0]) = safeRatio(baseN, 1, baseD, 1);
+    (ns[0], ds[0]) = safeRatio(n, 1, d, 1);
     for i in range(len(bin(exp)) - 3):
         (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
 
@@ -60,63 +60,63 @@ def productRatio(xn, yn, xd, yd):
 '''
     @dev Reduce the components of a given ratio
     
-    @param baseN The ratio numerator
-    @param baseD The ratio denominator
-    @param max   The maximum desired value
+    @param n The ratio numerator
+    @param d The ratio denominator
+    @param max The maximum desired value
     
     @return The reduced ratio numerator
     @return The reduced ratio denominator
 '''
-def reducedRatio(baseN, baseD, max):
-    scale = ((baseN if baseN > baseD else baseD) - 1) // max + 1;
-    return (baseN // scale, baseD // scale);
+def reducedRatio(n, d, max):
+    scale = ((n if n > d else d) - 1) // max + 1;
+    return (n // scale, d // scale);
 
 '''
     @dev Compute a normalized ratio as `scale * n / (n + d)` and `scale * d / (n + d)`
     
-    @param baseN The ratio numerator
-    @param baseD The ratio denominator
+    @param n The ratio numerator
+    @param d The ratio denominator
     @param scale The desired scale
     
     @return The normalized ratio numerator
     @return The normalized ratio denominator
 '''
-def normalizedRatio(baseN, baseD, scale):
-    if (baseN <= baseD):
-        return estimatedRatio(baseN, baseD, scale);
-    (d, n) = estimatedRatio(baseD, baseN, scale);
+def normalizedRatio(n, d, scale):
+    if (n <= d):
+        return estimatedRatio(n, d, scale);
+    (d, n) = estimatedRatio(d, n, scale);
     return (n, d);
 
 '''
     @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n <= d`
     
-    @param baseN The ratio numerator
-    @param baseD The ratio denominator
+    @param n The ratio numerator
+    @param d The ratio denominator
     @param scale The desired scale
     
     @return The estimated ratio numerator
     @return The estimated ratio denominator
 '''
-def estimatedRatio(baseN, baseD, scale):
+def estimatedRatio(n, d, scale):
     maxN = MAX_VAL // scale; # `MAX_VAL >= scale` hence `maxN >= 1`
-    if (maxN < baseN):
-        # `maxN < baseN <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
-        # `maxN + 1 >= 2` hence `baseN / (maxN + 1) < MAX_VAL` hence `baseN / (maxN + 1) + 1` is safe
-        c = baseN // (maxN + 1) + 1;
-        baseN //= c; # we can now safely compute `baseN * scale`
-        baseD //= c;
+    if (maxN < n):
+        # `maxN < n <= MAX_VAL` hence `maxN < MAX_VAL` hence `maxN + 1` is safe
+        # `maxN + 1 >= 2` hence `n / (maxN + 1) < MAX_VAL` hence `n / (maxN + 1) + 1` is safe
+        c = n // (maxN + 1) + 1;
+        n //= c; # we can now safely compute `n * scale`
+        d //= c;
 
-    if (baseN != baseD):
-        p = baseN * scale;
-        q = unsafeAdd(baseN, baseD); # `baseN + baseD` can overflow
-        if (q >= baseN):
-            # `baseN + baseD` did not overflow
+    if (n != d):
+        p = n * scale;
+        q = unsafeAdd(n, d); # `n + d` can overflow
+        if (q >= n):
+            # `n + d` did not overflow
             r = IntegralMath.roundDiv(p, q);
             return (r, scale - r);
-        if (p < baseD - (baseD - baseN) // 2):
-            return (0, scale); # `baseN * scale < (baseN + baseD) / 2 < MAX_VAL < baseN + baseD`
-        return (1, scale - 1); # `(baseN + baseD) / 2 < baseN * scale < MAX_VAL < baseN + baseD`
-    return (scale // 2, scale - scale // 2); # reflect the fact that initially `baseN <= baseD`
+        if (p < d - (d - n) // 2):
+            return (0, scale); # `n * scale < (n + d) / 2 < MAX_VAL < n + d`
+        return (1, scale - 1); # `(n + d) / 2 < n * scale < MAX_VAL < n + d`
+    return (scale // 2, scale - scale // 2); # reflect the fact that initially `n <= d`
 
 '''
     @dev Compute the product of two ratios and reduce the components of the result to 128 bits,
