@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.6;
+pragma solidity 0.8.10;
 
 uint256 constant MAX_VAL = type(uint256).max;
 

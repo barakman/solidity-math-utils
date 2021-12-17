@@ -86,10 +86,44 @@ For example, `floorCbrt(7)` returns 1, but the actual cubic root of 7 is ~1.91, 
 ## FractionMath
 
 This module implements the following interface:
-- `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
-- `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
-- `function productRatio(uint256 n1, uint256 n2, uint256 d1, uint256 d2)` => `(uint256, uint256)`
 - `function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast)` => `(uint256, uint256)`
+- `function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd)` => `(uint256, uint256)`
+- `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
+- `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
+
+### Powered Ratio
+
+Function `poweredRatio` computes the power of a given ratio by a given exponent.
+
+In order to avoid multiplication overflow, it may truncate the intermediate result on each iteration.
+
+Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
+
+The input argument `fast` allows to opt for either performance (using `true`) or accuracy (using `false`).
+
+This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
+
+### Product Ratio
+
+Function `productRatio` computes the product of two ratios as a single ratio whose components are not larger than 256 bits.
+
+If either one of the intermediate components is larger than 256 bits, then both of them are reduced based on the larger one.
+
+### Reduced Ratio
+
+Function `reducedRatio` computes the nearest ratio whose components (numerator and denominator) are not larger than the input threshold.
+
+Note that function `reducedRatio` is not meant to replace GCD, nor does it strive to achieve better accuracy.
+
+GCD is not being used here, because the time-complexity of this method depends on the bit-length of the input.
+
+The worst case is when the two input valus are consecutive Fibonacci numbers, in the case of `uint256` - F369 and F370, which yield 367 iterations.
+
+Moreover, the main issue with using GCD for reducing an arbitrary ratio, is the fact that it doesn't even guarantee the desired reduction to begin with.
+
+Reducing an input ratio by its GCD in advance (at your own expense) can most certainly improve the output of function `reducedRatio` in terms of accuracy.
+
+However, without knowing specific characteristics of that ratio (e.g., each one of its components is a multiple of `0x1000`), doing so is generally useless.
 
 ### Normalized Ratio
 
@@ -105,43 +139,7 @@ Keep in mind that it is an important consideration to take when choosing to use 
 
 For example, when designing a sustainable financial model, it is imperative to never entitle more than the actual entitlement.
 
-The same consideration applies for all the other functions in this module, since each one of them uses this function internally.
-
-### Reduced Ratio
-
-Function `reducedRatio` computes the nearest ratio whose components (numerator and denominator) are not larger than the input threshold.
-
-Internally, it calls function `normalizedRatio` with the input threshold, but only if one of the components is larger than that threshold.
-
-Note that function `reducedRatio` is not meant to replace GCD, nor does it strive to achieve better accuracy.
-
-GCD is not being used here, because the time-complexity of this method depends on the bit-length of the input.
-
-The worst case is when the two input valus are consecutive Fibonacci numbers, in the case of `uint256` - F369 and F370, which yield 367 iterations.
-
-Moreover, the main issue with using GCD for reducing an arbitrary ratio, is the fact that it doesn't even guarantee the desired reduction to begin with.
-
-Reducing an input ratio by its GCD in advance (at your own expense) can most certainly improve the output of function `reducedRatio` in terms of accuracy.
-
-However, without knowing specific characteristics of that ratio (e.g., each one of its components is a multiple of `0x1000`), doing so is generally useless.
-
-### Product Ratio
-
-Function `productRatio` computes the product of two ratios as a single ratio whose components are not larger than 256 bits.
-
-If either one of the intermediate components is larger than 256 bits, then both of them are reduced based on the larger one.
-
-### Powered Ratio
-
-Function `poweredRatio` computes the power of a given ratio by a given exponent.
-
-In order to avoid multiplication overflow, it may truncate the intermediate result on each iteration.
-
-Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
-
-The input argument `fast` allows to opt for either accuracy (using `false`) or performance (using `true`).
-
-This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
+The same consideration applies for all the other functions in this module.
 
 <br/><br/>
 
