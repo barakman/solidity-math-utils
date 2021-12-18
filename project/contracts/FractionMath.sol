@@ -111,13 +111,13 @@ library FractionMath {
       * @return The estimated ratio denominator
     */
     function estimatedRatio(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
-        uint256 x = MAX_VAL / scale; // `MAX_VAL >= scale` hence `x >= 1`
-        if (x < n) {
-            // `x < n <= MAX_VAL` hence `x < MAX_VAL` hence `x + 1` is safe
-            // `x >= 1` hence `n / (x + 1) < MAX_VAL` hence `n / (x + 1) + 1` is safe
-            uint256 y = n / (x + 1) + 1;
-            n /= y; // we can now safely compute `n * scale`
+        uint256 x = MAX_VAL / scale;
+        if (n > x) {
+            // `n * scale` will overflow
+            uint256 y = (n - 1) / x + 1;
+            n /= y;
             d /= y;
+            // `n * scale` will not overflow
         }
 
         if (n < d) {
