@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.10;
+pragma solidity 0.8.11;
 
 import "./IntegralMath.sol";
 
 contract AnalyticMath {
-    using IntegralMath for *;
-
     uint8 internal constant MIN_PRECISION = 32;
     uint8 internal constant MAX_PRECISION = 127;
 

@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.10;
+pragma solidity 0.8.11;
 
 import "../IntegralMath.sol";
 
 contract IntegralMathUser {
-    using IntegralMath for *;
-
     function floorLog2(uint256 n) external pure returns (uint8) {
         return IntegralMath.floorLog2(n);
     }
