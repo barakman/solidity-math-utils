@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.10;
+pragma solidity 0.8.11;
 
 import "./IntegralMath.sol";
 
 library FractionMath {
-    using IntegralMath for *;
-
     uint256 internal constant MAX_EXP_BIT_LEN = 4;
     uint256 internal constant MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
     uint256 internal constant MAX_UINT128 = type(uint128).max;

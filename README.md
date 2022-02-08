@@ -345,8 +345,8 @@ The dynamic-curve method was conceived by [Bancor](https://github.com/bancorprot
 
 ### Prerequisites
 
-- `node 12.20.0`
-- `yarn 1.22.10` or `npm 7.12.0`
+- `node 16.13.0`
+- `yarn 1.22.10` or `npm 8.1.0`
 
 ### Installation
 

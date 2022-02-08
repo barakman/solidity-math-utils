@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.10;
+pragma solidity 0.8.11;
 
 import "../FractionMath.sol";
 
 contract FractionMathUser {
-    using FractionMath for *;
-
     function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast) external pure returns (uint256, uint256) {
         return FractionMath.poweredRatio(n, d, exp, fast);
     }

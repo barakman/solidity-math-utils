@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.10;
+pragma solidity 0.8.11;
 
 import "./AnalyticMath.sol";
 import "./FractionMath.sol";
 
 contract AdvancedMath is AnalyticMath {
-    using FractionMath for *;
-
     // Auto-generated via 'PrintLambertFactors.py'
     uint256 internal constant LAMBERT_CONV_RADIUS = 0x002f16ac6c59de6f8d5d6f63c1482a7c86;
     uint256 internal constant LAMBERT_POS2_SAMPLE = 0x0003060c183060c183060c183060c18306;
