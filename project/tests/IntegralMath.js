@@ -139,7 +139,7 @@ contract("IntegralMath", () => {
                 assert(expected.eq(actual.toString()), `expected ${expected.toFixed()} but got ${actual.toString()}`);
             }
             else {
-                await assertRevert(integralMath[method.name](...args), "");
+                await assertRevert(integralMath[method.name](...args));
             }
         });
     }

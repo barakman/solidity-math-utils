@@ -1,12 +1,12 @@
-module.exports.assertRevert = async function (promise, suffix) {
+module.exports.assertRevert = async function (promise, reason) {
     try {
         await promise;
         throw null;
     }
     catch (error) {
-        const message = suffix.length > 0 ? " " + suffix : "";
-        assert(error, "Expected an error but did not get one");
-        const errorMessage = `Returned error: VM Exception while processing transaction: revert${message}`;
-        assert(error.message == errorMessage, `Expected '${errorMessage}' but got '${error.message}' instead`);
+        assert(error, "expected an error but did not get one");
+        assert.include(error.message, "revert");
+        if (reason)
+            assert.include(error.message, reason);
     }
 };

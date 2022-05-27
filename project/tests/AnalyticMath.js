@@ -224,7 +224,7 @@ contract("AnalyticMath", () => {
 
     function overflowTest(methodName, ...args) {
         it(`${methodName}(${args.join(", ")}) should revert`, async () => {
-            await assertRevert(analyticMath[methodName + "Test"](...args), "");
+            await assertRevert(analyticMath[methodName + "Test"](...args));
         });
     }
 });
