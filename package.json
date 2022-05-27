@@ -12,14 +12,15 @@
         "project/contracts/*.sol"
     ],
     "scripts": {
-        "build": "truffle compile",
-        "test": "truffle test --bail",
-        "verify": "truffle run coverage"
+        "build": "hardhat compile",
+        "test": "hardhat test --bail",
+        "verify": "hardhat coverage"
     },
     "devDependencies": {
+        "@nomiclabs/hardhat-truffle5": "2.0.6",
+        "@nomiclabs/hardhat-web3": "2.0.0",
         "decimal.js": "10.3.1",
-        "solidity-coverage": "0.7.18",
-        "truffle": "5.5.0",
-        "web3": "1.7.0"
+        "hardhat": "2.9.6",
+        "solidity-coverage": "0.7.21"
     }
 }
