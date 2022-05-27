@@ -1,4 +1,4 @@
-module.exports.assertRevert = async function (promise, message) {
+module.exports.assertRevert = async function (promise, reason) {
     try {
         await promise;
         throw null;
@@ -6,7 +6,7 @@ module.exports.assertRevert = async function (promise, message) {
     catch (error) {
         assert(error, "expected an error but did not get one");
         assert.include(error.message, "revert");
-        if (message)
-            assert.include(error.message, message);
+        if (reason)
+            assert.include(error.message, reason);
     }
 };
