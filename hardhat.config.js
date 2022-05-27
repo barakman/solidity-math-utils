@@ -7,7 +7,7 @@ Decimal.set({precision: 155, rounding: Decimal.ROUND_DOWN});
 
 module.exports = {
     solidity: {
-        version: "0.8.12",
+        version: "0.8.14",
         settings: {
             optimizer: {
                 enabled: true,
