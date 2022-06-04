@@ -5,7 +5,7 @@ This package consists of the following modules:
 - [FractionMath](#fractionmath) - a set of functions, each of which returning a rational result
 - [AnalyticMath](#analyticmath) - a set of exponential and logarithmic functions
 - [AdvancedMath](#advancedmath) - a function for solving xA^x = B, given rational values of A and B
-- [BodningCurve](#bodningcurve) - a set of functions implementing the bonding-curve mechanism
+- [BondingCurve](#bondingcurve) - a set of functions implementing the bonding-curve mechanism
 - [DynamicCurve](#dynamiccurve) - a function for equalizing the weights in a bonding-curve model
 
 ### Class Hierarchy
@@ -20,7 +20,7 @@ AnalyticMath < - - - - AdvancedMath
       |                      |
       |                      |
       |                      |
-BodningCurve           DynamicCurve
+BondingCurve           DynamicCurve
 ```
 
 Note that some of these modules are implemented as `library`, while others are implemented as `contract`.
@@ -231,7 +231,7 @@ The full customization manual can be found [here](#customization).
 
 <br/><br/>
 
-## BodningCurve
+## BondingCurve
 
 This module is implemented as a contract, because a library cannot extend (inherit) a contract.
 
