@@ -160,7 +160,7 @@ contract("AnalyticMath", () => {
         }
 
         for (let precision = 1; precision <= Constants.MAX_PRECISION; precision++) {
-            const minExp = new BN(Constants.maxExpArray[precision - 1].slice(2), 16).addn(1);
+            const minExp = new BN(Constants.maxExpArray[precision - 1], 16).addn(1);
             const minVal = new BN(1).shln(precision);
 
             it(`generalExp(0x${minExp.toString(16)}, ${precision})`, async () => {
@@ -170,8 +170,8 @@ contract("AnalyticMath", () => {
         }
 
         for (let precision = 0; precision <= Constants.MAX_PRECISION; precision++) {
-            const maxExp = new BN(Constants.maxExpArray[precision].slice(2), 16);
-            const maxVal = new BN(Constants.maxValArray[precision].slice(2), 16);
+            const maxExp = new BN(Constants.maxExpArray[precision], 16);
+            const maxVal = new BN(Constants.maxValArray[precision], 16);
 
             it(`generalExp(0x${maxExp.toString(16)}, ${precision})`, async () => {
                 const output = await analyticMath.generalExpTest(maxExp, precision);
@@ -185,7 +185,7 @@ contract("AnalyticMath", () => {
         }
 
         for (let precision = 0; precision <= Constants.MAX_PRECISION; precision++) {
-            const maxExp = new BN(Constants.maxExpArray[precision].slice(2), 16);
+            const maxExp = new BN(Constants.maxExpArray[precision], 16);
             const mulVal = new BN(1).shln(Constants.MAX_PRECISION - precision);
 
             for (const testCase of [
