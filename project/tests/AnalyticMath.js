@@ -6,7 +6,7 @@ const assertRevert = require("./helpers/Utilities.js").assertRevert;
 
 const Decimal = require("decimal.js");
 
-const BN = web3.utils.BN;
+const toBN = web3.utils.toBN;
 
 function assertAlmostEqual(actual, expected, maxError) {
     if (!actual.eq(expected)) {
@@ -151,7 +151,7 @@ contract("AnalyticMath", () => {
 
     describe("internal tests:", () => {
         for (let precision = Constants.MAX_PRECISION + 1; precision <= 256; precision++) {
-            const input = new BN(1).shln(precision).subn(1);
+            const input = toBN(1).shln(precision).subn(1);
 
             it(`generalLog(0x${input.toString(16)})`, async () => {
                 const output = await analyticMath.generalLogTest(input);
@@ -160,8 +160,8 @@ contract("AnalyticMath", () => {
         }
 
         for (let precision = 1; precision <= Constants.MAX_PRECISION; precision++) {
-            const minExp = new BN(Constants.maxExpArray[precision - 1].slice(2), 16).addn(1);
-            const minVal = new BN(1).shln(precision);
+            const minExp = toBN(Constants.maxExpArray[precision - 1], 16).addn(1);
+            const minVal = toBN(1).shln(precision);
 
             it(`generalExp(0x${minExp.toString(16)}, ${precision})`, async () => {
                 const output = await analyticMath.generalExpTest(minExp, precision);
@@ -170,8 +170,8 @@ contract("AnalyticMath", () => {
         }
 
         for (let precision = 0; precision <= Constants.MAX_PRECISION; precision++) {
-            const maxExp = new BN(Constants.maxExpArray[precision].slice(2), 16);
-            const maxVal = new BN(Constants.maxValArray[precision].slice(2), 16);
+            const maxExp = toBN(Constants.maxExpArray[precision], 16);
+            const maxVal = toBN(Constants.maxValArray[precision], 16);
 
             it(`generalExp(0x${maxExp.toString(16)}, ${precision})`, async () => {
                 const output = await analyticMath.generalExpTest(maxExp, precision);
@@ -185,8 +185,8 @@ contract("AnalyticMath", () => {
         }
 
         for (let precision = 0; precision <= Constants.MAX_PRECISION; precision++) {
-            const maxExp = new BN(Constants.maxExpArray[precision].slice(2), 16);
-            const mulVal = new BN(1).shln(Constants.MAX_PRECISION - precision);
+            const maxExp = toBN(Constants.maxExpArray[precision], 16);
+            const mulVal = toBN(1).shln(Constants.MAX_PRECISION - precision);
 
             for (const testCase of [
                 {input: maxExp.addn(0).mul(mulVal).subn(1), expectedOutput: precision - 0},
