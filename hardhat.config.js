@@ -1,5 +1,5 @@
 require("@nomiclabs/hardhat-truffle5");
-require("solidity-coverage")
+require("solidity-coverage");
 
 const Decimal = require("decimal.js");
 
@@ -7,7 +7,7 @@ Decimal.set({precision: 155, rounding: Decimal.ROUND_DOWN});
 
 module.exports = {
     solidity: {
-        version: "0.8.17",
+        version: "0.8.20",
         settings: {
             optimizer: {
                 enabled: true,
