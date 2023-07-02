@@ -95,6 +95,39 @@ def mulDivC(x, y, z):
     return w;
 
 '''
+    @dev Compute the largest integer smaller than or equal to `(x * y) / (z * w)`
+'''
+def mulDivExF(x, y, z, w):
+    (zwh, zwl) = mul512(z, w);
+    if (zwh > 0):
+        res = 0;
+        (xyh, xyl) = mul512(x, y);
+        if (xyh > zwh):
+            xyhn = floorLog2(xyh);
+            zwhn = floorLog2(zwh);
+            while (xyhn > zwhn):
+                n = xyhn - zwhn - 1;
+                res += 1 << n; # set `res = res + 2 ^ n`
+                (xyh, xyl) = sub512Ex(xyh, xyl, (zwh << n) | (zwl >> (256 - n)), zwl << n); # set `xy = xy - zw * 2 ^ n`
+                xyhn = floorLog2(xyh);
+        if (xyh > zwh or (xyh == zwh and xyl >= zwl)): # `xy >= zw`
+            return res + 1;
+        return res;
+    return mulDivF(x, y, zwl);
+
+'''
+    @dev Compute the smallest integer larger than or equal to `(x * y) / (z * w)`
+'''
+def mulDivExC(x, y, z, w):
+    v = mulDivExF(x, y, z, w);
+    (xyh, xyl) = mul512(x, y);
+    (zwh, zwl) = mul512(z, w);
+    (vzwlh, vzwll) = mul512(v, zwl);
+    if (xyh == v * zwh + vzwlh and xyl == vzwll):
+        return v;
+    return safeAdd(v, 1);
+
+'''
     @dev Compute the value of `x * y`
 '''
 def mul512(x, y):
@@ -128,3 +161,11 @@ def inv256(d):
     for i in range(8):
         x = unsafeMul(x, unsafeSub(2, unsafeMul(x, d))); # `x = x * (2 - x * d) mod 2 ^ 256`
     return x;
+
+'''
+    @dev Compute the value of `(2 ^ 256 * xh + xl) - (2 ^ 256 * yh + yl)`, where `2 ^ 256 * xh + xl >= 2 ^ 256 * yh + yl`
+'''
+def sub512Ex(xh, xl, yh, yl):
+    if (xl >= yl):
+        return (xh - yh, xl - yl);
+    return (xh - yh - 1, unsafeSub(xl, yl));

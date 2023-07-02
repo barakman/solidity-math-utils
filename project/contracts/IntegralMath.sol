@@ -118,6 +118,44 @@ library IntegralMath {
     }}
 
     /**
+      * @dev Compute the largest integer smaller than or equal to `(x * y) / (z * w)`
+    */
+    function mulDivExF(uint256 x, uint256 y, uint256 z, uint256 w) internal pure returns (uint256) { unchecked {
+        (uint256 zwh, uint256 zwl) = mul512(z, w);
+        if (zwh > 0) {
+            uint256 res = 0;
+            (uint256 xyh, uint256 xyl) = mul512(x, y);
+            if (xyh > zwh) {
+                uint8 xyhn = floorLog2(xyh);
+                uint8 zwhn = floorLog2(zwh);
+                while (xyhn > zwhn) {
+                    uint8 n = xyhn - zwhn - 1;
+                    res += 1 << n; // set `res = res + 2 ^ n`
+                    (xyh, xyl) = sub512Ex(xyh, xyl, (zwh << n) | (zwl >> (256 - n)), zwl << n); // set `xy = xy - zw * 2 ^ n`
+                    xyhn = floorLog2(xyh);
+                }
+            }
+            if (xyh > zwh || (xyh == zwh && xyl >= zwl)) // `xy >= zw`
+                return res + 1;
+            return res;
+        }
+        return mulDivF(x, y, zwl);
+    }}
+
+    /**
+      * @dev Compute the smallest integer larger than or equal to `(x * y) / (z * w)`
+    */
+    function mulDivExC(uint256 x, uint256 y, uint256 z, uint256 w) internal pure returns (uint256) { unchecked {
+        uint256 v = mulDivExF(x, y, z, w);
+        (uint256 xyh, uint256 xyl) = mul512(x, y);
+        (uint256 zwh, uint256 zwl) = mul512(z, w);
+        (uint256 vzwlh, uint256 vzwll) = mul512(v, zwl);
+        if (xyh == v * zwh + vzwlh && xyl == vzwll)
+            return v;
+        return safeAdd(v, 1);
+    }}
+
+    /**
       * @dev Compute the value of `x * y`
     */
     function mul512(uint256 x, uint256 y) private pure returns (uint256, uint256) { unchecked {
@@ -154,5 +192,14 @@ library IntegralMath {
         for (uint256 i = 0; i < 8; ++i)
             x = unsafeMul(x, unsafeSub(2, unsafeMul(x, d))); // `x = x * (2 - x * d) mod 2 ^ 256`
         return x;
+    }}
+
+    /**
+      * @dev Compute the value of `(2 ^ 256 * xh + xl) - (2 ^ 256 * yh + yl)`, where `2 ^ 256 * xh + xl >= 2 ^ 256 * yh + yl`
+    */
+    function sub512Ex(uint256 xh, uint256 xl, uint256 yh, uint256 yl) private pure returns (uint256, uint256) { unchecked {
+        if (xl >= yl)
+            return (xh - yh, xl - yl);
+        return (xh - yh - 1, unsafeSub(xl, yl));
     }}
 }
