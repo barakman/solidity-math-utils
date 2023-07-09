@@ -1,6 +1,6 @@
 {
     "name": "solidity-math-utils",
-    "version": "1.10.0",
+    "version": "1.11.0",
     "description": "Solidity Mathematical Utilities",
     "repository": {
         "type": "git",
@@ -21,7 +21,7 @@
         "@nomiclabs/hardhat-truffle5": "2.0.7",
         "@nomiclabs/hardhat-web3": "2.0.0",
         "decimal.js": "10.4.3",
-        "hardhat": "2.14.0",
-        "solidity-coverage": "0.8.2"
+        "hardhat": "2.16.1",
+        "solidity-coverage": "0.8.4"
     }
 }

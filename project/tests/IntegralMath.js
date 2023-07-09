@@ -14,6 +14,8 @@ const ceilCbrt  = (n) => n.cbrt().ceil();
 const roundDiv  = (n, d) => n.div(d).add(0.5).floor();
 const mulDivF   = (x, y, z) => x.mul(y).div(z).floor();
 const mulDivC   = (x, y, z) => x.mul(y).div(z).ceil();
+const mulDivExF = (x, y, z, w) => x.mul(y).div(z.mul(w)).floor();
+const mulDivExC = (x, y, z, w) => x.mul(y).div(z.mul(w)).ceil();
 
 contract("IntegralMath", () => {
     let integralMath;
@@ -74,7 +76,7 @@ contract("IntegralMath", () => {
         }
     }
 
-    for (const method of [mulDivF, mulDivC]) {
+    for (const method of [mulDivF, mulDivC, mulDivExF, mulDivExC]) {
         for (const px of [0, 64, 128, 192, 255, 256]) {
             for (const py of [0, 64, 128, 192, 255, 256]) {
                 for (const pz of [1, 64, 128, 192, 255, 256]) {
@@ -84,7 +86,7 @@ contract("IntegralMath", () => {
                                 const x = Decimal(2).pow(px).add(ax);
                                 const y = Decimal(2).pow(py).add(ay);
                                 const z = Decimal(2).pow(pz).add(az);
-                                test(method, x.toHex(), y.toHex(), z.toHex());
+                                test(method, ...[x.toHex(), y.toHex(), z.toHex(), MAX_UINT256.toHex()].slice(0, method.length));
                             }
                         }
                     }
@@ -93,7 +95,7 @@ contract("IntegralMath", () => {
         }
     }
 
-    for (const method of [mulDivF, mulDivC]) {
+    for (const method of [mulDivF, mulDivC, mulDivExF, mulDivExC]) {
         for (const px of [64, 128, 192, 256]) {
             for (const py of [64, 128, 192, 256]) {
                 for (const pz of [64, 128, 192, 256]) {
@@ -103,7 +105,7 @@ contract("IntegralMath", () => {
                                 const x = Decimal(2).pow(px).sub(ax);
                                 const y = Decimal(2).pow(py).sub(ay);
                                 const z = Decimal(2).pow(pz).sub(az);
-                                test(method, x.toHex(), y.toHex(), z.toHex());
+                                test(method, ...[x.toHex(), y.toHex(), z.toHex(), MAX_UINT256.toHex()].slice(0, method.length));
                             }
                         }
                     }
@@ -112,7 +114,7 @@ contract("IntegralMath", () => {
         }
     }
 
-    for (const method of [mulDivF, mulDivC]) {
+    for (const method of [mulDivF, mulDivC, mulDivExF, mulDivExC]) {
         for (const px of [128, 192, 256]) {
             for (const py of [128, 192, 256]) {
                 for (const pz of [128, 192, 256]) {
@@ -122,10 +124,22 @@ contract("IntegralMath", () => {
                                 const x = Decimal(2).pow(px).divToInt(ax);
                                 const y = Decimal(2).pow(py).divToInt(ay);
                                 const z = Decimal(2).pow(pz).divToInt(az);
-                                test(method, x.toHex(), y.toHex(), z.toHex());
+                                test(method, ...[x.toHex(), y.toHex(), z.toHex(), MAX_UINT256.toHex()].slice(0, method.length));
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    for (const method of [mulDivExF, mulDivExC]) {
+        for (const d of [1, 7, 11, 17, 23]) {
+            for (let pw = 1; pw <= 256 - d; pw++) {
+                for (const aw of [-1, 0, +1]) {
+                    const n = MAX_UINT256.divToInt(d);
+                    const w = Decimal(2).pow(pw).add(aw);
+                    test(method, n.toHex(), n.toHex(), n.toHex(), w.toHex());
                 }
             }
         }
