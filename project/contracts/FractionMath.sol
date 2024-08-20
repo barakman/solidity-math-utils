@@ -56,13 +56,10 @@ library FractionMath {
       * @return The product ratio denominator
     */
     function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd) internal pure returns (uint256, uint256) { unchecked {
-        uint256 n = IntegralMath.mulDivC(xn, yn, MAX_VAL);
-        uint256 d = IntegralMath.mulDivC(xd, yd, MAX_VAL);
+        uint256 n = IntegralMath.minFactor(xn, yn);
+        uint256 d = IntegralMath.minFactor(xd, yd);
         uint256 z = n > d ? n : d;
-        if (z > 1) {
-            return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
-        }
-        return (xn * yn, xd * yd);
+        return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
     }}
 
     /**

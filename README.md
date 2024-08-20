@@ -61,6 +61,8 @@ Function `ceilCbrt(n)` computes the smallest integer larger than or equal to the
 
 Function `roundDiv(n, d)` computes the nearest integer to the quotient of `n` and `d` (or `n / d`).
 
+Function `minFactor(x, y)` computes the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`.
+
 Function `mulDivF(x, y, z)` computes the largest integer smaller than or equal to `x * y / z`.
 
 Function `mulDivC(x, y, z)` computes the smallest integer larger than or equal to `x * y / z`.

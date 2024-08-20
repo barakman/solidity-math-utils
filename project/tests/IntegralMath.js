@@ -16,6 +16,7 @@ const mulDivF   = (x, y, z) => x.mul(y).div(z).floor();
 const mulDivC   = (x, y, z) => x.mul(y).div(z).ceil();
 const mulDivExF = (x, y, z, w) => x.mul(y).div(z.mul(w)).floor();
 const mulDivExC = (x, y, z, w) => x.mul(y).div(z.mul(w)).ceil();
+const minFactor = (x, y) => Decimal.max(mulDivC(x, y, MAX_UINT256), 1);
 
 contract("IntegralMath", () => {
     let integralMath;
@@ -72,6 +73,30 @@ contract("IntegralMath", () => {
             const y = Decimal(2).pow(256).sub(j).toHex();
             for (const [n, d] of [[i, j], [x, j], [i, y], [x, y]]) {
                 test(roundDiv, n, d);
+            }
+        }
+    }
+
+    for (const px of [0, 64, 128, 192, 255, 256]) {
+        for (const py of [0, 64, 128, 192, 255, 256]) {
+            for (const ax of px < 256 ? [-1, 0, +1] : [-1]) {
+                for (const ay of py < 256 ? [-1, 0, +1] : [-1]) {
+                    const x = Decimal(2).pow(px).add(ax);
+                    const y = Decimal(2).pow(py).add(ay);
+                    test(minFactor, x.toHex(), y.toHex());
+                }
+            }
+        }
+    }
+
+    for (const px of [64, 128, 192, 256]) {
+        for (const py of [64, 128, 192, 256]) {
+            for (const ax of [Decimal(2).pow(px >> 1), 1]) {
+                for (const ay of [Decimal(2).pow(py >> 1), 1]) {
+                    const x = Decimal(2).pow(px).sub(ax);
+                    const y = Decimal(2).pow(py).sub(ay);
+                    test(minFactor, x.toHex(), y.toHex());
+                }
             }
         }
     }

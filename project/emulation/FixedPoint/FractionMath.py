@@ -50,12 +50,10 @@ def poweredRatio(n, d, exp, fast):
     @return The product ratio denominator
 '''
 def productRatio(xn, yn, xd, yd):
-    n = IntegralMath.mulDivC(xn, yn, MAX_VAL);
-    d = IntegralMath.mulDivC(xd, yd, MAX_VAL);
+    n = IntegralMath.minFactor(xn, yn);
+    d = IntegralMath.minFactor(xd, yd);
     z = n if n > d else d;
-    if (z > 1):
-        return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
-    return (xn * yn, xd * yd);
+    return (IntegralMath.mulDivC(xn, yn, z), IntegralMath.mulDivC(xd, yd, z));
 
 '''
     @dev Reduce the components of a given ratio

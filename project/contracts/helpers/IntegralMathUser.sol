@@ -28,6 +28,10 @@ contract IntegralMathUser {
         return IntegralMath.roundDiv(n, d);
     }
 
+    function minFactor(uint256 x, uint256 y) external pure returns (uint256) {
+        return IntegralMath.minFactor(x, y);
+    }
+
     function mulDivF(uint256 x, uint256 y, uint256 z) external pure returns (uint256) {
         return IntegralMath.mulDivF(x, y, z);
     }
