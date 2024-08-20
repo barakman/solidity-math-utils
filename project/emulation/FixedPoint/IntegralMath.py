@@ -68,7 +68,7 @@ def roundDiv(n, d):
     return n // d + (n % d) // (d - d // 2);
 
 '''
-    dev Compute the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`
+    @dev Compute the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`
 '''
 def minFactor(x, y):
     (hi, lo) = mul512(x, y);

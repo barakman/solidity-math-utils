@@ -86,8 +86,8 @@ library IntegralMath {
     }}
 
     /**
-     * @dev Compute the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`
-     */
+      * @dev Compute the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`
+    */
     function minFactor(uint256 x, uint256 y) internal pure returns (uint256) { unchecked {
         (uint256 hi, uint256 lo) = mul512(x, y);
         // Safe because:
