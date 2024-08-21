@@ -72,59 +72,58 @@ def roundDiv(n, d):
 '''
 def minFactor(x, y):
     (hi, lo) = mul512(x, y);
-    # Safe because:
+    return hi + 2 if hi > MAX_VAL - lo else hi + 1;
+    # General:
+    # - find the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`
+    # - the value of `x * y` is represented via `2 ^ 256 * hi + lo`
+    # - the expression `~lo` is equivalent to `2 ^ 256 - 1 - lo`
+    # 
+    # Safety:
     # - if `x < 2 ^ 256 - 1` or `y < 2 ^ 256 - 1`
     #   then `hi < 2 ^ 256 - 2`
     #   hence neither `hi + 1` nor `hi + 2` overflows
     # - if `x = 2 ^ 256 - 1` and `y = 2 ^ 256 - 1`
     #   then `hi = 2 ^ 256 - 2 = ~lo`
     #   hence `hi + 1`, which does not overflow, is computed
-    return hi + 2 if hi > MAX_VAL - lo else hi + 1;
-    # Reasoning:
-    #
-    #  General:
-    #  - find the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`
-    #  - the value of `x * y` is represented via `2 ^ 256 * hi + lo`
-    #  - the expression `~lo` is equivalent to `2 ^ 256 - 1 - lo`
-    #  
-    #  Symbols:
-    #  - let `H` denote `hi`
-    #  - let `L` denote `lo`
-    #  - let `N` denote `2 ^ 256 - 1`
-    #  
-    #  Inference:
-    #  `x * y / z <= 2 ^ 256 - 1`     <-->
-    #  `x * y / (2 ^ 256 - 1) <= z`   <-->
-    #  `((N + 1) * H + L) / N <= z`   <-->
-    #  `(N * H + H + L) / N <= z`     <-->
-    #  `H + (H + L) / N <= z`
-    #  
-    #  Inference:
-    #  `0 <= H <= N && 0 <= L <= N`   <-->
-    #  `0 <= H + L <= N + N`          <-->
-    #  `0 <= H + L <= N * 2`          <-->
-    #  `0 <= (H + L) / N <= 2`
-    #  
-    #  Inference:
-    #  - `0 = (H + L) / N` --> `H + L = 0` --> `x * y = 0` --> `z = 1 = H + 1`
-    #  - `0 < (H + L) / N <= 1` --> `H + (H + L) / N <= H + 1` --> `z = H + 1`
-    #  - `1 < (H + L) / N <= 2` --> `H + (H + L) / N <= H + 2` --> `z = H + 2`
-    #  
-    #  Implementation:
-    #  - if `hi > ~lo`:
-    #    `~L < H <= N`                         <-->
-    #    `N - L < H <= N`                      <-->
-    #    `N < H + L <= N + L`                  <-->
-    #    `1 < (H + L) / N <= 2`                <-->
-    #    `H + 1 < H + (H + L) / N <= H + 2`    <-->
-    #    `z = H + 2`
-    #  - if `hi <= ~lo`:
-    #    `H <= ~L`                             <-->
-    #    `H <= N - L`                          <-->
-    #    `H + L <= N`                          <-->
-    #    `(H + L) / N <= 1`                    <-->
-    #    `H + (H + L) / N <= H + 1`            <-->
-    #    `z = H + 1`
+    # 
+    # Symbols:
+    # - let `H` denote `hi`
+    # - let `L` denote `lo`
+    # - let `N` denote `2 ^ 256 - 1`
+    # 
+    # Inference:
+    # `x * y / z <= 2 ^ 256 - 1`     <-->
+    # `x * y / (2 ^ 256 - 1) <= z`   <-->
+    # `((N + 1) * H + L) / N <= z`   <-->
+    # `(N * H + H + L) / N <= z`     <-->
+    # `H + (H + L) / N <= z`
+    # 
+    # Inference:
+    # `0 <= H <= N && 0 <= L <= N`   <-->
+    # `0 <= H + L <= N + N`          <-->
+    # `0 <= H + L <= N * 2`          <-->
+    # `0 <= (H + L) / N <= 2`
+    # 
+    # Inference:
+    # - `0 = (H + L) / N` --> `H + L = 0` --> `x * y = 0` --> `z = 1 = H + 1`
+    # - `0 < (H + L) / N <= 1` --> `H + (H + L) / N <= H + 1` --> `z = H + 1`
+    # - `1 < (H + L) / N <= 2` --> `H + (H + L) / N <= H + 2` --> `z = H + 2`
+    # 
+    # Implementation:
+    # - if `hi > ~lo`:
+    #   `~L < H <= N`                         <-->
+    #   `N - L < H <= N`                      <-->
+    #   `N < H + L <= N + L`                  <-->
+    #   `1 < (H + L) / N <= 2`                <-->
+    #   `H + 1 < H + (H + L) / N <= H + 2`    <-->
+    #   `z = H + 2`
+    # - if `hi <= ~lo`:
+    #   `H <= ~L`                             <-->
+    #   `H <= N - L`                          <-->
+    #   `H + L <= N`                          <-->
+    #   `(H + L) / N <= 1`                    <-->
+    #   `H + (H + L) / N <= H + 1`            <-->
+    #   `z = H + 1`
 
 '''
     @dev Compute the largest integer smaller than or equal to `x * y / z`
