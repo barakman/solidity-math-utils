@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.20;
+pragma solidity 0.8.26;
 
 import "../IntegralMath.sol";
 
@@ -26,6 +26,10 @@ contract IntegralMathUser {
 
     function roundDiv(uint256 n, uint256 d) external pure returns (uint256) {
         return IntegralMath.roundDiv(n, d);
+    }
+
+    function minFactor(uint256 x, uint256 y) external pure returns (uint256) {
+        return IntegralMath.minFactor(x, y);
     }
 
     function mulDivF(uint256 x, uint256 y, uint256 z) external pure returns (uint256) {
