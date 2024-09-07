@@ -290,5 +290,4 @@ def read(array, index):
 
 # auxiliary function
 def call(f, x, y, z, w):
-    result = f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
-    return FractionMath.productRatio(result, z, FIXED_1, w);
+    return FractionMath.productRatio(f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w)), z, w, FIXED_1);

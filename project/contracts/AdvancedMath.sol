@@ -301,7 +301,6 @@ library AdvancedMath {
 
     // auxiliary function
     function call(function (uint256) pure returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private pure returns (uint256, uint256) {
-        uint256 result = f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
-        return FractionMath.productRatio(result, z, FIXED_1, w);
+        return FractionMath.productRatio(f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w)), z, w, FIXED_1);
     }
 }
