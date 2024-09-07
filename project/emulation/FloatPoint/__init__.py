@@ -1,10 +1,10 @@
-from mpmath import mp
-from mpmath import lambertw
 from decimal import Decimal
 from decimal import getcontext
+from decimal import ROUND_HALF_DOWN
 
 
-getcontext().prec = mp.dps = 80 # 78 digits for a maximum of 2^256-1, and 2 more digits for after the decimal point
+getcontext().prec = 100
+getcontext().rounding = ROUND_HALF_DOWN
 
 
 def pow(a, b, c, d, factor):
@@ -24,12 +24,12 @@ def exp(a, b, factor):
 
 def lambertNeg(x, factor):
     x, factor = [Decimal(value) for value in vars().values()]
-    return Decimal(str(lambertw(-x/factor)))/(-x/factor)*factor
+    return lambertRatio(-x/factor)*factor
 
 
 def lambertPos(x, factor):
     x, factor = [Decimal(value) for value in vars().values()]
-    return Decimal(str(lambertw(+x/factor)))/(+x/factor)*factor
+    return lambertRatio(+x/factor)*factor
 
 
 def buy(supply, balance, weight, amount):
@@ -60,3 +60,13 @@ def withdraw(supply, balance, weights, amount):
 def invest(supply, balance, weights, amount):
     supply, balance, weights, amount = [Decimal(value) for value in vars().values()]
     return balance*(((supply+amount)/supply)**(MAX_WEIGHT/weights)-1)
+
+
+def lambertRatio(x):
+    a = x if x < 1 else x.ln()
+    for _ in range(8):
+        e = a.exp()
+        f = a * e
+        if f == x: break
+        a = (a * f + x) / (f + e)
+    return a / x

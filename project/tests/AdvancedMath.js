@@ -17,7 +17,7 @@ function solvable(a, b, c, d) {
     return Decimal(a).div(b).ln().mul(c).div(d).gte(W_MIN_X);
 }
 
-function W(x) {
+function lambertRatio(x) {
     assert(x.gte(W_MIN_X));
     let a = x.lt(1) ? x : x.log();
     for (let n = 0; n < 8; n++) {
@@ -26,7 +26,7 @@ function W(x) {
         if (f.eq(x)) break;
         a = a.mul(f).add(x).div(f.add(e));
     }
-    return a;
+    return a.div(x);
 }
 
 describe(TestContract.contractName, () => {
@@ -77,8 +77,8 @@ describe(TestContract.contractName, () => {
     function testSuccess(methodName, percent, sign, bgn, end, maxError) {
         it(`${methodName}(${percent}%)`, async () => {
             const x = SECTIONS[bgn].add(1).add(SECTIONS[end].sub(SECTIONS[bgn].add(1)).mul(percent).divToInt(100));
-            const expected = W(x.mul(sign).div(FIXED_1)).div(x.mul(sign).div(FIXED_1)).mul(FIXED_1);
             const actual = Decimal((await testContract[methodName](x.toFixed())).toString());
+            const expected = lambertRatio(x.mul(sign).div(FIXED_1)).mul(FIXED_1);
             if (!actual.eq(expected)) {
                 const error = actual.div(expected).sub(1).abs();
                 assert(error.lte(maxError), `error = ${error.toFixed()}`);
