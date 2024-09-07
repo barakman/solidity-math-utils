@@ -269,9 +269,9 @@ def lambertPos2(x):
     i = y // LAMBERT_POS2_SAMPLE;
     a = LAMBERT_POS2_SAMPLE * (i + 0);
     b = LAMBERT_POS2_SAMPLE * (i + 1);
-    c = read(values, i + 0);
-    d = read(values, i + 1);
-    return (c * (b - y) + d * (y - a)) // LAMBERT_POS2_SAMPLE;
+    c = read(values, i + 0) * (b - y);
+    d = read(values, i + 1) * (y - a);
+    return (c + d) // LAMBERT_POS2_SAMPLE;
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
