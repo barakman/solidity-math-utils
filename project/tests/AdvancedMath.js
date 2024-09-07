@@ -19,8 +19,8 @@ function solvable(a, b, c, d) {
 
 function W(x) {
     assert(x.gte(W_MIN_X));
-    let a = x;
-    for (let n = 0; n < 337; n++) {
+    let a = x.lt(1) ? x : x.log();
+    for (let n = 0; n < 8; n++) {
         const e = a.exp();
         const f = a.mul(e);
         if (f.eq(x)) {
@@ -51,7 +51,7 @@ describe(TestContract.contractName, () => {
                     testSolve(a, b, c, d, "0.000000000000000000000000000000002");
 
     for (let percent = 0; percent <= 100; percent++) {
-        testSuccess("lambertNeg", percent, -1, 0, 1, "0.13573");
+        testSuccess("lambertNeg", percent, -1, 0, 1, "0.13251");
         testSuccess("lambertPos", percent, +1, 0, 3, "0.06598");
         testSuccess("lambertPos", percent, +1, 0, 1, "0.00353");
         testSuccess("lambertPos", percent, +1, 1, 2, "0.00006");
