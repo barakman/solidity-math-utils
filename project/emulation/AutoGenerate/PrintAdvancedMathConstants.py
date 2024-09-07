@@ -2,16 +2,7 @@ from common import Decimal
 from common.constants import FIXED_1
 from common.constants import LAMBERT_POS2_EXTENT
 from common.constants import LAMBERT_POS2_SAMPLES
-
-
-def lambertRatio(x):
-    a = x if x < 1 else x.ln()
-    for _ in range(8):
-        e = a.exp()
-        f = a * e
-        if f == x: break
-        a = (a * f + x) / (f + e)
-    return a / x
+from common.functions import lambertRatio
 
 
 LAMBERT_CONV_RADIUS = int(Decimal(-1).exp()*FIXED_1)

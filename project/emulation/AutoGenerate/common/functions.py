@@ -17,6 +17,16 @@ def lambertCoefs():
     return [maxFactorial*i**(i-1)//factorial(i) for i in range(1,LAMBERT_NUM_OF_COEFS)]
 
 
+def lambertRatio(x):
+    a = x if x < 1 else x.ln()
+    for _ in range(8):
+        e = a.exp()
+        f = a * e
+        if f == x: break
+        a = (a * f + x) / (f + e)
+    return a / x
+
+
 def optimalLogTerms():
     hiTerms = []
     loTerms = []

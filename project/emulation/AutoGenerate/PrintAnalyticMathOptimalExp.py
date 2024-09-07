@@ -1,6 +1,6 @@
-from common.functions import optimalExpTerms
 from common.constants import EXP_MAX_HI_TERM_VAL
 from common.constants import EXP_NUM_OF_HI_TERMS
+from common.functions import optimalExpTerms
 
 
 hiTerms,loTerms = optimalExpTerms()

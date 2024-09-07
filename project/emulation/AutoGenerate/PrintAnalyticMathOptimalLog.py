@@ -1,5 +1,5 @@
-from common.functions import optimalLogTerms
 from common.constants import LOG_MAX_HI_TERM_VAL
+from common.functions import optimalLogTerms
 
 
 hiTerms,loTerms = optimalLogTerms()
