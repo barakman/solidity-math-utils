@@ -12,13 +12,13 @@ def test(balance1, weight1, balance2, weight2, amount):
     floatPoint = FloatPoint.convert(balance1, weight1, balance2, weight2, amount)
     if fixedPoint > floatPoint:
         error = ['Implementation Error:']
-        error.append('balance1   = {}'.format(balance1  ))
-        error.append('weight1    = {}'.format(weight1   ))
-        error.append('balance2   = {}'.format(balance2  ))
-        error.append('weight2    = {}'.format(weight2   ))
-        error.append('amount     = {}'.format(amount    ))
-        error.append('fixedPoint = {}'.format(fixedPoint))
-        error.append('floatPoint = {}'.format(floatPoint))
+        error.append(f'balance1   = {balance1  }')
+        error.append(f'weight1    = {weight1   }')
+        error.append(f'balance2   = {balance2  }')
+        error.append(f'weight2    = {weight2   }')
+        error.append(f'amount     = {amount    }')
+        error.append(f'fixedPoint = {fixedPoint}')
+        error.append(f'floatPoint = {floatPoint}')
         raise Exception('\n'.join(error))
     return fixedPoint / floatPoint
 
@@ -45,4 +45,4 @@ for n in range(size):
     except Exception as error:
         print(error)
         break
-    print('Test #{}: accuracy = {:.24f}, worst accuracy = {:.24f}, num of failures = {}'.format(n, accuracy, worstAccuracy, numOfFailures))
+    print(f'Test #{n}: accuracy = {accuracy:.24f}, worstAccuracy = {worstAccuracy:.24f}, numOfFailures = {numOfFailures}')

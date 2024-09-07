@@ -9,8 +9,8 @@ Decimal = FloatPoint.Decimal
 
 def test(staked1, balance1, balance2, rate1, rate2):
     weights = FixedPoint.equalize(staked1, balance1, balance2, rate1, rate2)
-    weight1 = weights[0];
-    weight2 = weights[1];
+    weight1 = weights[0]
+    weight2 = weights[1]
     amount1 = staked1 - balance1
     amount2 = FloatPoint.convert(balance1, weight1, balance2, weight2, amount1)
     return Decimal((balance1 + amount1) * rate1 * weight2) / Decimal((balance2 - amount2) * rate2 * weight1)
@@ -38,4 +38,4 @@ for n in range(size):
     except AssertionError as error:
         ratio = 0
         numOfFailures += 1
-    print('Test #{}: ratio = {:.24f}, minRatio = {:.24f}, maxRatio = {:.24f}, num of failures = {}'.format(n, ratio, minRatio, maxRatio, numOfFailures))
+    print(f'Test #{n}: ratio = {ratio:.24f}, minRatio = {minRatio:.24f}, maxRatio = {maxRatio:.24f}, numOfFailures = {numOfFailures}')

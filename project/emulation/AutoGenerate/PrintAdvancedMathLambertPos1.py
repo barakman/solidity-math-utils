@@ -1,15 +1,14 @@
-from common.functions import getLambertCoefs
-from common.constants import NUM_OF_LAMBERT_COEFS
+from common.functions import lambertCoefs
 
 
-coefficients = getLambertCoefs(NUM_OF_LAMBERT_COEFS)
+coefficients = lambertCoefs()
 
 
 valueMaxLen = len(hex(coefficients[-1]))
 indexMaxLen = len(str(len(coefficients)))
 
 
-print('    function lambertPos1(uint256 x) internal pure returns (uint256) { unchecked {')
+print('    function lambertPos1(uint256 x) private pure returns (uint256) { unchecked {')
 print('        uint256 xi = x;')
 print('        uint256 res = (FIXED_1 - x) * 0x{:x}; // x^(1-1) * ({}! * 1^(1-1) / 1!) - x^(2-1) * ({}! * 2^(2-1) / 2!)'.format(coefficients[0],len(coefficients),len(coefficients)))
 print('')

@@ -1,5 +1,6 @@
 from .common.BuiltIn import *
-from .AdvancedMath import *
+from . import AdvancedMath
+from . import FractionMath
 
 MAX_WEIGHT = 1000000;
 
@@ -53,7 +54,7 @@ def equalize(t, s, r, q, p):
     require(q > 0 and p > 0, "invalid rate");
 
     (tq, rp) = FractionMath.productRatio(t, q, r, p);
-    (xn, xd) = solve(s, t, tq, rp);
+    (xn, xd) = AdvancedMath.solve(s, t, tq, rp);
     (w1, w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
 
     return (w1, w2);

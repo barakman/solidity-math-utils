@@ -1,31 +1,151 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.26;
+pragma solidity 0.8.27;
 
 import "./AnalyticMath.sol";
 import "./FractionMath.sol";
+import "./IntegralMath.sol";
 
-contract AdvancedMath is AnalyticMath {
-    // Auto-generated via 'PrintLambertFactors.py'
-    uint256 internal constant LAMBERT_CONV_RADIUS = 0x002f16ac6c59de6f8d5d6f63c1482a7c86;
-    uint256 internal constant LAMBERT_POS2_SAMPLE = 0x0003060c183060c183060c183060c18306;
-    uint256 internal constant LAMBERT_POS2_MAXVAL = 0x01af16ac6c59de6f8d5d6f63c1482a7c80;
-    uint256 internal constant LAMBERT_POS3_MAXVAL = 0x6b22d43e72c326539cceeef8bb48f255ff;
+library AdvancedMath {
+    uint256 internal constant FIXED_1 = AnalyticMath.FIXED_1;
 
-    uint256[MAX_PRECISION + 1] private lambertArray;
-
-    /**
-      * @dev Should be executed either during construction or after construction (if too large for the constructor)
-    */
-    function init() public override {
-        initMaxExpArray();
-        initLambertArray();
-    }
+    // Auto-generated via 'PrintAdvancedMathConstants.py'
+    uint256 internal constant LAMBERT_CONV_RADIUS = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
+    uint256 internal constant LAMBERT_POS2_SAMPLE = 0x003060c183060c183060c183060c18306;
+    uint256 internal constant LAMBERT_POS2_MAXVAL = 0x1af16ac6c59de6f8d5d6f63c1482a7c80;
+    bytes   internal constant LAMBERT_POS2_VALUES = hex"60e393c68d20b1bd09deaabc0373b9c5"
+                                                    hex"5f8f46e4854120989ed94719fb4c2011"
+                                                    hex"5e479ebb9129fb1b7e72a648f992b606"
+                                                    hex"5d0bd23fe42dfedde2e9586be12b85fe"
+                                                    hex"5bdb29ddee979308ddfca81aeeb8095a"
+                                                    hex"5ab4fd8a260d2c7e2c0d2afcf0009dad"
+                                                    hex"5998b31359a55d48724c65cf09001221"
+                                                    hex"5885bcad2b322dfc43e8860f9c018cf5"
+                                                    hex"577b97aa1fe222bb452fdf111b1f0be2"
+                                                    hex"5679cb5e3575632e5baa27e2b949f704"
+                                                    hex"557fe8241b3a31c83c732f1cdff4a1c5"
+                                                    hex"548d868026504875d6e59bbe95fc2a6b"
+                                                    hex"53a2465ce347cf34d05a867c17dd3088"
+                                                    hex"52bdce5dcd4faed59c7f5511cf8f8acc"
+                                                    hex"51dfcb453c07f8da817606e7885f7c3e"
+                                                    hex"5107ef6b0a5a2be8f8ff15590daa3cce"
+                                                    hex"5035f241d6eae0cd7bacba119993de7b"
+                                                    hex"4f698fe90d5b53d532171e1210164c66"
+                                                    hex"4ea288ca297a0e6a09a0eee240e16c85"
+                                                    hex"4de0a13fdcf5d4213fc398ba6e3becde"
+                                                    hex"4d23a145eef91fec06b06140804c4808"
+                                                    hex"4c6b5430d4c1ee5526473db4ae0f11de"
+                                                    hex"4bb7886c240562eba11f4963a53b4240"
+                                                    hex"4b080f3f1cb491d2d521e0ea4583521e"
+                                                    hex"4a5cbc96a05589cb4d86be1db3168364"
+                                                    hex"49b566d40243517658d78c33162d6ece"
+                                                    hex"4911e6a02e5507a30f947383fd9a3276"
+                                                    hex"487216c2b31be4adc41db8a8d5cc0c88"
+                                                    hex"47d5d3fc4a7a1b188cd3d788b5c5e9fc"
+                                                    hex"473cfce4871a2c40bc4f9e1c32b955d0"
+                                                    hex"46a771ca578ab878485810e285e31c67"
+                                                    hex"4615149718aed4c258c373dc676aa72d"
+                                                    hex"4585c8b3f8fe489c6e1833ca47871384"
+                                                    hex"44f972f174e41e5efb7e9d63c29ce735"
+                                                    hex"446ff970ba86d8b00beb05ecebf3c4dc"
+                                                    hex"43e9438ec88971812d6f198b5ccaad96"
+                                                    hex"436539d11ff7bea657aeddb394e809ef"
+                                                    hex"42e3c5d3e5a913401d86f66db5d81c2c"
+                                                    hex"4264d2395303070ea726cbe98df62174"
+                                                    hex"41e84a9a593bb7194c3a6349ecae4eea"
+                                                    hex"416e1b785d13eba07a08f3f18876a5ab"
+                                                    hex"40f6322ff389d423ba9dd7e7e7b7e809"
+                                                    hex"40807cec8a466880ecf4184545d240a4"
+                                                    hex"400cea9ce88a8d3ae668e8ea0d9bf07f"
+                                                    hex"3f9b6ae8772d4c55091e0ed7dfea0ac1"
+                                                    hex"3f2bee253fd84594f54bcaafac383a13"
+                                                    hex"3ebe654e95208bb9210c575c081c5958"
+                                                    hex"3e52c1fc5665635b78ce1f05ad53c086"
+                                                    hex"3de8f65ac388101ddf718a6f5c1eff65"
+                                                    hex"3d80f522d59bd0b328ca012df4cd2d49"
+                                                    hex"3d1ab193129ea72b23648a161163a85a"
+                                                    hex"3cb61f68d32576c135b95cfb53f76d75"
+                                                    hex"3c5332d9f1aae851a3619e77e4cc8473"
+                                                    hex"3bf1e08edbe2aa109e1525f65759ef73"
+                                                    hex"3b921d9cff13fa2c197746a3dfc4918f"
+                                                    hex"3b33df818910bfc1a5aefb8f63ae2ac4"
+                                                    hex"3ad71c1c77e34fa32a9f184967eccbf6"
+                                                    hex"3a7bc9abf2c5bb53e2f7384a8a16521a"
+                                                    hex"3a21dec7e76369783a68a0c6385a1c57"
+                                                    hex"39c9525de6c9cdf7c1c157ca4a7a6ee3"
+                                                    hex"39721bad3dc85d1240ff0190e0adaac3"
+                                                    hex"391c324344d3248f0469eb28dd3d77e0"
+                                                    hex"38c78df7e3c796279fb4ff84394ab3da"
+                                                    hex"387426ea4638ae9aae08049d3554c20a"
+                                                    hex"3821f57dbd2763256c1a99bbd2051378"
+                                                    hex"37d0f256cb46a8c92ff62fbbef289698"
+                                                    hex"37811658591ffc7abdd1feaf3cef9b73"
+                                                    hex"37325aa10e9e82f7df0f380f7997154b"
+                                                    hex"36e4b888cfb408d873b9a80d439311c6"
+                                                    hex"3698299e59f4bb9de645fc9b08c64cca"
+                                                    hex"364ca7a5012cb603023b57dd3ebfd50d"
+                                                    hex"36022c928915b778ab1b06aaee7e61d4"
+                                                    hex"35b8b28d1a73dc27500ffe35559cc028"
+                                                    hex"357033e951fe250ec5eb4e60955132d7"
+                                                    hex"3528ab2867934e3a21b5412e4c4f8881"
+                                                    hex"34e212f66c55057f9676c80094a61d59"
+                                                    hex"349c66289e5b3c4b540c24f42fa4b9bb"
+                                                    hex"34579fbbd0c733a9c8d6af6b0f7d00f7"
+                                                    hex"3413bad2e712288b924b5882b5b369bf"
+                                                    hex"33d0b2b56286510ef730e213f71f12e9"
+                                                    hex"338e82ce00e2496262c64457535ba1a1"
+                                                    hex"334d26a96b373bb7c2f8ea1827f27a92"
+                                                    hex"330c99f4f4211469e00b3e18c31475ea"
+                                                    hex"32ccd87d6486094999c7d5e6f33237d8"
+                                                    hex"328dde2dd617b6665a2e8556f250c1af"
+                                                    hex"324fa70e9adc270f8262755af5a99af9"
+                                                    hex"32122f443110611ca51040f41fa6e1e3"
+                                                    hex"31d5730e42c0831482f0f1485c4263d8"
+                                                    hex"31996ec6b07b4a83421b5ebc4ab4e1f1"
+                                                    hex"315e1ee0a68ff46bb43ec2b85032e876"
+                                                    hex"31237fe7bc4deacf6775b9efa1a145f8"
+                                                    hex"30e98e7f1cc5a356e44627a6972ea2ff"
+                                                    hex"30b04760b8917ec74205a3002650ec05"
+                                                    hex"3077a75c803468e9132ce0cf3224241d"
+                                                    hex"303fab57a6a275c36f19cda9bace667a"
+                                                    hex"3008504beb8dcbd2cf3bc1f6d5a064f0"
+                                                    hex"2fd19346ed17dac61219ce0c2c5ac4b0"
+                                                    hex"2f9b7169808c324b5852fd3d54ba9714"
+                                                    hex"2f65e7e711cf4b064eea9c08cbdad574"
+                                                    hex"2f30f405093042ddff8a251b6bf6d103"
+                                                    hex"2efc931a3750f2e8bfe323edfe037574"
+                                                    hex"2ec8c28e46dbe56d98685278339400cb"
+                                                    hex"2e957fd933c3926d8a599b602379b851"
+                                                    hex"2e62c882c7c9ed4473412702f08ba0e5"
+                                                    hex"2e309a221c12ba361e3ed695167feee2"
+                                                    hex"2dfef25d1f865ae18dd07cfea4bcea10"
+                                                    hex"2dcdcee821cdc80decc02c44344aeb31"
+                                                    hex"2d9d2d8562b34944d0b201bb87260c83"
+                                                    hex"2d6d0c04a5b62a2c42636308669b729a"
+                                                    hex"2d3d6842c9a235517fc5a0332691528f"
+                                                    hex"2d0e402963fe1ea2834abc408c437c10"
+                                                    hex"2cdf91ae602647908aff975e4d6a2a8c"
+                                                    hex"2cb15ad3a1eb65f6d74a75da09a1b6c5"
+                                                    hex"2c8399a6ab8e9774d6fcff373d210727"
+                                                    hex"2c564c4046f64edba6883ca06bbc4535"
+                                                    hex"2c2970c431f952641e05cb493e23eed3"
+                                                    hex"2bfd0560cd9eb14563bc7c0732856c18"
+                                                    hex"2bd1084ed0332f7ff4150f9d0ef41a2c"
+                                                    hex"2ba577d0fa1628b76d040b12a82492fb"
+                                                    hex"2b7a5233cd21581e855e89dc2f1e8a92"
+                                                    hex"2b4f95cd46904d05d72bdcde337d9cc7"
+                                                    hex"2b2540fc9b4d9abba3faca6691914675"
+                                                    hex"2afb5229f68d0830d8be8adb0a0db70f"
+                                                    hex"2ad1c7c63a9b294c5bc73a3ba3ab7a2b"
+                                                    hex"2aa8a04ac3cbe1ee1c9c86361465dbb8"
+                                                    hex"2a7fda392d725a44a2c8aeb9ab35430d"
+                                                    hex"2a57741b18cde618717792b4faa216db"
+                                                    hex"2a2f6c81f5d84dd950a35626d6d5503a";
 
     /**
       * @dev Solve x * (a / b) ^ x = c / d
       * Solution: x = W(log(a / b) * c / d) / (log(a / b) * c / d) * c / d
     */
-    function solve(uint256 a, uint256 b, uint256 c, uint256 d) internal view returns (uint256, uint256) { unchecked {
+    function solve(uint256 a, uint256 b, uint256 c, uint256 d) internal pure returns (uint256, uint256) { unchecked {
         if (a > b)
             return call(lambertPos, a, b, c, d);
         if (b > a)
@@ -38,33 +158,35 @@ contract AdvancedMath is AnalyticMath {
       * Input range: 1 <= x <= LAMBERT_CONV_RADIUS
     */
     function lambertNeg(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x > 0, "lambertNeg: x < min");
-        if (x <= LAMBERT_CONV_RADIUS)
+        if (x < 1)
+            revert("lambertNeg: x < min");
+        else if (x <= LAMBERT_CONV_RADIUS)
             return lambertNeg1(x);
-        revert("lambertNeg: x > max");
+        else
+            revert("lambertNeg: x > max");
     }}
 
     /**
       * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
-      * Input range: 1 <= x <= LAMBERT_POS3_MAXVAL
+      * Input range: 1 <= x <= 2 ^ 256 - 1
     */
-    function lambertPos(uint256 x) internal view returns (uint256) { unchecked {
-        require(x > 0, "lambertPos: x < min");
-        if (x <= LAMBERT_CONV_RADIUS)
+    function lambertPos(uint256 x) internal pure returns (uint256) { unchecked {
+        if (x < 1)
+            revert("lambertPos: x < min");
+        else if (x <= LAMBERT_CONV_RADIUS)
             return lambertPos1(x);
-        if (x <= LAMBERT_POS2_MAXVAL)
+        else if (x <= LAMBERT_POS2_MAXVAL)
             return lambertPos2(x);
-        if (x <= LAMBERT_POS3_MAXVAL)
+        else
             return lambertPos3(x);
-        revert("lambertPos: x > max");
     }}
 
     /**
       * @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
       * Input range: 1 <= x <= LAMBERT_CONV_RADIUS
-      * Auto-generated via 'PrintFunctionLambertNeg1.py'
+      * Auto-generated via 'PrintAdvancedMathLambertNeg1.py'
     */
-    function lambertNeg1(uint256 x) internal pure returns (uint256) { unchecked {
+    function lambertNeg1(uint256 x) private pure returns (uint256) { unchecked {
         uint256 xi = x;
         uint256 res = 0;
 
@@ -107,9 +229,9 @@ contract AdvancedMath is AnalyticMath {
     /**
       * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
       * Input range: 1 <= x <= LAMBERT_CONV_RADIUS
-      * Auto-generated via 'PrintFunctionLambertPos1.py'
+      * Auto-generated via 'PrintAdvancedMathLambertPos1.py'
     */
-    function lambertPos1(uint256 x) internal pure returns (uint256) { unchecked {
+    function lambertPos1(uint256 x) private pure returns (uint256) { unchecked {
         uint256 xi = x;
         uint256 res = (FIXED_1 - x) * 0xde1bc4d19efcac82445da75b00000000; // x^(1-1) * (34! * 1^(1-1) / 1!) - x^(2-1) * (34! * 2^(2-1) / 2!)
 
@@ -153,164 +275,37 @@ contract AdvancedMath is AnalyticMath {
       * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
       * Input range: LAMBERT_CONV_RADIUS + 1 <= x <= LAMBERT_POS2_MAXVAL
     */
-    function lambertPos2(uint256 x) internal view returns (uint256) { unchecked {
+    function lambertPos2(uint256 x) private pure returns (uint256) { unchecked {
+        bytes memory values = LAMBERT_POS2_VALUES;
         uint256 y = x - LAMBERT_CONV_RADIUS - 1;
         uint256 i = y / LAMBERT_POS2_SAMPLE;
-        uint256 a = LAMBERT_POS2_SAMPLE * i;
+        uint256 a = LAMBERT_POS2_SAMPLE * (i + 0);
         uint256 b = LAMBERT_POS2_SAMPLE * (i + 1);
-        uint256 c = lambertArray[i];
-        uint256 d = lambertArray[i + 1];
+        uint256 c = read(values, i + 0);
+        uint256 d = read(values, i + 1);
         return (c * (b - y) + d * (y - a)) / LAMBERT_POS2_SAMPLE;
     }}
 
     /**
       * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
-      * Input range: LAMBERT_POS2_MAXVAL + 1 <= x <= LAMBERT_POS3_MAXVAL
+      * Input range: LAMBERT_POS2_MAXVAL + 1 <= x <= 2 ^ 256 - 1
     */
-    function lambertPos3(uint256 x) internal pure returns (uint256) { unchecked {
-        uint256 l1 = fixedLog(x);
-        uint256 l2 = fixedLog(l1);
-        return (l1 - l2 + FIXED_1 * l2 / l1) * FIXED_1 / x;
+    function lambertPos3(uint256 x) private pure returns (uint256) { unchecked {
+        uint256 a = AnalyticMath.fixedLog(x);
+        uint256 b = AnalyticMath.fixedLog(a);
+        uint256 c = IntegralMath.mulDivF(FIXED_1, b, a);
+        uint256 d = IntegralMath.mulDivF(FIXED_1, a - b + c, x);
+        return d;
     }}
 
-    /**
-      * @dev Initialize internal data structure
-      * Auto-generated via 'PrintLambertArray.py'
-    */
-    function initLambertArray() internal {
-        lambertArray[  0] = 0x60e393c68d20b1bd09deaabc0373b9c5;
-        lambertArray[  1] = 0x5f8f46e4854120989ed94719fb4c2011;
-        lambertArray[  2] = 0x5e479ebb9129fb1b7e72a648f992b606;
-        lambertArray[  3] = 0x5d0bd23fe42dfedde2e9586be12b85fe;
-        lambertArray[  4] = 0x5bdb29ddee979308ddfca81aeeb8095a;
-        lambertArray[  5] = 0x5ab4fd8a260d2c7e2c0d2afcf0009dad;
-        lambertArray[  6] = 0x5998b31359a55d48724c65cf09001221;
-        lambertArray[  7] = 0x5885bcad2b322dfc43e8860f9c018cf5;
-        lambertArray[  8] = 0x577b97aa1fe222bb452fdf111b1f0be2;
-        lambertArray[  9] = 0x5679cb5e3575632e5baa27e2b949f704;
-        lambertArray[ 10] = 0x557fe8241b3a31c83c732f1cdff4a1c5;
-        lambertArray[ 11] = 0x548d868026504875d6e59bbe95fc2a6b;
-        lambertArray[ 12] = 0x53a2465ce347cf34d05a867c17dd3088;
-        lambertArray[ 13] = 0x52bdce5dcd4faed59c7f5511cf8f8acc;
-        lambertArray[ 14] = 0x51dfcb453c07f8da817606e7885f7c3e;
-        lambertArray[ 15] = 0x5107ef6b0a5a2be8f8ff15590daa3cce;
-        lambertArray[ 16] = 0x5035f241d6eae0cd7bacba119993de7b;
-        lambertArray[ 17] = 0x4f698fe90d5b53d532171e1210164c66;
-        lambertArray[ 18] = 0x4ea288ca297a0e6a09a0eee240e16c85;
-        lambertArray[ 19] = 0x4de0a13fdcf5d4213fc398ba6e3becde;
-        lambertArray[ 20] = 0x4d23a145eef91fec06b06140804c4808;
-        lambertArray[ 21] = 0x4c6b5430d4c1ee5526473db4ae0f11de;
-        lambertArray[ 22] = 0x4bb7886c240562eba11f4963a53b4240;
-        lambertArray[ 23] = 0x4b080f3f1cb491d2d521e0ea4583521e;
-        lambertArray[ 24] = 0x4a5cbc96a05589cb4d86be1db3168364;
-        lambertArray[ 25] = 0x49b566d40243517658d78c33162d6ece;
-        lambertArray[ 26] = 0x4911e6a02e5507a30f947383fd9a3276;
-        lambertArray[ 27] = 0x487216c2b31be4adc41db8a8d5cc0c88;
-        lambertArray[ 28] = 0x47d5d3fc4a7a1b188cd3d788b5c5e9fc;
-        lambertArray[ 29] = 0x473cfce4871a2c40bc4f9e1c32b955d0;
-        lambertArray[ 30] = 0x46a771ca578ab878485810e285e31c67;
-        lambertArray[ 31] = 0x4615149718aed4c258c373dc676aa72d;
-        lambertArray[ 32] = 0x4585c8b3f8fe489c6e1833ca47871384;
-        lambertArray[ 33] = 0x44f972f174e41e5efb7e9d63c29ce735;
-        lambertArray[ 34] = 0x446ff970ba86d8b00beb05ecebf3c4dc;
-        lambertArray[ 35] = 0x43e9438ec88971812d6f198b5ccaad96;
-        lambertArray[ 36] = 0x436539d11ff7bea657aeddb394e809ef;
-        lambertArray[ 37] = 0x42e3c5d3e5a913401d86f66db5d81c2c;
-        lambertArray[ 38] = 0x4264d2395303070ea726cbe98df62174;
-        lambertArray[ 39] = 0x41e84a9a593bb7194c3a6349ecae4eea;
-        lambertArray[ 40] = 0x416e1b785d13eba07a08f3f18876a5ab;
-        lambertArray[ 41] = 0x40f6322ff389d423ba9dd7e7e7b7e809;
-        lambertArray[ 42] = 0x40807cec8a466880ecf4184545d240a4;
-        lambertArray[ 43] = 0x400cea9ce88a8d3ae668e8ea0d9bf07f;
-        lambertArray[ 44] = 0x3f9b6ae8772d4c55091e0ed7dfea0ac1;
-        lambertArray[ 45] = 0x3f2bee253fd84594f54bcaafac383a13;
-        lambertArray[ 46] = 0x3ebe654e95208bb9210c575c081c5958;
-        lambertArray[ 47] = 0x3e52c1fc5665635b78ce1f05ad53c086;
-        lambertArray[ 48] = 0x3de8f65ac388101ddf718a6f5c1eff65;
-        lambertArray[ 49] = 0x3d80f522d59bd0b328ca012df4cd2d49;
-        lambertArray[ 50] = 0x3d1ab193129ea72b23648a161163a85a;
-        lambertArray[ 51] = 0x3cb61f68d32576c135b95cfb53f76d75;
-        lambertArray[ 52] = 0x3c5332d9f1aae851a3619e77e4cc8473;
-        lambertArray[ 53] = 0x3bf1e08edbe2aa109e1525f65759ef73;
-        lambertArray[ 54] = 0x3b921d9cff13fa2c197746a3dfc4918f;
-        lambertArray[ 55] = 0x3b33df818910bfc1a5aefb8f63ae2ac4;
-        lambertArray[ 56] = 0x3ad71c1c77e34fa32a9f184967eccbf6;
-        lambertArray[ 57] = 0x3a7bc9abf2c5bb53e2f7384a8a16521a;
-        lambertArray[ 58] = 0x3a21dec7e76369783a68a0c6385a1c57;
-        lambertArray[ 59] = 0x39c9525de6c9cdf7c1c157ca4a7a6ee3;
-        lambertArray[ 60] = 0x39721bad3dc85d1240ff0190e0adaac3;
-        lambertArray[ 61] = 0x391c324344d3248f0469eb28dd3d77e0;
-        lambertArray[ 62] = 0x38c78df7e3c796279fb4ff84394ab3da;
-        lambertArray[ 63] = 0x387426ea4638ae9aae08049d3554c20a;
-        lambertArray[ 64] = 0x3821f57dbd2763256c1a99bbd2051378;
-        lambertArray[ 65] = 0x37d0f256cb46a8c92ff62fbbef289698;
-        lambertArray[ 66] = 0x37811658591ffc7abdd1feaf3cef9b73;
-        lambertArray[ 67] = 0x37325aa10e9e82f7df0f380f7997154b;
-        lambertArray[ 68] = 0x36e4b888cfb408d873b9a80d439311c6;
-        lambertArray[ 69] = 0x3698299e59f4bb9de645fc9b08c64cca;
-        lambertArray[ 70] = 0x364ca7a5012cb603023b57dd3ebfd50d;
-        lambertArray[ 71] = 0x36022c928915b778ab1b06aaee7e61d4;
-        lambertArray[ 72] = 0x35b8b28d1a73dc27500ffe35559cc028;
-        lambertArray[ 73] = 0x357033e951fe250ec5eb4e60955132d7;
-        lambertArray[ 74] = 0x3528ab2867934e3a21b5412e4c4f8881;
-        lambertArray[ 75] = 0x34e212f66c55057f9676c80094a61d59;
-        lambertArray[ 76] = 0x349c66289e5b3c4b540c24f42fa4b9bb;
-        lambertArray[ 77] = 0x34579fbbd0c733a9c8d6af6b0f7d00f7;
-        lambertArray[ 78] = 0x3413bad2e712288b924b5882b5b369bf;
-        lambertArray[ 79] = 0x33d0b2b56286510ef730e213f71f12e9;
-        lambertArray[ 80] = 0x338e82ce00e2496262c64457535ba1a1;
-        lambertArray[ 81] = 0x334d26a96b373bb7c2f8ea1827f27a92;
-        lambertArray[ 82] = 0x330c99f4f4211469e00b3e18c31475ea;
-        lambertArray[ 83] = 0x32ccd87d6486094999c7d5e6f33237d8;
-        lambertArray[ 84] = 0x328dde2dd617b6665a2e8556f250c1af;
-        lambertArray[ 85] = 0x324fa70e9adc270f8262755af5a99af9;
-        lambertArray[ 86] = 0x32122f443110611ca51040f41fa6e1e3;
-        lambertArray[ 87] = 0x31d5730e42c0831482f0f1485c4263d8;
-        lambertArray[ 88] = 0x31996ec6b07b4a83421b5ebc4ab4e1f1;
-        lambertArray[ 89] = 0x315e1ee0a68ff46bb43ec2b85032e876;
-        lambertArray[ 90] = 0x31237fe7bc4deacf6775b9efa1a145f8;
-        lambertArray[ 91] = 0x30e98e7f1cc5a356e44627a6972ea2ff;
-        lambertArray[ 92] = 0x30b04760b8917ec74205a3002650ec05;
-        lambertArray[ 93] = 0x3077a75c803468e9132ce0cf3224241d;
-        lambertArray[ 94] = 0x303fab57a6a275c36f19cda9bace667a;
-        lambertArray[ 95] = 0x3008504beb8dcbd2cf3bc1f6d5a064f0;
-        lambertArray[ 96] = 0x2fd19346ed17dac61219ce0c2c5ac4b0;
-        lambertArray[ 97] = 0x2f9b7169808c324b5852fd3d54ba9714;
-        lambertArray[ 98] = 0x2f65e7e711cf4b064eea9c08cbdad574;
-        lambertArray[ 99] = 0x2f30f405093042ddff8a251b6bf6d103;
-        lambertArray[100] = 0x2efc931a3750f2e8bfe323edfe037574;
-        lambertArray[101] = 0x2ec8c28e46dbe56d98685278339400cb;
-        lambertArray[102] = 0x2e957fd933c3926d8a599b602379b851;
-        lambertArray[103] = 0x2e62c882c7c9ed4473412702f08ba0e5;
-        lambertArray[104] = 0x2e309a221c12ba361e3ed695167feee2;
-        lambertArray[105] = 0x2dfef25d1f865ae18dd07cfea4bcea10;
-        lambertArray[106] = 0x2dcdcee821cdc80decc02c44344aeb31;
-        lambertArray[107] = 0x2d9d2d8562b34944d0b201bb87260c83;
-        lambertArray[108] = 0x2d6d0c04a5b62a2c42636308669b729a;
-        lambertArray[109] = 0x2d3d6842c9a235517fc5a0332691528f;
-        lambertArray[110] = 0x2d0e402963fe1ea2834abc408c437c10;
-        lambertArray[111] = 0x2cdf91ae602647908aff975e4d6a2a8c;
-        lambertArray[112] = 0x2cb15ad3a1eb65f6d74a75da09a1b6c5;
-        lambertArray[113] = 0x2c8399a6ab8e9774d6fcff373d210727;
-        lambertArray[114] = 0x2c564c4046f64edba6883ca06bbc4535;
-        lambertArray[115] = 0x2c2970c431f952641e05cb493e23eed3;
-        lambertArray[116] = 0x2bfd0560cd9eb14563bc7c0732856c18;
-        lambertArray[117] = 0x2bd1084ed0332f7ff4150f9d0ef41a2c;
-        lambertArray[118] = 0x2ba577d0fa1628b76d040b12a82492fb;
-        lambertArray[119] = 0x2b7a5233cd21581e855e89dc2f1e8a92;
-        lambertArray[120] = 0x2b4f95cd46904d05d72bdcde337d9cc7;
-        lambertArray[121] = 0x2b2540fc9b4d9abba3faca6691914675;
-        lambertArray[122] = 0x2afb5229f68d0830d8be8adb0a0db70f;
-        lambertArray[123] = 0x2ad1c7c63a9b294c5bc73a3ba3ab7a2b;
-        lambertArray[124] = 0x2aa8a04ac3cbe1ee1c9c86361465dbb8;
-        lambertArray[125] = 0x2a7fda392d725a44a2c8aeb9ab35430d;
-        lambertArray[126] = 0x2a57741b18cde618717792b4faa216db;
-        lambertArray[127] = 0x2a2f6c81f5d84dd950a35626d6d5503a;
+    // auxiliary function
+    function read(bytes memory array, uint256 index) private pure returns (uint128 result) {
+        assembly {result := mload(add(add(array, 16), mul(index, 16)))}
     }
 
     // auxiliary function
-    function call(function (uint256) view returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private view returns (uint256, uint256) {
-        uint256 result = f(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
+    function call(function (uint256) pure returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private pure returns (uint256, uint256) {
+        uint256 result = f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w));
         return FractionMath.productRatio(result, z, FIXED_1, w);
     }
 }

@@ -22,4 +22,4 @@ for n in range(size):
     ratio = test(x)
     minRatio = min(minRatio, ratio)
     maxRatio = max(maxRatio, ratio)
-    print('Test #{}: ratio = {:.24f}, minRatio = {:.24f}, maxRatio = {:.24f}'.format(n, ratio, minRatio, maxRatio))
+    print(f'Test #{n}: ratio = {ratio:.24f}, minRatio = {minRatio:.24f}, maxRatio = {maxRatio:.24f}')

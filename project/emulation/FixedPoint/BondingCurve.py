@@ -1,6 +1,7 @@
 from .common.BuiltIn import *
 from .common.Uint import *
-from .AnalyticMath import *
+from . import AnalyticMath
+from . import IntegralMath
 
 MIN_WEIGHT = 1;
 MAX_WEIGHT = 1000000;
@@ -26,7 +27,7 @@ def buy(supply, balance, weight, amount):
     if (weight == MAX_WEIGHT):
         return IntegralMath.mulDivF(amount, supply, balance);
 
-    (n, d) = pow(safeAdd(balance, amount), balance, weight, MAX_WEIGHT);
+    (n, d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weight, MAX_WEIGHT);
     return IntegralMath.mulDivF(supply, n, d) - supply;
 
 '''
@@ -54,7 +55,7 @@ def sell(supply, balance, weight, amount):
     if (weight == MAX_WEIGHT):
         return IntegralMath.mulDivF(amount, balance, supply);
 
-    (n, d) = pow(supply, supply - amount, MAX_WEIGHT, weight);
+    (n, d) = AnalyticMath.pow(supply, supply - amount, MAX_WEIGHT, weight);
     return IntegralMath.mulDivF(balance, n - d, n);
 
 '''
@@ -77,7 +78,7 @@ def convert(balance1, weight1, balance2, weight2, amount):
     if (weight1 == weight2):
         return IntegralMath.mulDivF(balance2, amount, safeAdd(balance1, amount));
 
-    (n, d) = pow(safeAdd(balance1, amount), balance1, weight1, weight2);
+    (n, d) = AnalyticMath.pow(safeAdd(balance1, amount), balance1, weight1, weight2);
     return IntegralMath.mulDivF(balance2, n - d, n);
 
 '''
@@ -101,7 +102,7 @@ def deposit(supply, balance, weights, amount):
     if (weights == MAX_WEIGHT):
         return IntegralMath.mulDivF(amount, supply, balance);
 
-    (n, d) = pow(safeAdd(balance, amount), balance, weights, MAX_WEIGHT);
+    (n, d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weights, MAX_WEIGHT);
     return IntegralMath.mulDivF(supply, n, d) - supply;
 
 '''
@@ -129,7 +130,7 @@ def withdraw(supply, balance, weights, amount):
     if (weights == MAX_WEIGHT):
         return IntegralMath.mulDivF(amount, balance, supply);
 
-    (n, d) = pow(supply, supply - amount, MAX_WEIGHT, weights);
+    (n, d) = AnalyticMath.pow(supply, supply - amount, MAX_WEIGHT, weights);
     return IntegralMath.mulDivF(balance, n - d, n);
 
 '''
@@ -153,5 +154,5 @@ def invest(supply, balance, weights, amount):
     if (weights == MAX_WEIGHT):
         return IntegralMath.mulDivC(amount, balance, supply);
 
-    (n, d) = pow(safeAdd(supply, amount), supply, MAX_WEIGHT, weights);
+    (n, d) = AnalyticMath.pow(safeAdd(supply, amount), supply, MAX_WEIGHT, weights);
     return IntegralMath.mulDivC(balance, n, d) - balance;

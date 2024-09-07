@@ -1,49 +1,81 @@
+from common import Decimal
 from math import factorial
+from collections import namedtuple
+from common.constants import FIXED_1
+from common.constants import LOG_MAX_HI_TERM_VAL
+from common.constants import LOG_NUM_OF_HI_TERMS
+from common.constants import EXP_MAX_HI_TERM_VAL
+from common.constants import EXP_NUM_OF_HI_TERMS
+from common.constants import LAMBERT_NUM_OF_COEFS
 
 
-def getTaylorCoefs(numOfCoefficients):
-    maxFactorial = factorial(numOfCoefficients-1)
-    return [maxFactorial//factorial(i) for i in range(1,numOfCoefficients)]
+MAX_VAL = (1<<256)-1
 
 
-def getLambertCoefs(numOfLambertCoefs):
-    maxFactorial = factorial(numOfLambertCoefs-1)
-    return [maxFactorial*i**(i-1)//factorial(i) for i in range(1,numOfLambertCoefs)]
+def lambertCoefs():
+    maxFactorial = factorial(LAMBERT_NUM_OF_COEFS-1)
+    return [maxFactorial*i**(i-1)//factorial(i) for i in range(1,LAMBERT_NUM_OF_COEFS)]
 
 
-def getMaxExpArray(coefficients,numOfPrecisions):
-    return [binarySearch(generalExp,[coefficients,precision]) for precision in range(numOfPrecisions)]
+def optimalLogTerms():
+    hiTerms = []
+    loTerms = []
+
+    HiTerm = namedtuple('HiTerm','val,exp')
+    LoTerm = namedtuple('LoTerm','num,den')
+
+    for n in range(LOG_NUM_OF_HI_TERMS+1):
+        cur = Decimal(LOG_MAX_HI_TERM_VAL)/2**n
+        val = int(FIXED_1*cur)
+        exp = int(FIXED_1*cur.exp()+1)
+        hiTerms.append(HiTerm(val,exp))
+
+    highest = hiTerms[0].exp-1
+    loTerms = [LoTerm(FIXED_1*2,FIXED_1*2)]
+    res = optimalLog(highest,hiTerms,loTerms,FIXED_1)
+
+    while True:
+        n = len(loTerms)
+        val = FIXED_1*(2*n+2)
+        loTermsNext = loTerms+[LoTerm(val//(2*n+1),val)]
+        resNext = optimalLog(highest,hiTerms,loTermsNext,FIXED_1)
+        if res < resNext:
+            res = resNext
+            loTerms = loTermsNext
+        else:
+            return hiTerms,loTerms
 
 
-def getMaxValArray(coefficients,maxExpArray):
-    return [generalExp(maxExpArray[precision],coefficients,precision) for precision in range(len(maxExpArray))]
+def optimalExpTerms():
+    hiTerms = []
+    loTerms = []
 
+    HiTerm = namedtuple('HiTerm','bit,num,den')
+    LoTerm = namedtuple('LoTerm','val,ind')
 
-def binarySearch(func,args):
-    lo = 0
-    hi = (1<<256)-1
-    while lo+1 < hi:
-        mid = (lo+hi)//2
-        try:
-            func(mid,*args)
-            lo = mid
-        except:
-            hi = mid
-    try:
-        func(hi,*args)
-        return hi
-    except:
-        func(lo,*args)
-        return lo
+    top = int(Decimal(2**(0+EXP_MAX_HI_TERM_VAL-EXP_NUM_OF_HI_TERMS)).exp()*FIXED_1)-1
+    for n in range(EXP_NUM_OF_HI_TERMS+1):
+        cur = Decimal(2**(n+EXP_MAX_HI_TERM_VAL-EXP_NUM_OF_HI_TERMS)).exp()
+        den = int(MAX_VAL/(cur*top))
+        num = int(den*cur)
+        top = top*num//den
+        bit = (FIXED_1<<(n+EXP_MAX_HI_TERM_VAL))>>EXP_NUM_OF_HI_TERMS
+        hiTerms.append(HiTerm(bit,num,den))
 
+    highest = hiTerms[-1].bit-1
+    loTerms = [LoTerm(1,1)]
+    res = optimalExp(highest,hiTerms,loTerms,FIXED_1)
 
-def generalExp(x,coefficients,precision):
-    xi = x
-    res = 0
-    for coefficient in coefficients[1:]:
-        xi = safe(xi*x)>>precision
-        res = safe(res+safe(xi*coefficient))
-    return safe(safe(res//coefficients[0]+x)+(1<<precision))
+    while True:
+        n = len(loTerms)+1
+        val = factorial(n)
+        loTermsNext = [LoTerm(val//factorial(i+1),i+1) for i in range(n)]
+        resNext = optimalExp(highest,hiTerms,loTermsNext,FIXED_1)
+        if res < resNext:
+            res = resNext
+            loTerms = loTermsNext
+        else:
+            return hiTerms,loTerms
 
 
 def optimalLog(x,hiTerms,loTerms,fixed1):
@@ -74,12 +106,6 @@ def optimalExp(x,hiTerms,loTerms,fixed1):
     return res
 
 
-def lambertPos3(x,optimalLog,generalLog,optimalLogMaxVal,fixed1):
-    L1 = optimalLog(x) if x < optimalLogMaxVal else generalLog(x)
-    L2 = optimalLog(L1) if L1 < optimalLogMaxVal else generalLog(L1)
-    return safe(safe(safe(L1-L2)+safe(L2*fixed1)//L1)*fixed1)//x
-
-
 def safe(x):
-    assert 0 <= x <= 2**256-1
+    assert 0 <= x <= MAX_VAL
     return x

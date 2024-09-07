@@ -30,4 +30,4 @@ for n in range(size):
     except AssertionError as error:
         ratio = 0
         numOfFailures += 1
-    print('Test #{}: ratio = {:.24f}, minRatio = {:.24f}, maxRatio = {:.24f}, num of failures = {}'.format(n, ratio, minRatio, maxRatio, numOfFailures))
+    print(f'Test #{n}: ratio = {ratio:.24f}, minRatio = {minRatio:.24f}, maxRatio = {maxRatio:.24f}, numOfFailures = {numOfFailures}')

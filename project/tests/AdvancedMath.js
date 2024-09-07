@@ -1,83 +1,86 @@
-const AdvancedMath = artifacts.require("AdvancedMathAdapter");
-
-const Constants = require("./helpers/AnalyticMathConstants.js");
-
-const assertRevert = require("./helpers/Utilities.js").assertRevert;
-
+const TestContract = artifacts.require("AdvancedMathUser");
+const Constants = require("./helpers/Constants.js");
+const Utilities = require("./helpers/Utilities.js");
 const Decimal = require("decimal.js");
 
 const W_MIN_X = Decimal(-1).exp().neg();
-const FIXED_1 = Decimal(2).pow(Constants.MAX_PRECISION);
+const FIXED_1 = Decimal(Constants.FIXED_1);
+
+const SECTIONS = [
+    Decimal(0),
+    Decimal(Constants.LAMBERT_CONV_RADIUS),
+    Decimal(Constants.LAMBERT_POS2_MAXVAL),
+    Decimal(Constants.LAMBERT_POS2_MAXVAL).mul(100)
+];
 
 function solvable(a, b, c, d) {
     return Decimal(a).div(b).ln().mul(c).div(d).gte(W_MIN_X);
 }
 
 function W(x) {
-    if (x.gte(W_MIN_X)) {
-        let a = x;
-        for (let n = 0; n < 215; n++) {
-            const e = a.exp();
-            a = a.mul(a).mul(e).add(x).div(a.mul(e).add(e));
+    assert(x.gte(W_MIN_X));
+    let a = x;
+    for (let n = 0; n < 337; n++) {
+        const e = a.exp();
+        const f = a.mul(e);
+        if (f.eq(x)) {
+            break;
         }
-        return a;
+        a = a.mul(f).add(x).div(f.add(e));
     }
-    assert(false);
+    return a;
 }
 
-contract("AdvancedMath", () => {
-    let advancedMath;
-    let sections;
+describe(TestContract.contractName, () => {
+    let testContract;
 
     before(async () => {
-        advancedMath = await AdvancedMath.new();
-        await advancedMath.init();
-        const maxInputValues = await advancedMath.maxInputValues();
-        sections = [Decimal(0), ...maxInputValues.map(x => Decimal(x.toString()))];
+        testContract = await TestContract.new();
     });
 
     for (const a of [1, 2, 3, 4, 5])
         for (const b of [1, 2, 3, 4, 5])
             for (const c of [1, 2, 3, 4, 5])
                 for (const d of [1, 2, 3, 4, 5])
-                    solveTest(a, b, c, d, "0.19382");
+                    testSolve(a, b, c, d, "0.19382");
 
     for (const a of [1, 2, 3, 4, 5].map(n => n + 1000))
         for (const b of [1, 2, 3, 4, 5].map(n => n + 1000))
             for (const c of [1, 2, 3, 4, 5].map(n => n + 1000))
                 for (const d of [1, 2, 3, 4, 5].map(n => n + 1000))
-                    solveTest(a, b, c, d, "0.00000000000000000000000000000001");
+                    testSolve(a, b, c, d, "0.000000000000000000000000000000002");
 
     for (let percent = 0; percent <= 100; percent++) {
-        testSuccess("lambertNegTest" , percent, -1, 0, 1, "0.13573");
-        testSuccess("lambertPosTest" , percent, +1, 0, 3, "0.07888");
-        testSuccess("lambertNeg1Test", percent, -1, 0, 1, "0.13573");
-        testSuccess("lambertPos1Test", percent, +1, 0, 1, "0.00353");
-        testSuccess("lambertPos2Test", percent, +1, 1, 2, "0.00006");
-        testSuccess("lambertPos3Test", percent, +1, 2, 3, "0.07448");
+        testSuccess("lambertNeg", percent, -1, 0, 1, "0.13573");
+        testSuccess("lambertPos", percent, +1, 0, 3, "0.06598");
+        testSuccess("lambertPos", percent, +1, 0, 1, "0.00353");
+        testSuccess("lambertPos", percent, +1, 1, 2, "0.00006");
+        testSuccess("lambertPos", percent, +1, 2, 3, "0.06620");
     }
 
-    testFailure("lambertNegTest", 0, 0, "lambertNeg: x < min");
-    testFailure("lambertNegTest", 1, 1, "lambertNeg: x > max");
-    testFailure("lambertPosTest", 0, 0, "lambertPos: x < min");
-    testFailure("lambertPosTest", 3, 1, "lambertPos: x > max");
+    testFailure("lambertNeg", 0, 0, "lambertNeg: x < min");
+    testFailure("lambertPos", 0, 0, "lambertPos: x < min");
+    testFailure("lambertNeg", 1, 1, "lambertNeg: x > max");
 
-    function solveTest(a, b, c, d, maxError) {
-        if (solvable(a, b, c, d)) {
-            it(`solveTest(${a}, ${b}, ${c}, ${d})`, async () => {
-                const result = await advancedMath.solveTest(a, b, c, d);
+    function testSolve(a, b, c, d, maxError) {
+        it(`solve(${a}, ${b}, ${c}, ${d})`, async () => {
+            if (solvable(a, b, c, d)) {
+                const result = await testContract.solve(a, b, c, d);
                 const x = Decimal(result[0].toString()).div(result[1].toString());
                 const error = x.mul(Decimal(a).div(b).pow(x)).div(c).mul(d).sub(1).abs();
                 assert(error.lte(maxError), `error = ${error.toFixed()}`);
-            });
-        }
+            }
+            else {
+                await Utilities.assertRevert(testContract.solve(a, b, c, d));
+            }
+        });
     }
 
     function testSuccess(methodName, percent, sign, bgn, end, maxError) {
         it(`${methodName}(${percent}%)`, async () => {
-            const x = sections[bgn].add(1).add(sections[end].sub(sections[bgn].add(1)).mul(percent).divToInt(100));
+            const x = SECTIONS[bgn].add(1).add(SECTIONS[end].sub(SECTIONS[bgn].add(1)).mul(percent).divToInt(100));
             const expected = W(x.mul(sign).div(FIXED_1)).div(x.mul(sign).div(FIXED_1)).mul(FIXED_1);
-            const actual = Decimal((await advancedMath[methodName](x.toFixed())).toString());
+            const actual = Decimal((await testContract[methodName](x.toFixed())).toString());
             if (!actual.eq(expected)) {
                 const error = actual.div(expected).sub(1).abs();
                 assert(error.lte(maxError), `error = ${error.toFixed()}`);
@@ -87,7 +90,7 @@ contract("AdvancedMath", () => {
 
     function testFailure(methodName, index, add, errorMessage) {
         it(`${methodName} should revert with '${errorMessage}'`, async () => {
-            await assertRevert(advancedMath[methodName](sections[index].add(add).toFixed()), errorMessage);
+            await Utilities.assertRevert(testContract[methodName](SECTIONS[index].add(add).toFixed()), errorMessage);
         });
     }
 });

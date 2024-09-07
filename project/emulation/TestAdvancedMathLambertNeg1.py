@@ -9,9 +9,9 @@ def test(x):
     floatPoint = FloatPoint.lambertNeg(x, FixedPoint.fixedOne())
     if fixedPoint > floatPoint:
         error = ['Implementation Error:']
-        error.append('x          = {}'.format(x         ))
-        error.append('fixedPoint = {}'.format(fixedPoint))
-        error.append('floatPoint = {}'.format(floatPoint))
+        error.append(f'x          = {x         }')
+        error.append(f'fixedPoint = {fixedPoint}')
+        error.append(f'floatPoint = {floatPoint}')
         raise Exception('\n'.join(error))
     return fixedPoint / floatPoint
 
@@ -30,4 +30,4 @@ for n in range(size):
     except Exception as error:
         print(error)
         break
-    print('Test #{}: accuracy = {:.24f}, worst accuracy = {:.24f}'.format(n, accuracy, worstAccuracy))
+    print(f'Test #{n}: accuracy = {accuracy:.24f}, worstAccuracy = {worstAccuracy:.24f}')

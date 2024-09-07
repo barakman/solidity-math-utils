@@ -12,12 +12,12 @@ def test(supply, balance, weights, amount):
     floatPoint = FloatPoint.withdraw(supply, balance, weights, amount)
     if fixedPoint > floatPoint:
         error = ['Implementation Error:']
-        error.append('supply     = {}'.format(supply    ))
-        error.append('balance    = {}'.format(balance   ))
-        error.append('weights    = {}'.format(weights   ))
-        error.append('amount     = {}'.format(amount    ))
-        error.append('fixedPoint = {}'.format(fixedPoint))
-        error.append('floatPoint = {}'.format(floatPoint))
+        error.append(f'supply     = {supply    }')
+        error.append(f'balance    = {balance   }')
+        error.append(f'weights    = {weights   }')
+        error.append(f'amount     = {amount    }')
+        error.append(f'fixedPoint = {fixedPoint}')
+        error.append(f'floatPoint = {floatPoint}')
         raise Exception('\n'.join(error))
     return fixedPoint / floatPoint
 
@@ -43,4 +43,4 @@ for n in range(size):
     except Exception as error:
         print(error)
         break
-    print('Test #{}: accuracy = {:.24f}, worst accuracy = {:.24f}, num of failures = {}'.format(n, accuracy, worstAccuracy, numOfFailures))
+    print(f'Test #{n}: accuracy = {accuracy:.24f}, worstAccuracy = {worstAccuracy:.24f}, numOfFailures = {numOfFailures}')

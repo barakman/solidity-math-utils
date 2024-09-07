@@ -23,12 +23,6 @@ AnalyticMath < - - - - AdvancedMath
 BondingCurve           DynamicCurve
 ```
 
-Note that some of these modules are implemented as `library`, while others are implemented as `contract`.
-
-Nevertheless, they can all be regarded as *libraries*, since the reason for this is purely technical.
-
-A library cannot utilize non-constant state variables, nor can it extend (inherit) another library.
-
 <br/><br/>
 
 ---
@@ -111,7 +105,7 @@ Subsequently, the larger the input exponent is, the lower the accuracy of the ou
 
 The input argument `fast` allows to opt for either performance (using `true`) or accuracy (using `false`).
 
-This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
+This module defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
 
 ### Product Ratio
 
@@ -159,20 +153,10 @@ The same consideration applies for all the other functions in this module.
 
 ## AnalyticMath
 
-This module is implemented as a contract, because a library cannot utilize non-constant state variables.
-
-It implements the following interface:
+This module implements the following interface:
 - `function pow(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
 - `function log(uint256 a, uint256 b)` => `(uint256, uint256)`
 - `function exp(uint256 a, uint256 b)` => `(uint256, uint256)`
-
-### Initialization
-
-Prior to using any of these functions, internal data structure must be initialized by executing function `init`.
-
-Function `init` should be executed either during construction or after construction (if too large for the constructor).
-
-Thus, any contract which inherits this contract can choose whether or not to call function `init` in its constructor.
 
 ### Exponentiation
 
@@ -196,9 +180,9 @@ Function `exp(a, b)` approximates the natural exponentiation of `a / b`.
 
 The output of this function is guaranteed to be smaller than or equal to the actual value of exp(a / b).
 
-### Contract Customization
+### Module Customization
 
-This contract can be customized to support different input ranges (as a tradeoff with accuracy and/or performance).
+This module can be customized to support different input ranges (as a tradeoff with accuracy and/or performance).
 
 The full customization manual can be found [here](#customization).
 
@@ -210,18 +194,8 @@ The full customization manual can be found [here](#customization).
 
 ## AdvancedMath
 
-This module is implemented as a contract, because a library cannot utilize non-constant state variables.
-
-It implements the following interface:
+This module implements the following interface:
 - `function solve(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
-
-### Initialization
-
-Prior to using any of these functions, internal data structure must be initialized by executing function `init`.
-
-Function `init` should be executed either during construction or after construction (if too large for the constructor).
-
-Thus, any contract which inherits this contract can choose whether or not to call function `init` in its constructor.
 
 ### Equation Solving
 
@@ -229,9 +203,9 @@ Function `solve(a, b, c, d)` computes a value of x which satisfies the equation 
 
 A detailed description of how this function works can be found [here](readme/AdvancedMath.pdf).
 
-### Contract Customization
+### Module Customization
 
-This contract can be customized to support different input ranges (as a tradeoff with accuracy and/or performance).
+This module can be customized to support different input ranges (as a tradeoff with accuracy and/or performance).
 
 The full customization manual can be found [here](#customization).
 
@@ -243,23 +217,13 @@ The full customization manual can be found [here](#customization).
 
 ## BondingCurve
 
-This module is implemented as a contract, because a library cannot extend (inherit) a contract.
-
-It implements the following interface:
+This module implements the following interface:
 - `function buy(uint256 supply, uint256 balance, uint256 weight, uint256 amount)` => `(uint256)`
 - `function sell(uint256 supply, uint256 balance, uint256 weight, uint256 amount)` => `(uint256)`
 - `function convert(uint256 balance1, uint256 weight1, uint256 balance2, uint256 weight2, uint256 amount)` => `(uint256)`
 - `function deposit(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
 - `function withdraw(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
 - `function invest(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
-
-### Initialization
-
-Prior to using any of these functions, internal data structure must be initialized by executing function `init`.
-
-Function `init` should be executed either during construction or after construction (if too large for the constructor).
-
-Thus, any contract which inherits this contract can choose whether or not to call function `init` in its constructor.
 
 ### Functionality
 
@@ -286,18 +250,8 @@ The bonding-curve model was conceived by [Bancor](https://github.com/bancorproto
 
 ## DynamicCurve
 
-This module is implemented as a contract, because a library cannot extend (inherit) a contract.
-
-It implements the following interface:
+This module implements the following interface:
 - `function equalize(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p)` => `(uint256, uint256)`
-
-### Initialization
-
-Prior to using any of these functions, internal data structure must be initialized by executing function `init`.
-
-Function `init` should be executed either during construction or after construction (if too large for the constructor).
-
-Thus, any contract which inherits this contract can choose whether or not to call function `init` in its constructor.
 
 ### Equalization
 
@@ -355,8 +309,8 @@ The dynamic-curve method was conceived by [Bancor](https://github.com/bancorprot
 
 ### Prerequisites
 
-- `node 16.13.0`
-- `yarn 1.22.10` or `npm 8.1.0`
+- `node 20.17.0`
+- `yarn 1.22.22` or `npm 10.8.2`
 
 ### Installation
 
@@ -384,11 +338,11 @@ The dynamic-curve method was conceived by [Bancor](https://github.com/bancorprot
 
 ### Prerequisites
 
-- `python 3.9`
+- `python 3.12.3`
 
 ### Execution
 
-In order to allow rapid testing and verification, all modules (contracts and libraries) have been ported from Solidity to Python:
+In order to allow rapid testing and verification, all modules have been ported from Solidity to Python:
 - The emulation modules themselves are located under [FixedPoint](project/emulation/FixedPoint)
 - The corresponding floating-point functionality is located under [FloatPoint](project/emulation/FloatPoint)
 - A set of unit-tests for various functions (one per function) is located under [emulation](project/emulation)
@@ -406,22 +360,18 @@ All customization parameters are located in [constants.py](project/emulation/Aut
 When modifying **any** of them, one should regenerate **all** the code.
 
 The following scripts generate the code for [AnalyticMath.sol](project/contracts/AnalyticMath.sol):
-- [PrintLn2ScalingFactors.py ](project/emulation/AutoGenerate/PrintLn2ScalingFactors.py )
-- [PrintOptimalThresholds.py ](project/emulation/AutoGenerate/PrintOptimalThresholds.py )
-- [PrintFunctionGeneralExp.py](project/emulation/AutoGenerate/PrintFunctionGeneralExp.py)
-- [PrintFunctionOptimalLog.py](project/emulation/AutoGenerate/PrintFunctionOptimalLog.py)
-- [PrintFunctionOptimalExp.py](project/emulation/AutoGenerate/PrintFunctionOptimalExp.py)
-- [PrintMaxExpArray.py       ](project/emulation/AutoGenerate/PrintMaxExpArray.py       )
+- [PrintAnalyticMathConstants.py ](project/emulation/AutoGenerate/PrintAnalyticMathConstants.py )
+- [PrintAnalyticMathOptimalLog.py](project/emulation/AutoGenerate/PrintAnalyticMathOptimalLog.py)
+- [PrintAnalyticMathOptimalExp.py](project/emulation/AutoGenerate/PrintAnalyticMathOptimalExp.py)
 
 The following scripts generate the code for [AdvancedMath.sol](project/contracts/AdvancedMath.sol):
-- [PrintLambertFactors.py     ](project/emulation/AutoGenerate/PrintLambertFactors.py     )
-- [PrintFunctionLambertNeg1.py](project/emulation/AutoGenerate/PrintFunctionLambertNeg1.py)
-- [PrintFunctionLambertPos1.py](project/emulation/AutoGenerate/PrintFunctionLambertPos1.py)
-- [PrintLambertArray.py       ](project/emulation/AutoGenerate/PrintLambertArray.py       )
+- [PrintAdvancedMathConstants.py  ](project/emulation/AutoGenerate/PrintAdvancedMathConstants.py  )
+- [PrintAdvancedMathLambertNeg1.py](project/emulation/AutoGenerate/PrintAdvancedMathLambertNeg1.py)
+- [PrintAdvancedMathLambertPos1.py](project/emulation/AutoGenerate/PrintAdvancedMathLambertPos1.py)
 
 In order to retain the [testing infrastructure](#testing), one should proceed by:
 - Running the script [PrintTestConstants.py](project/emulation/AutoGenerate/PrintTestConstants.py)
-- Pasting the printout into [AnalyticMathConstants.js](project/tests/helpers/AnalyticMathConstants.js)
+- Pasting the printout into [Constants.js](project/tests/helpers/Constants.js)
 
 In order to retain the [emulation infrastructure](#emulation), one should proceed by:
 - Porting all changes from [AnalyticMath.sol](project/contracts/AnalyticMath.sol) to [AnalyticMath.py](project/emulation/FixedPoint/AnalyticMath.py)

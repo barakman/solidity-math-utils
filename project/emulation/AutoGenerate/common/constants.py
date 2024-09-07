@@ -1,18 +1,14 @@
-MIN_PRECISION =  32 # The minimum scaling factor is 2 ^ MIN_PRECISION
-MAX_PRECISION = 127 # The maximum scaling factor is 2 ^ MAX_PRECISION
-
-
-NUM_OF_TAYLOR_COEFS  = 34 # The number of binomial coefficients in function 'generalExp'
-NUM_OF_LAMBERT_COEFS = 35 # The number of binomial coefficients in function 'lambertNeg' / 'lambertPos'
+FIXED_1 = 2 ** 127 # The scaling factor
 
 
 LOG_MAX_HI_TERM_VAL = 1 # The input to function 'optimalLog' must be smaller than e ^ LOG_MAX_HI_TERM_VAL
-LOG_NUM_OF_HI_TERMS = 8 # Compute e ^ (LOG_MAX_HI_TERM_VAL / 2 ^ n) for n = 0 to LOG_NUM_OF_HI_TERMS
+LOG_NUM_OF_HI_TERMS = 8 # Compute LOG_MAX_HI_TERM_VAL / 2 ^ n for n = 1 to LOG_NUM_OF_HI_TERMS
 
 
 EXP_MAX_HI_TERM_VAL = 4 # The input to function 'optimalExp' must be smaller than 2 ^ EXP_MAX_HI_TERM_VAL
-EXP_NUM_OF_HI_TERMS = 7 # Compute e ^ 2 ^ n for n = EXP_MAX_HI_TERM_VAL - EXP_NUM_OF_HI_TERMS to EXP_MAX_HI_TERM_VAL
+EXP_NUM_OF_HI_TERMS = 7 # Compute e ^ 2 ^ (n - EXP_MAX_HI_TERM_VAL) for n = 1 to EXP_NUM_OF_HI_TERMS
 
 
+LAMBERT_NUM_OF_COEFS =  35 # The number of binomial coefficients in function 'lambertNeg' and in function 'lambertPos'
 LAMBERT_POS2_EXTENT  =   3 # The size of the extended range calculated by the Lambert W Function outside the convergence radius
 LAMBERT_POS2_SAMPLES = 128 # The size of the lookup table for approximating the Lambert W Function outside the convergence radius
