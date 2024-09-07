@@ -151,8 +151,8 @@ describe(TestContract.contractName, () => {
         it(`${method.name}(${args.join(", ")})`, async () => {
             const expected = method(...args.map(x => Decimal(x)));
             if (expected.lte(MAX_UINT256)) {
-                const actual = Decimal((await testContract[method.name](...args)).toString());
-                assert(actual.eq(expected), `expected ${expected.toFixed()} but got ${actual.toFixed()}`);
+                const actual = await testContract[method.name](...args);
+                assert.equal(actual.toString(), expected.toFixed());
             }
             else {
                 await Utilities.assertRevert(testContract[method.name](...args));
