@@ -23,9 +23,7 @@ function W(x) {
     for (let n = 0; n < 8; n++) {
         const e = a.exp();
         const f = a.mul(e);
-        if (f.eq(x)) {
-            break;
-        }
+        if (f.eq(x)) break;
         a = a.mul(f).add(x).div(f.add(e));
     }
     return a;
