@@ -154,26 +154,22 @@ def solve(a, b, c, d):
     Input range: 1 <= x <= LAMBERT_CONV_RADIUS
 '''
 def lambertNeg(x):
-    if (x < 1):
-        revert("lambertNeg: x < min");
-    elif (x <= LAMBERT_CONV_RADIUS):
+    require(x > 0, "lambertNeg: x < min");
+    if (x <= LAMBERT_CONV_RADIUS):
         return lambertNeg1(x);
-    else:
-        revert("lambertNeg: x > max");
+    revert("lambertNeg: x > max");
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
     Input range: 1 <= x <= 2 ^ 256 - 1
 '''
 def lambertPos(x):
-    if (x < 1):
-        revert("lambertPos: x < min");
-    elif (x <= LAMBERT_CONV_RADIUS):
+    require(x > 0, "lambertPos: x < min");
+    if (x <= LAMBERT_CONV_RADIUS):
         return lambertPos1(x);
-    elif (x <= LAMBERT_POS2_MAXVAL):
+    if (x <= LAMBERT_POS2_MAXVAL):
         return lambertPos2(x);
-    else:
-        return lambertPos3(x);
+    return lambertPos3(x);
 
 '''
     @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1

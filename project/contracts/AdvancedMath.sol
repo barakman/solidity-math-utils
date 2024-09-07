@@ -158,12 +158,10 @@ library AdvancedMath {
       * Input range: 1 <= x <= LAMBERT_CONV_RADIUS
     */
     function lambertNeg(uint256 x) internal pure returns (uint256) { unchecked {
-        if (x < 1)
-            revert("lambertNeg: x < min");
-        else if (x <= LAMBERT_CONV_RADIUS)
+        require(x > 0, "lambertNeg: x < min");
+        if (x <= LAMBERT_CONV_RADIUS)
             return lambertNeg1(x);
-        else
-            revert("lambertNeg: x > max");
+        revert("lambertNeg: x > max");
     }}
 
     /**
@@ -171,14 +169,12 @@ library AdvancedMath {
       * Input range: 1 <= x <= 2 ^ 256 - 1
     */
     function lambertPos(uint256 x) internal pure returns (uint256) { unchecked {
-        if (x < 1)
-            revert("lambertPos: x < min");
-        else if (x <= LAMBERT_CONV_RADIUS)
+        require(x > 0, "lambertPos: x < min");
+        if (x <= LAMBERT_CONV_RADIUS)
             return lambertPos1(x);
-        else if (x <= LAMBERT_POS2_MAXVAL)
+        if (x <= LAMBERT_POS2_MAXVAL)
             return lambertPos2(x);
-        else
-            return lambertPos3(x);
+        return lambertPos3(x);
     }}
 
     /**
