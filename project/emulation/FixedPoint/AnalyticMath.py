@@ -30,7 +30,7 @@ def log(a, b):
     return (fixedLog(IntegralMath.mulDivF(FIXED_1, a, b)), FIXED_1);
 
 '''
-    @dev Compute e ^ (a / b)
+    @dev Compute exp(a / b)
 '''
 def exp(a, b):
     return (fixedExp(IntegralMath.mulDivF(FIXED_1, a, b)), FIXED_1);
@@ -58,18 +58,18 @@ def fixedLog(x):
     return optimalLog(x >> count) + count * LN2_MIN;
 
 '''
-    @dev Compute e ^ (x / FIXED_1) * FIXED_1
+    @dev Compute exp(x / FIXED_1) * FIXED_1
     Input range: 0 <= x <= EXP_MAX - 1
     Detailed description:
-    - For x < EXP_MID, compute e ^ x
-    - For any other x, compute e ^ (x % log(2)) * 2 ^ (x / log(2))
+    - For x < EXP_MID, compute exp(x)
+    - For any other x, compute exp(x % log(2)) * 2 ^ (x / log(2))
     - The value of log(2) is represented as ceil(log(2) * FIXED_1)
     - With k = x / log(2), this solution relies on the following identity:
-      e ^ x =
-      e ^ x * 2 ^ k / 2 ^ k =
-      e ^ x * 2 ^ k / e ^ (k * log(2)) =
-      e ^ x / e ^ (k * log(2)) * 2 ^ k =
-      e ^ (x - k * log(2)) * 2 ^ k
+      exp(x) =
+      exp(x) * 2 ^ k / 2 ^ k =
+      exp(x) * 2 ^ k / exp(k * log(2)) =
+      exp(x) / exp(k * log(2)) * 2 ^ k =
+      exp(x - k * log(2)) * 2 ^ k
 '''
 def fixedExp(x):
     if (x < EXP_MID):
@@ -115,7 +115,7 @@ def optimalLog(x):
     return res;
 
 '''
-    @dev Compute e ^ (x / FIXED_1) * FIXED_1
+    @dev Compute exp(x / FIXED_1) * FIXED_1
     Input range: 0 <= x <= EXP_MID * 2 - 1
     Auto-generated via 'PrintAnalyticMathOptimalExp.py'
     Detailed description:
