@@ -22,10 +22,11 @@ const exp      = (a, b)       => a.div(b).exp();
 const fixedLog = (x)          => log(x, FIXED_1).mul(FIXED_1);
 const fixedExp = (x)          => exp(x, FIXED_1).mul(FIXED_1);
 
-const lessThan   = (x, y) => x.lt(y);
-const moreThan   = (x, y) => x.gt(y);
-const toInteger  = (val)  => Decimal(val.toString());
-const toFraction = (arr)  => Decimal(arr[0].toString()).div(arr[1].toString());
+const equalTo    = (x, y)  => x.eq(y);
+const lessThan   = (x, y)  => x.lt(y);
+const moreThan   = (x, y)  => x.gt(y);
+const toInteger  = (value) => Decimal(value.toString());
+const toFraction = (tuple) => Decimal(tuple[0].toString()).div(tuple[1].toString());
 
 const portion = (min, max, percent) => min.add(max.sub(min).mul(percent).divToInt(100));
 
@@ -35,6 +36,21 @@ describe(TestContract.contractName, () => {
     before(async () => {
         testContract = await TestContract.new();
     });
+
+    for (const a of [ZERO, ONE, MAX_VAL]) {
+        for (const b of [ZERO, ONE, MAX_VAL]) {
+            for (const c of [ZERO, ONE, MAX_VAL]) {
+                for (const d of [ZERO, ONE, MAX_VAL]) {
+                    if (b.eq(0) || d.eq(0)) {
+                        testFailure(pow, "division by zero", a, b, c, d);
+                    }
+                    else if (a.eq(0) || c.eq(0)) {
+                        testSuccess(pow, toFraction, equalTo, "0", a, b, c, d);
+                    }
+                }
+            }
+        }
+    }
 
     for (let a = 1; a < 5; a++) {
         for (let b = 1; b <= a; b++) {

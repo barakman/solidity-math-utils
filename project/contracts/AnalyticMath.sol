@@ -16,6 +16,10 @@ library AnalyticMath {
       * @dev Compute (a / b) ^ (c / d)
     */
     function pow(uint256 a, uint256 b, uint256 c, uint256 d) internal pure returns (uint256, uint256) { unchecked {
+        if (b == 0 || d == 0)
+            revert("division by zero");
+        if (a == 0 || c == 0)
+            return (a ** c, 1);
         if (a > b)
             return (fixedExp(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, a, b)), c, d)), FIXED_1);
         if (b > a)

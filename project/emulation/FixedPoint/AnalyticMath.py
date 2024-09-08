@@ -13,6 +13,10 @@ EXP_MAX = 0x2cb53f09f05cc627c85ddebfccfeb72758;
     @dev Compute (a / b) ^ (c / d)
 '''
 def pow(a, b, c, d):
+    if (b == 0 or d == 0):
+        revert("division by zero");
+    if (a == 0 or c == 0):
+        return (a ** c, 1);
     if (a > b):
         return (fixedExp(IntegralMath.mulDivF(fixedLog(IntegralMath.mulDivF(FIXED_1, a, b)), c, d)), FIXED_1);
     if (b > a):
