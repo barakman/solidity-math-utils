@@ -22,8 +22,8 @@ module.exports = {
         artifacts: "./project/artifacts"
     },
     mocha: {
+        timeout: 0,
         useColors: true,
-        enableTimeouts: false,
         reporter: "list" // https://mochajs.org/#reporters
     }
 };
