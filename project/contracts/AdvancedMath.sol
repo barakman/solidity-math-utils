@@ -182,7 +182,7 @@ library AdvancedMath {
       * Input range: 1 <= x <= LAMBERT_CONV_RADIUS
       * Auto-generated via 'PrintAdvancedMathLambertNeg1.py'
     */
-    function lambertNeg1(uint256 x) private pure returns (uint256) { unchecked {
+    function lambertNeg1(uint256 x) internal pure returns (uint256) { unchecked {
         uint256 xi = x;
         uint256 res = 0;
 
@@ -227,7 +227,7 @@ library AdvancedMath {
       * Input range: 1 <= x <= LAMBERT_CONV_RADIUS
       * Auto-generated via 'PrintAdvancedMathLambertPos1.py'
     */
-    function lambertPos1(uint256 x) private pure returns (uint256) { unchecked {
+    function lambertPos1(uint256 x) internal pure returns (uint256) { unchecked {
         uint256 xi = x;
         uint256 res = (FIXED_1 - x) * 0xde1bc4d19efcac82445da75b00000000; // x^(1-1) * (34! * 1^(1-1) / 1!) - x^(2-1) * (34! * 2^(2-1) / 2!)
 
@@ -271,7 +271,7 @@ library AdvancedMath {
       * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
       * Input range: LAMBERT_CONV_RADIUS + 1 <= x <= LAMBERT_POS2_MAXVAL
     */
-    function lambertPos2(uint256 x) private pure returns (uint256) { unchecked {
+    function lambertPos2(uint256 x) internal pure returns (uint256) { unchecked {
         bytes memory values = LAMBERT_POS2_VALUES;
         uint256 y = x - LAMBERT_CONV_RADIUS - 1;
         uint256 i = y / LAMBERT_POS2_SAMPLE;
@@ -286,7 +286,7 @@ library AdvancedMath {
       * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
       * Input range: LAMBERT_POS2_MAXVAL + 1 <= x <= 2 ^ 256 - 1
     */
-    function lambertPos3(uint256 x) private pure returns (uint256) { unchecked {
+    function lambertPos3(uint256 x) internal pure returns (uint256) { unchecked {
         uint256 a = AnalyticMath.fixedLog(x);
         uint256 b = AnalyticMath.fixedLog(a);
         uint256 c = IntegralMath.mulDivF(FIXED_1, b, a);

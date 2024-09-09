@@ -16,7 +16,7 @@ loTermPosMaxLen = len(str(len(loTerms)*2-1))
 loTermNegMaxLen = len(str(len(loTerms)*2-0))
 
 
-print('    function optimalLog(uint256 x) private pure returns (uint256) { unchecked {')
+print('    function optimalLog(uint256 x) internal pure returns (uint256) { unchecked {')
 print('        uint256 res = 0;')
 print('')
 print('        uint256 y;')

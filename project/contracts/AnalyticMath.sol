@@ -97,7 +97,7 @@ library AnalyticMath {
       * - The natural logarithm of the input is calculated by summing up the intermediate results above
       * - For example: log(250) = log(e^4 * e^1 * e^0.5 * 1.021692859) = 4 + 1 + 0.5 + log(1 + 0.021692859)
     */
-    function optimalLog(uint256 x) private pure returns (uint256) { unchecked {
+    function optimalLog(uint256 x) internal pure returns (uint256) { unchecked {
         uint256 res = 0;
 
         uint256 y;
@@ -138,7 +138,7 @@ library AnalyticMath {
       * - The exponentiation of the input is calculated by multiplying the intermediate results above
       * - For example: e^5.521692859 = e^(4 + 1 + 0.5 + 0.021692859) = e^4 * e^1 * e^0.5 * e^0.021692859
     */
-    function optimalExp(uint256 x) private pure returns (uint256) { unchecked {
+    function optimalExp(uint256 x) internal pure returns (uint256) { unchecked {
         uint256 res = 0;
 
         uint256 y;

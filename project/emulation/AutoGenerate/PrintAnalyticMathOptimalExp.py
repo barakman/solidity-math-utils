@@ -17,7 +17,7 @@ hiTermIndMin    = EXP_MAX_HI_TERM_VAL-EXP_NUM_OF_HI_TERMS
 hiTermIndMaxLen = max(len(str(EXP_MAX_HI_TERM_VAL-1)),len(str(EXP_MAX_HI_TERM_VAL-EXP_NUM_OF_HI_TERMS)))
 
 
-print('    function optimalExp(uint256 x) private pure returns (uint256) { unchecked {')
+print('    function optimalExp(uint256 x) internal pure returns (uint256) { unchecked {')
 print('        uint256 res = 0;')
 print('')
 print('        uint256 y;')

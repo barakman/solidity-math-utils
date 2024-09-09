@@ -8,7 +8,7 @@ valueMaxLen = len(hex(coefficients[-1]))
 indexMaxLen = len(str(len(coefficients)))
 
 
-print('    function lambertNeg1(uint256 x) private pure returns (uint256) { unchecked {')
+print('    function lambertNeg1(uint256 x) internal pure returns (uint256) { unchecked {')
 print('        uint256 xi = x;')
 print('        uint256 res = 0;')
 print('')
