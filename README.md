@@ -355,7 +355,7 @@ In order to allow rapid testing and verification, all modules have been ported f
 
 ## Customization
 
-All customization parameters are located in [constants.py](project/customization/common/constants.py).
+All customization parameters are located in [constants.py](project/customization/constants.py).
 
 When modifying **any** of them, one should regenerate **all** the code.
 
