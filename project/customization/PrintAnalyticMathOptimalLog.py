@@ -1,13 +1,15 @@
-from common.constants import LOG_MAX_HI_TERM_VAL
-from common.functions import optimalLogTerms
+from core import AnalyticMath
+from constants import FIXED_1
+from constants import LOG_MAX_HI_TERM_VAL
+from constants import LOG_NUM_OF_HI_TERMS
 
 
-hiTerms,loTerms = optimalLogTerms()
+hiTerms,loTerms = AnalyticMath.optimalLogTerms(FIXED_1,LOG_MAX_HI_TERM_VAL,LOG_NUM_OF_HI_TERMS)
 
 
 hiTermValMaxLen = len(hex(hiTerms[+1].val))
 hiTermExpMaxLen = len(hex(hiTerms[+1].exp))
-loTermNumMaxLen = len(hex(loTerms[-0].num))
+loTermNumMaxLen = len(hex(loTerms[+0].num))
 loTermDenMaxLen = len(hex(loTerms[-1].den))
 
 

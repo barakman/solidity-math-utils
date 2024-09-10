@@ -355,22 +355,22 @@ In order to allow rapid testing and verification, all modules have been ported f
 
 ## Customization
 
-All customization parameters are located in [constants.py](project/emulation/AutoGenerate/common/constants.py).
+All customization parameters are located in [constants.py](project/customization/common/constants.py).
 
 When modifying **any** of them, one should regenerate **all** the code.
 
 The following scripts generate the code for [AnalyticMath.sol](project/contracts/AnalyticMath.sol):
-- [PrintAnalyticMathConstants.py ](project/emulation/AutoGenerate/PrintAnalyticMathConstants.py )
-- [PrintAnalyticMathOptimalLog.py](project/emulation/AutoGenerate/PrintAnalyticMathOptimalLog.py)
-- [PrintAnalyticMathOptimalExp.py](project/emulation/AutoGenerate/PrintAnalyticMathOptimalExp.py)
+- [PrintAnalyticMathConstants.py ](project/customization/PrintAnalyticMathConstants.py )
+- [PrintAnalyticMathOptimalLog.py](project/customization/PrintAnalyticMathOptimalLog.py)
+- [PrintAnalyticMathOptimalExp.py](project/customization/PrintAnalyticMathOptimalExp.py)
 
 The following scripts generate the code for [AdvancedMath.sol](project/contracts/AdvancedMath.sol):
-- [PrintAdvancedMathConstants.py  ](project/emulation/AutoGenerate/PrintAdvancedMathConstants.py  )
-- [PrintAdvancedMathLambertNeg1.py](project/emulation/AutoGenerate/PrintAdvancedMathLambertNeg1.py)
-- [PrintAdvancedMathLambertPos1.py](project/emulation/AutoGenerate/PrintAdvancedMathLambertPos1.py)
+- [PrintAdvancedMathConstants.py  ](project/customization/PrintAdvancedMathConstants.py  )
+- [PrintAdvancedMathLambertNeg1.py](project/customization/PrintAdvancedMathLambertNeg1.py)
+- [PrintAdvancedMathLambertPos1.py](project/customization/PrintAdvancedMathLambertPos1.py)
 
 In order to retain the [testing infrastructure](#testing), one should proceed by:
-- Running the script [PrintTestConstants.py](project/emulation/AutoGenerate/PrintTestConstants.py)
+- Running the script [PrintTestConstants.py](project/customization/PrintTestConstants.py)
 - Pasting the printout into [Constants.js](project/tests/helpers/Constants.js)
 
 In order to retain the [emulation infrastructure](#emulation), one should proceed by:

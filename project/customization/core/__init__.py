@@ -5,3 +5,11 @@ from decimal import ROUND_HALF_DOWN
 
 getcontext().prec = 100
 getcontext().rounding = ROUND_HALF_DOWN
+
+
+MAX_VAL = 2 ** 256 - 1
+
+
+def checked(x):
+    assert 0 <= x <= MAX_VAL
+    return x

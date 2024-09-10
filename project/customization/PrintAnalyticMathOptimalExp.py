@@ -1,14 +1,15 @@
-from common.constants import EXP_MAX_HI_TERM_VAL
-from common.constants import EXP_NUM_OF_HI_TERMS
-from common.functions import optimalExpTerms
+from core import AnalyticMath
+from constants import FIXED_1
+from constants import EXP_MAX_HI_TERM_VAL
+from constants import EXP_NUM_OF_HI_TERMS
 
 
-hiTerms,loTerms = optimalExpTerms()
+hiTerms,loTerms = AnalyticMath.optimalExpTerms(FIXED_1,EXP_MAX_HI_TERM_VAL,EXP_NUM_OF_HI_TERMS)
 
 
 hiTermBitMaxLen = len(hex(hiTerms[-1].bit))
-hiTermNumMaxLen = len(hex(hiTerms[ 0].num))
-hiTermDenMaxLen = len(hex(hiTerms[ 0].den))
+hiTermNumMaxLen = len(hex(hiTerms[+0].num))
+hiTermDenMaxLen = len(hex(hiTerms[+0].den))
 loTermValMaxLen = len(hex(loTerms[+1].val))
 loTermIndMaxLen = len(str(loTerms[-1].ind))
 
