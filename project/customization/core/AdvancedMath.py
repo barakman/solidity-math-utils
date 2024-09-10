@@ -34,9 +34,9 @@ def lambertNeg1(numOfCoefs, x, fixed1):
     coefs = lambertBinomial(numOfCoefs)
     xi = x
     res = 0
-    for coef in coefs[2:-1]:
+    for i in range(2, len(coefs)):
         xi = checked(xi * x) // fixed1
-        res = checked(res + checked(xi * coef))
+        res = checked(res + checked(xi * coefs[i]))
     res = checked(checked(res // coefs[-1] + x) + fixed1)
     return coefs
 
@@ -45,9 +45,9 @@ def lambertPos1(numOfCoefs, x, fixed1):
     coefs = lambertBinomial(numOfCoefs)
     xi = x
     res = checked(checked(fixed1 - x) * coefs[1])
-    for i, coef in enumerate(coefs[2:-1]):
+    for i in range(2, len(coefs)):
         xi = checked(xi * x) // fixed1
-        res = checked(res + checked(xi * coef) * (-1) ** i)
+        res = checked(res + checked(xi * coefs[i]) * (-1) ** i)
     res = res // coefs[1]
     return coefs
 
