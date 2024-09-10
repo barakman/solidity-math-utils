@@ -10,12 +10,18 @@ valueMaxLen = len(hex(lambertCoefs[-1]))
 indexMaxLen = len(str(len(lambertCoefs)))
 
 
+str0 = '0x{:x}'.format(lambertCoefs[0])
+str1 = '{:d}'.format(len(lambertCoefs))
+
+
 print('    function lambertNeg1(uint256 x) internal pure returns (uint256) { unchecked {')
 print('        uint256 xi = x;')
 print('        uint256 res = 0;')
 print('')
-for i in range(2,len(lambertCoefs)):
-    print('        xi = (xi * x) / FIXED_1; res += xi * {0:#0{3}x}; // add x^({1:0{4}d}-1) * ({2:d}! * {1:0{4}d}^({1:0{4}d}-1) / {1:0{4}d}!)'.format(lambertCoefs[i],i+1,len(lambertCoefs),valueMaxLen,indexMaxLen))
+for n in range(2,len(lambertCoefs)):
+    str2 = '{0:#0{1}x}'.format(lambertCoefs[n],valueMaxLen)
+    str3 = '{0:0{1}d}' .format(n+1            ,indexMaxLen)
+    print('        xi = (xi * x) / FIXED_1; res += xi * {}; // add x^({}-1) * ({}! * {}^({}-1) / {}!)'.format(str2,str3,str1,str3,str3,str3))
 print('')
-print('        return res / 0x{:x} + x + FIXED_1; // divide by {}! and then add x^(2-1) * ({}! * 2^(2-1) / 2!) + x^(1-1) * ({}! * 1^(1-1) / 1!)'.format(lambertCoefs[0],len(lambertCoefs),len(lambertCoefs),len(lambertCoefs)))
+print('        return res / {} + x + FIXED_1; // divide by {}! and then add x^(2-1) * ({}! * 2^(2-1) / 2!) + x^(1-1) * ({}! * 1^(1-1) / 1!)'.format(str0,str1,str1,str1))
 print('    }}')
