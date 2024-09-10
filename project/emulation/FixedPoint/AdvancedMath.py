@@ -9,6 +9,8 @@ FIXED_1 = AnalyticMath.FIXED_1;
 LAMBERT_CONV_RADIUS = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
 LAMBERT_POS2_SAMPLE = 0x003060c183060c183060c183060c18306;
 LAMBERT_POS2_MAXVAL = 0x1af16ac6c59de6f8d5d6f63c1482a7c80;
+LAMBERT_POS2_T_SIZE = 0x000000000000000000000000000000010;
+LAMBERT_POS2_T_MASK = 0x0ffffffffffffffffffffffffffffffff;
 LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
                       "5f8f46e4854120989ed94719fb4c2011"\
                       "5e479ebb9129fb1b7e72a648f992b606"\
@@ -286,7 +288,7 @@ def lambertPos3(x):
 
 # auxiliary function
 def read(array, index):
-    return int(array[index * 32 : index * 32 + 32], 16)
+    return int(array[(index + 0) * LAMBERT_POS2_T_SIZE * 2 : (index + 1) * LAMBERT_POS2_T_SIZE * 2], 16);
 
 # auxiliary function
 def call(f, x, y, z, w):
