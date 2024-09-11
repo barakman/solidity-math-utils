@@ -279,8 +279,8 @@ library AdvancedMath {
         uint256 i = y / LAMBERT_POS2_SAMPLE;
         uint256 a = LAMBERT_POS2_SAMPLE * (i + 0);
         uint256 b = LAMBERT_POS2_SAMPLE * (i + 1);
-        uint256 c = read(values, i + 0) * (b - y);
-        uint256 d = read(values, i + 1) * (y - a);
+        uint256 c = (read(values, (i + 1) * LAMBERT_POS2_T_SIZE) & LAMBERT_POS2_T_MASK) * (b - y);
+        uint256 d = (read(values, (i + 2) * LAMBERT_POS2_T_SIZE) & LAMBERT_POS2_T_MASK) * (y - a);
         return (c + d) / LAMBERT_POS2_SAMPLE;
     }}
 
@@ -297,8 +297,8 @@ library AdvancedMath {
     }}
 
     // auxiliary function
-    function read(bytes memory array, uint256 index) private pure returns (uint256 result) {
-        assembly {result := and(mload(add(array, mul(add(index, 1), LAMBERT_POS2_T_SIZE))), LAMBERT_POS2_T_MASK)}
+    function read(bytes memory data, uint256 offset) private pure returns (uint256 result) {
+        assembly {result := mload(add(data, offset))}
     }
 
     // auxiliary function
