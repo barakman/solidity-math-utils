@@ -271,9 +271,13 @@ def lambertPos2(x):
     i = y // LAMBERT_POS2_SAMPLE;
     a = LAMBERT_POS2_SAMPLE * (i + 0);
     b = LAMBERT_POS2_SAMPLE * (i + 1);
-    c = (read(values, (i + 1) * LAMBERT_POS2_T_SIZE) & LAMBERT_POS2_T_MASK) * (b - y);
-    d = (read(values, (i + 2) * LAMBERT_POS2_T_SIZE) & LAMBERT_POS2_T_MASK) * (y - a);
-    return (c + d) // LAMBERT_POS2_SAMPLE;
+    c = LAMBERT_POS2_T_SIZE * (i + 1);
+    d = LAMBERT_POS2_T_SIZE * (i + 2);
+    e = read(values, c) & LAMBERT_POS2_T_MASK;
+    f = read(values, d) & LAMBERT_POS2_T_MASK;
+    g = e * (b - y);
+    h = f * (y - a);
+    return (g + h) // LAMBERT_POS2_SAMPLE;
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
@@ -288,7 +292,7 @@ def lambertPos3(x):
 
 # auxiliary function
 def read(data, offset):
-    return int(('0' * 64 + data)[offset * 2 : offset * 2 + 64], 16);
+    return int(("0" * 64 + data)[offset * 2 : offset * 2 + 64], 16);
 
 # auxiliary function
 def call(f, x, y, z, w):

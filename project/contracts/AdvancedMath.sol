@@ -279,9 +279,13 @@ library AdvancedMath {
         uint256 i = y / LAMBERT_POS2_SAMPLE;
         uint256 a = LAMBERT_POS2_SAMPLE * (i + 0);
         uint256 b = LAMBERT_POS2_SAMPLE * (i + 1);
-        uint256 c = (read(values, (i + 1) * LAMBERT_POS2_T_SIZE) & LAMBERT_POS2_T_MASK) * (b - y);
-        uint256 d = (read(values, (i + 2) * LAMBERT_POS2_T_SIZE) & LAMBERT_POS2_T_MASK) * (y - a);
-        return (c + d) / LAMBERT_POS2_SAMPLE;
+        uint256 c = LAMBERT_POS2_T_SIZE * (i + 1);
+        uint256 d = LAMBERT_POS2_T_SIZE * (i + 2);
+        uint256 e = read(values, c) & LAMBERT_POS2_T_MASK;
+        uint256 f = read(values, d) & LAMBERT_POS2_T_MASK;
+        uint256 g = e * (b - y);
+        uint256 h = f * (y - a);
+        return (g + h) / LAMBERT_POS2_SAMPLE;
     }}
 
     /**
