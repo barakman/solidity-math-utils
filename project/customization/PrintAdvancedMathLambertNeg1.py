@@ -1,3 +1,5 @@
+from util import len_str
+from util import len_hex
 from core import AdvancedMath
 from constants import FIXED_1
 from constants import LAMBERT_MAX_COEFS
@@ -6,12 +8,12 @@ from constants import LAMBERT_MAX_COEFS
 lambertCoefs = AdvancedMath.lambertCoefs(FIXED_1,LAMBERT_MAX_COEFS,-1)
 
 
-valueMaxLen = len(hex(lambertCoefs[-1]))
-indexMaxLen = len(str(len(lambertCoefs)))
+valueMaxLen = len_hex(lambertCoefs[-1])
+indexMaxLen = len_str(len(lambertCoefs))
 
 
-str0 = '0x{:x}'.format(lambertCoefs[0])
-str1 = '{:d}'.format(len(lambertCoefs))
+str0 = '{0:#0{1}x}'.format(lambertCoefs[0]  ,len_hex(lambertCoefs[0]  ))
+str1 = '{0:0{1}d}' .format(len(lambertCoefs),len_str(len(lambertCoefs)))
 
 
 print('    function lambertNeg1(uint256 x) internal pure returns (uint256) { unchecked {')

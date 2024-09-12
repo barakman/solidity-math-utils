@@ -1,3 +1,5 @@
+from util import len_str
+from util import len_hex
 from core import AnalyticMath
 from constants import FIXED_1
 from constants import LOG_MAX_HI_TERM_VAL
@@ -7,15 +9,15 @@ from constants import LOG_NUM_OF_HI_TERMS
 hiTerms,loTerms = AnalyticMath.optimalLogTerms(FIXED_1,LOG_MAX_HI_TERM_VAL,LOG_NUM_OF_HI_TERMS)
 
 
-hiTermValMaxLen = len(hex(hiTerms[+1].val))
-hiTermExpMaxLen = len(hex(hiTerms[+1].exp))
-loTermNumMaxLen = len(hex(loTerms[+0].num))
-loTermDenMaxLen = len(hex(loTerms[-1].den))
+hiTermValMaxLen = len_hex(hiTerms[+1].val)
+hiTermExpMaxLen = len_hex(hiTerms[+1].exp)
+loTermNumMaxLen = len_hex(loTerms[+0].num)
+loTermDenMaxLen = len_hex(loTerms[-1].den)
 
 
-hiTermIndMaxLen = len(str(len(hiTerms)*1-1))
-loTermPosMaxLen = len(str(len(loTerms)*2-1))
-loTermNegMaxLen = len(str(len(loTerms)*2-0))
+hiTermIndMaxLen = len_str(len(hiTerms)*1-1)
+loTermPosMaxLen = len_str(len(loTerms)*2-1)
+loTermNegMaxLen = len_str(len(loTerms)*2-0)
 
 
 print('    function optimalLog(uint256 x) internal pure returns (uint256) { unchecked {')
