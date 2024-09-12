@@ -33,12 +33,12 @@ def lambertPos(x, factor):
 
 
 def buy(supply, balance, weight, amount, max_weight):
-    supply, balance, weight, amount = [Decimal(value) for value in vars().values()]
+    supply, balance, weight, amount, max_weight = [Decimal(value) for value in vars().values()]
     return supply * ((1 + amount / balance) ** (weight / max_weight) - 1)
 
 
 def sell(supply, balance, weight, amount, max_weight):
-    supply, balance, weight, amount = [Decimal(value) for value in vars().values()]
+    supply, balance, weight, amount, max_weight = [Decimal(value) for value in vars().values()]
     return balance * (1 - (1 - amount / supply) ** (max_weight / weight))
 
 
@@ -48,17 +48,17 @@ def convert(balance1, weight1, balance2, weight2, amount):
 
 
 def deposit(supply, balance, weights, amount, max_weight):
-    supply, balance, weights, amount = [Decimal(value) for value in vars().values()]
+    supply, balance, weights, amount, max_weight = [Decimal(value) for value in vars().values()]
     return supply * ((amount / balance + 1) ** (weights / max_weight) - 1)
 
 
 def withdraw(supply, balance, weights, amount, max_weight):
-    supply, balance, weights, amount = [Decimal(value) for value in vars().values()]
+    supply, balance, weights, amount, max_weight = [Decimal(value) for value in vars().values()]
     return balance * (1 - ((supply - amount) / supply) ** (max_weight / weights))
 
 
 def invest(supply, balance, weights, amount, max_weight):
-    supply, balance, weights, amount = [Decimal(value) for value in vars().values()]
+    supply, balance, weights, amount, max_weight = [Decimal(value) for value in vars().values()]
     return balance * (((supply + amount) / supply) ** (max_weight / weights) - 1)
 
 
