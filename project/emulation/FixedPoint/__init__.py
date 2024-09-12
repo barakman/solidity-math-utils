@@ -54,11 +54,3 @@ def invest(supply, balance, weights, amount):
 
 def equalize(staked1, balance1, balance2, rate1, rate2):
     return DynamicCurve.equalize(staked1, balance1, balance2, rate1, rate2)
-
-
-def fixedOne():
-    return AnalyticMath.FIXED_1
-
-
-def lambertRange(n):
-    return [1, AdvancedMath.LAMBERT_CONV_RADIUS+1, AdvancedMath.LAMBERT_POS2_MAXVAL+1, AdvancedMath.LAMBERT_POS2_MAXVAL*100+1][n-1:n+1]
