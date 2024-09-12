@@ -4,4 +4,4 @@ def len_str(n):
 
 def len_hex(n):
     length = len(hex(n))
-    return 42 if 39 <= length <= 41 else length
+    return 44 if 41 <= length <= 43 else length
