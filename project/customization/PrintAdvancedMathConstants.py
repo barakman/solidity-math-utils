@@ -1,4 +1,4 @@
-from util import len_hex
+from util import hex_len
 from core import AdvancedMath
 from constants import FIXED_1
 from constants import LAMBERT_POS2_EXTENT
@@ -18,7 +18,7 @@ LAMBERT_POS2_T_MASK = (1<<(LAMBERT_POS2_T_SIZE*8))-1
 LAMBERT_POS2_VALUES = [f'hex"{sample:0{LAMBERT_POS2_T_SIZE*2}x}"' for sample in samples]
 
 
-maxLen = len_hex(max([LAMBERT_CONV_RADIUS,LAMBERT_POS2_SAMPLE,LAMBERT_POS2_MAXVAL,LAMBERT_POS2_T_SIZE,LAMBERT_POS2_T_MASK]))
+maxLen = hex_len(max([LAMBERT_CONV_RADIUS,LAMBERT_POS2_SAMPLE,LAMBERT_POS2_MAXVAL,LAMBERT_POS2_T_SIZE,LAMBERT_POS2_T_MASK]))
 
 
 print(f'    uint256 internal constant LAMBERT_CONV_RADIUS = {LAMBERT_CONV_RADIUS:#0{maxLen}x};')
