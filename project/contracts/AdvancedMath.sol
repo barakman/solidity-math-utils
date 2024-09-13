@@ -12,6 +12,8 @@ library AdvancedMath {
     uint256 internal constant LAMBERT_CONV_RADIUS = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
     uint256 internal constant LAMBERT_POS2_SAMPLE = 0x003060c183060c183060c183060c18306;
     uint256 internal constant LAMBERT_POS2_MAXVAL = 0x1af16ac6c59de6f8d5d6f63c1482a7c80;
+    uint256 internal constant LAMBERT_POS2_T_SIZE = 0x000000000000000000000000000000010;
+    uint256 internal constant LAMBERT_POS2_T_MASK = 0x0ffffffffffffffffffffffffffffffff;
     bytes   internal constant LAMBERT_POS2_VALUES = hex"60e393c68d20b1bd09deaabc0373b9c5"
                                                     hex"5f8f46e4854120989ed94719fb4c2011"
                                                     hex"5e479ebb9129fb1b7e72a648f992b606"
@@ -277,9 +279,13 @@ library AdvancedMath {
         uint256 i = y / LAMBERT_POS2_SAMPLE;
         uint256 a = LAMBERT_POS2_SAMPLE * (i + 0);
         uint256 b = LAMBERT_POS2_SAMPLE * (i + 1);
-        uint256 c = read(values, i + 0) * (b - y);
-        uint256 d = read(values, i + 1) * (y - a);
-        return (c + d) / LAMBERT_POS2_SAMPLE;
+        uint256 c = LAMBERT_POS2_T_SIZE * (i + 1);
+        uint256 d = LAMBERT_POS2_T_SIZE * (i + 2);
+        uint256 e = read(values, c) & LAMBERT_POS2_T_MASK;
+        uint256 f = read(values, d) & LAMBERT_POS2_T_MASK;
+        uint256 g = e * (b - y);
+        uint256 h = f * (y - a);
+        return (g + h) / LAMBERT_POS2_SAMPLE;
     }}
 
     /**
@@ -295,8 +301,8 @@ library AdvancedMath {
     }}
 
     // auxiliary function
-    function read(bytes memory array, uint256 index) private pure returns (uint128 result) {
-        assembly {result := mload(add(add(array, 16), mul(index, 16)))}
+    function read(bytes memory data, uint256 offset) private pure returns (uint256 result) {
+        assembly {result := mload(add(data, offset))}
     }
 
     // auxiliary function

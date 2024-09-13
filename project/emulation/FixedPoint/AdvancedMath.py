@@ -9,6 +9,8 @@ FIXED_1 = AnalyticMath.FIXED_1;
 LAMBERT_CONV_RADIUS = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
 LAMBERT_POS2_SAMPLE = 0x003060c183060c183060c183060c18306;
 LAMBERT_POS2_MAXVAL = 0x1af16ac6c59de6f8d5d6f63c1482a7c80;
+LAMBERT_POS2_T_SIZE = 0x000000000000000000000000000000010;
+LAMBERT_POS2_T_MASK = 0x0ffffffffffffffffffffffffffffffff;
 LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
                       "5f8f46e4854120989ed94719fb4c2011"\
                       "5e479ebb9129fb1b7e72a648f992b606"\
@@ -269,9 +271,13 @@ def lambertPos2(x):
     i = y // LAMBERT_POS2_SAMPLE;
     a = LAMBERT_POS2_SAMPLE * (i + 0);
     b = LAMBERT_POS2_SAMPLE * (i + 1);
-    c = read(values, i + 0) * (b - y);
-    d = read(values, i + 1) * (y - a);
-    return (c + d) // LAMBERT_POS2_SAMPLE;
+    c = LAMBERT_POS2_T_SIZE * (i + 1);
+    d = LAMBERT_POS2_T_SIZE * (i + 2);
+    e = read(values, c) & LAMBERT_POS2_T_MASK;
+    f = read(values, d) & LAMBERT_POS2_T_MASK;
+    g = e * (b - y);
+    h = f * (y - a);
+    return (g + h) // LAMBERT_POS2_SAMPLE;
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
@@ -285,8 +291,8 @@ def lambertPos3(x):
     return d;
 
 # auxiliary function
-def read(array, index):
-    return int(array[index * 32 : index * 32 + 32], 16)
+def read(data, offset):
+    return int(("0" * 64 + data)[offset * 2 : offset * 2 + 64], 16);
 
 # auxiliary function
 def call(f, x, y, z, w):

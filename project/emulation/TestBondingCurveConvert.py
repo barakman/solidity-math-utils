@@ -4,7 +4,7 @@ import FixedPoint
 import FloatPoint
 
 
-MAX_WEIGHT = FloatPoint.MAX_WEIGHT = FixedPoint.BondingCurve.MAX_WEIGHT
+MAX_WEIGHT = FixedPoint.BondingCurve.MAX_WEIGHT
 
 
 def test(balance1, weight1, balance2, weight2, amount):

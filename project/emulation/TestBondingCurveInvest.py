@@ -4,12 +4,12 @@ import FixedPoint
 import FloatPoint
 
 
-MAX_WEIGHT = FloatPoint.MAX_WEIGHT = FixedPoint.BondingCurve.MAX_WEIGHT
+MAX_WEIGHT = FixedPoint.BondingCurve.MAX_WEIGHT
 
 
 def test(supply, balance, weights, amount):
     fixedPoint = FixedPoint.invest(supply, balance, weights, amount)
-    floatPoint = FloatPoint.invest(supply, balance, weights, amount)
+    floatPoint = FloatPoint.invest(supply, balance, weights, amount, MAX_WEIGHT)
     if floatPoint > fixedPoint:
         error = ['Implementation Error:']
         error.append(f'supply     = {supply    }')
