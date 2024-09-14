@@ -9,15 +9,15 @@ def scaledLn2(fixed1):
     return Decimal(2).ln() * fixed1
 
 
-def optimalLogTerms(fixed1, logMaxHiTermVal, logNumOfHiTerms):
+def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
     HiTerm = namedtuple('HiTerm', 'val,exp')
     LoTerm = namedtuple('LoTerm', 'num,den')
 
     hiTerms = []
     loTerms = [LoTerm(fixed1 * 2, fixed1 * 2)]
 
-    for n in range(logNumOfHiTerms + 1):
-        cur = Decimal(logMaxHiTermVal) / 2 ** n
+    for n in range(numOfHiTerms + 1):
+        cur = Decimal(maxHiTermVal) / 2 ** n
         val = int(fixed1 * cur)
         exp = int(fixed1 * cur.exp() + 1)
         hiTerms.append(HiTerm(val, exp))
@@ -37,20 +37,20 @@ def optimalLogTerms(fixed1, logMaxHiTermVal, logNumOfHiTerms):
             return hiTerms, loTerms
 
 
-def optimalExpTerms(fixed1, expMaxHiTermVal, expNumOfHiTerms):
+def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
     HiTerm = namedtuple('HiTerm', 'bit,num,den')
     LoTerm = namedtuple('LoTerm', 'val,ind')
 
     hiTerms = []
     loTerms = [LoTerm(1, 1)]
 
-    top = int(Decimal(2 ** (0 + expMaxHiTermVal - expNumOfHiTerms)).exp() * fixed1) - 1
-    for n in range(expNumOfHiTerms + 1):
-        cur = Decimal(2 ** (n + expMaxHiTermVal - expNumOfHiTerms)).exp()
+    top = int(Decimal(2 ** (0 + maxHiTermVal - numOfHiTerms)).exp() * fixed1) - 1
+    for n in range(numOfHiTerms + 1):
+        cur = Decimal(2 ** (n + maxHiTermVal - numOfHiTerms)).exp()
         den = int(MAX_VAL / (cur * top))
         num = int(den * cur)
         top = top * num // den
-        bit = (fixed1 << (n + expMaxHiTermVal)) >> expNumOfHiTerms
+        bit = (fixed1 << (n + maxHiTermVal)) >> numOfHiTerms
         hiTerms.append(HiTerm(bit, num, den))
 
     highest = hiTerms[-1].bit - 1
