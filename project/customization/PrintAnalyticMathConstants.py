@@ -14,7 +14,7 @@ optimalExpTerms = AnalyticMath.optimalExpTerms(FIXED_1,EXP_MAX_HI_TERM_VAL,EXP_N
 
 LN2_MIN = scaledLn2.__floor__()
 LN2_MAX = scaledLn2.__ceil__()
-LOG_MID = optimalLogTerms[0][ 0].exp
+LOG_MID = optimalLogTerms[0][+0].exp
 EXP_MID = optimalExpTerms[0][-1].bit//2
 EXP_MAX = LN2_MAX*(259-len(bin(FIXED_1*2-1)))
 
