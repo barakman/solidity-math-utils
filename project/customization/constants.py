@@ -6,7 +6,7 @@ LOG_NUM_OF_HI_TERMS = 8 # Compute LOG_MAX_HI_TERM_VAL / 2 ^ n for n = 1 to LOG_N
 
 
 EXP_MAX_HI_TERM_VAL = 3 # The input to function 'optimalExp' must be smaller than 2 ^ EXP_MAX_HI_TERM_VAL
-EXP_NUM_OF_HI_TERMS = 6 # Compute e ^ 2 ^ (n - EXP_MAX_HI_TERM_VAL) for n = 0 to EXP_NUM_OF_HI_TERMS - 1
+EXP_NUM_OF_HI_TERMS = 6 # Compute e ^ 2 ^ (n - 1 - EXP_MAX_HI_TERM_VAL) for n = 1 to EXP_NUM_OF_HI_TERMS
 
 
 LAMBERT_MAX_TERMS    =  48 # The maximum number of terms used for approximating the Lambert W Function inside the convergence radius
