@@ -116,7 +116,7 @@ def optimalLog(x):
 
 '''
     @dev Compute exp(x / FIXED_1) * FIXED_1
-    Input range: 0 <= x <= EXP_MID * 2 - 1
+    Input range: 0 <= x <= EXP_MID - 1
     Auto-generated via 'PrintAnalyticMathOptimalExp.py'
     Detailed description:
     - Rewrite the input as a sum of binary exponents and a single residual r, as small as possible
@@ -156,6 +156,5 @@ def optimalExp(x):
     if ((x & 0x080000000000000000000000000000000) != 0): res = res * 0x0bc5ab1b16779be3575bd8f0520a9f21e // 0x0454aaa8efe072e7f6ddbab84b40a55c9; # multiply by e^2^(+0)
     if ((x & 0x100000000000000000000000000000000) != 0): res = res * 0x0454aaa8efe072e7f6ddbab84b40a55c5 // 0x00960aadc109e7a3bf4578099615711ea; # multiply by e^2^(+1)
     if ((x & 0x200000000000000000000000000000000) != 0): res = res * 0x00960aadc109e7a3bf4578099615711d7 // 0x0002bf84208204f5977f9a8cf01fdce3d; # multiply by e^2^(+2)
-    if ((x & 0x400000000000000000000000000000000) != 0): res = res * 0x0002bf84208204f5977f9a8cf01fdc307 // 0x0000003c6ab775dd0b95b4cbee7e65d11; # multiply by e^2^(+3)
 
     return res;
