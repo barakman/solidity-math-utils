@@ -4,14 +4,18 @@ import FixedPoint
 import FloatPoint
 
 
+FIXED_1 = FixedPoint.AdvancedMath.FIXED_1
+MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_CONV_RADIUS + 1
+
+
 def test(x):
     fixedPoint = FixedPoint.lambertNeg(x)
-    floatPoint = FloatPoint.lambertNeg(x, FixedPoint.fixedOne())
+    floatPoint = FloatPoint.lambertNeg(x, FIXED_1)
     if fixedPoint > floatPoint:
         error = ['Implementation Error:']
-        error.append('x          = {}'.format(x         ))
-        error.append('fixedPoint = {}'.format(fixedPoint))
-        error.append('floatPoint = {}'.format(floatPoint))
+        error.append(f'x          = {x         }')
+        error.append(f'fixedPoint = {fixedPoint}')
+        error.append(f'floatPoint = {floatPoint}')
         raise Exception('\n'.join(error))
     return fixedPoint / floatPoint
 
@@ -23,11 +27,11 @@ worstAccuracy = 1
 
 
 for n in range(size):
-    x = random.randrange(*FixedPoint.lambertRange(1))
+    x = random.randrange(1, MAX_VAL)
     try:
         accuracy = test(x)
         worstAccuracy = min(worstAccuracy, accuracy)
     except Exception as error:
         print(error)
         break
-    print('Test #{}: accuracy = {:.24f}, worst accuracy = {:.24f}'.format(n, accuracy, worstAccuracy))
+    print(f'Test #{n}: accuracy = {accuracy:.24f}, worstAccuracy = {worstAccuracy:.24f}')

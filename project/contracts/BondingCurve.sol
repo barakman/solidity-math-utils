@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.26;
+pragma solidity 0.8.27;
 
 import "./AnalyticMath.sol";
+import "./IntegralMath.sol";
 
-contract BondingCurve is AnalyticMath {
-    uint256 private constant MIN_WEIGHT = 1;
-    uint256 private constant MAX_WEIGHT = 1000000;
+library BondingCurve {
+    uint256 internal constant MIN_WEIGHT = 1;
+    uint256 internal constant MAX_WEIGHT = 1000000;
 
     /**
       * @dev Buy pool tokens with reserve tokens
@@ -17,7 +18,7 @@ contract BondingCurve is AnalyticMath {
       *
       * @return supply * ((1 + amount / balance) ^ (weight / MAX_WEIGHT) - 1)
     */
-    function buy(uint256 supply, uint256 balance, uint256 weight, uint256 amount) public view returns (uint256) { unchecked {
+    function buy(uint256 supply, uint256 balance, uint256 weight, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
         require(MIN_WEIGHT <= weight && weight <= MAX_WEIGHT, "invalid weight");
@@ -28,7 +29,7 @@ contract BondingCurve is AnalyticMath {
         if (weight == MAX_WEIGHT)
             return IntegralMath.mulDivF(amount, supply, balance);
 
-        (uint256 n, uint256 d) = pow(safeAdd(balance, amount), balance, weight, MAX_WEIGHT);
+        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weight, MAX_WEIGHT);
         return IntegralMath.mulDivF(supply, n, d) - supply;
     }}
 
@@ -42,7 +43,7 @@ contract BondingCurve is AnalyticMath {
       *
       * @return balance * (1 - (1 - amount / supply) ^ (MAX_WEIGHT / weight))
     */
-    function sell(uint256 supply, uint256 balance, uint256 weight, uint256 amount) public view returns (uint256) { unchecked {
+    function sell(uint256 supply, uint256 balance, uint256 weight, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
         require(MIN_WEIGHT <= weight && weight <= MAX_WEIGHT, "invalid weight");
@@ -57,7 +58,7 @@ contract BondingCurve is AnalyticMath {
         if (weight == MAX_WEIGHT)
             return IntegralMath.mulDivF(amount, balance, supply);
 
-        (uint256 n, uint256 d) = pow(supply, supply - amount, MAX_WEIGHT, weight);
+        (uint256 n, uint256 d) = AnalyticMath.pow(supply, supply - amount, MAX_WEIGHT, weight);
         return IntegralMath.mulDivF(balance, n - d, n);
     }}
 
@@ -72,7 +73,7 @@ contract BondingCurve is AnalyticMath {
       *
       * @return balance2 * (1 - (balance1 / (balance1 + amount)) ^ (weight1 / weight2))
     */
-    function convert(uint256 balance1, uint256 weight1, uint256 balance2, uint256 weight2, uint256 amount) public view returns (uint256) { unchecked {
+    function convert(uint256 balance1, uint256 weight1, uint256 balance2, uint256 weight2, uint256 amount) internal pure returns (uint256) { unchecked {
         require(0 < balance1, "invalid source balance");
         require(0 < balance2, "invalid target balance");
         require(MIN_WEIGHT <= weight1 && weight1 <= MAX_WEIGHT, "invalid source weight");
@@ -81,7 +82,7 @@ contract BondingCurve is AnalyticMath {
         if (weight1 == weight2)
             return IntegralMath.mulDivF(balance2, amount, safeAdd(balance1, amount));
 
-        (uint256 n, uint256 d) = pow(safeAdd(balance1, amount), balance1, weight1, weight2);
+        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(balance1, amount), balance1, weight1, weight2);
         return IntegralMath.mulDivF(balance2, n - d, n);
     }}
 
@@ -95,7 +96,7 @@ contract BondingCurve is AnalyticMath {
       *
       * @return supply * ((amount / balance + 1) ^ (weights / MAX_WEIGHT) - 1)
     */
-    function deposit(uint256 supply, uint256 balance, uint256 weights, uint256 amount) public view returns (uint256) { unchecked {
+    function deposit(uint256 supply, uint256 balance, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
         require(MIN_WEIGHT * 2 <= weights && weights <= MAX_WEIGHT * 2, "invalid weights");
@@ -106,7 +107,7 @@ contract BondingCurve is AnalyticMath {
         if (weights == MAX_WEIGHT)
             return IntegralMath.mulDivF(amount, supply, balance);
 
-        (uint256 n, uint256 d) = pow(safeAdd(balance, amount), balance, weights, MAX_WEIGHT);
+        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weights, MAX_WEIGHT);
         return IntegralMath.mulDivF(supply, n, d) - supply;
     }}
 
@@ -120,7 +121,7 @@ contract BondingCurve is AnalyticMath {
       *
       * @return balance * (1 - ((supply - amount) / supply) ^ (MAX_WEIGHT / weights))
     */
-    function withdraw(uint256 supply, uint256 balance, uint256 weights, uint256 amount) public view returns (uint256) { unchecked {
+    function withdraw(uint256 supply, uint256 balance, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
         require(MIN_WEIGHT * 2 <= weights && weights <= MAX_WEIGHT * 2, "invalid weights");
@@ -135,7 +136,7 @@ contract BondingCurve is AnalyticMath {
         if (weights == MAX_WEIGHT)
             return IntegralMath.mulDivF(amount, balance, supply);
 
-        (uint256 n, uint256 d) = pow(supply, supply - amount, MAX_WEIGHT, weights);
+        (uint256 n, uint256 d) = AnalyticMath.pow(supply, supply - amount, MAX_WEIGHT, weights);
         return IntegralMath.mulDivF(balance, n - d, n);
     }}
 
@@ -149,7 +150,7 @@ contract BondingCurve is AnalyticMath {
       *
       * @return balance * (((supply + amount) / supply) ^ (MAX_WEIGHT / weights) - 1)
     */
-    function invest(uint256 supply, uint256 balance, uint256 weights, uint256 amount) public view returns (uint256) { unchecked {
+    function invest(uint256 supply, uint256 balance, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
         require(MIN_WEIGHT * 2 <= weights && weights <= MAX_WEIGHT * 2, "invalid weights");
@@ -160,7 +161,7 @@ contract BondingCurve is AnalyticMath {
         if (weights == MAX_WEIGHT)
             return IntegralMath.mulDivC(amount, balance, supply);
 
-        (uint256 n, uint256 d) = pow(safeAdd(supply, amount), supply, MAX_WEIGHT, weights);
+        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(supply, amount), supply, MAX_WEIGHT, weights);
         return IntegralMath.mulDivC(balance, n, d) - balance;
     }}
 }

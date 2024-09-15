@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.26;
+pragma solidity 0.8.27;
 
 import "./AdvancedMath.sol";
+import "./FractionMath.sol";
 
-contract DynamicCurve is AdvancedMath {
-    uint256 private constant MAX_WEIGHT = 1000000;
+library DynamicCurve {
+    uint256 internal constant MAX_WEIGHT = 1000000;
 
     /**
       * @dev Consider a pool which implements the bonding-curve model over a primary reserve token and a secondary reserve token.
@@ -48,7 +49,7 @@ contract DynamicCurve is AdvancedMath {
       *
       * @return The weight of the primary reserve token and the weight of the secondary reserve token, both in ppm units
     */
-    function equalize(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p) public view returns (uint256, uint256) { unchecked {
+    function equalize(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p) internal pure returns (uint256, uint256) { unchecked {
         if (t == s)
             require(t > 0 || r > 0, "invalid balance");
         else
@@ -56,7 +57,7 @@ contract DynamicCurve is AdvancedMath {
         require(q > 0 && p > 0, "invalid rate");
 
         (uint256 tq, uint256 rp) = FractionMath.productRatio(t, q, r, p);
-        (uint256 xn, uint256 xd) = solve(s, t, tq, rp);
+        (uint256 xn, uint256 xd) = AdvancedMath.solve(s, t, tq, rp);
         (uint256 w1, uint256 w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
 
         return (w1, w2);
