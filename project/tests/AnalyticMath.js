@@ -56,17 +56,17 @@ describe(TestContract.contractName, () => {
         for (let b = 1; b <= a; b++) {
             for (let c = 1; c < 5; c++) {
                 for (let d = 1; d < 5; d++) {
-                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000251", a, b, c, d);
-                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000643", 1000000 - a, b, c, d);
-                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000661", 1000000 + a, b, c, d);
-                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000251", b, a, c, d);
-                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000643", b, 1000000 - a, c, d);
-                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000661", b, 1000000 + a, c, d);
+                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000128", a, b, c, d);
+                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000541", 1000000 - a, b, c, d);
+                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000572", 1000000 + a, b, c, d);
+                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000128", b, a, c, d);
+                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000541", b, 1000000 - a, c, d);
+                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000572", b, 1000000 + a, c, d);
                 }
             }
-            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000135", a, b);
-            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000028", 1000000 - a, 100000 + b);
-            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000028", 1000000 + a, 100000 - b);
+            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000090", a, b);
+            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000018", 1000000 - a, 100000 + b);
+            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000018", 1000000 + a, 100000 - b);
             testSuccess(exp, toFraction, lessThan, "0.000000000000000000000000000000000000017", a, b);
             testSuccess(exp, toFraction, lessThan, "0.000000000000000000000000000000000000046", 1000000 - a, 100000 + b);
             testSuccess(exp, toFraction, lessThan, "0.000000000000000000000000000000000000045", 1000000 + a, 100000 - b);
@@ -76,15 +76,15 @@ describe(TestContract.contractName, () => {
     for (let percent = 1; percent <= 100; percent++) {
         testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000002", MAX_MUL, MAX_MUL.sub(1), portion(ZERO, MAX_U32, percent), MAX_U32);
         testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000147", MAX_MUL, MAX_MUL.sub(1), MAX_U32, portion(ZERO, MAX_U32, percent));
-        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000096", MAX_MUL, portion(MAX_U32, MAX_MUL, percent), MAX_U32.sub(1), MAX_U32);
-        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000092", MAX_MUL, portion(MAX_U32, MAX_MUL, percent), MAX_U32, MAX_U32.sub(1));
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000068", MAX_MUL, portion(MAX_U32, MAX_MUL, percent), MAX_U32.sub(1), MAX_U32);
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000069", MAX_MUL, portion(MAX_U32, MAX_MUL, percent), MAX_U32, MAX_U32.sub(1));
         testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000584", MAX_MUL, MAX_U32, portion(ZERO, MAX_U32, percent), MAX_U32);
-        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000804", MAX_MUL, ONE, portion(ZERO, MAX_U32, percent), MAX_U32);
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000787", MAX_MUL, ONE, portion(ZERO, MAX_U32, percent), MAX_U32);
     }
 
     for (let percent = 0; percent < 100; percent++) {
-        testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000001054", portion(FIXED_1, LOG_MID, percent));
-        testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000065", portion(LOG_MID, FIXED_1.mul(4), percent));
+        testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000795", portion(FIXED_1, LOG_MID, percent));
+        testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000041", portion(LOG_MID, FIXED_1.mul(4), percent));
         testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000006", portion(FIXED_1.mul(4), MAX_VAL, percent));
         testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000027", portion(ZERO, EXP_MID, percent));
         testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000061", portion(EXP_MID, EXP_MID.mul(2), percent));
@@ -95,8 +95,8 @@ describe(TestContract.contractName, () => {
     testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000593", MAX_MUL, MAX_U32, MAX_U32.sub(1), MAX_U32);
     testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000588", MAX_MUL, MAX_U32, MAX_U32, MAX_U32.sub(1));
 
-    testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000058", LOG_MID.sub(1));
-    testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000062", LOG_MID.add(1));
+    testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000014", LOG_MID.sub(1));
+    testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000036", LOG_MID.add(1));
     testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000006", MAX_VAL);
 
     testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000027", EXP_MID.sub(1));

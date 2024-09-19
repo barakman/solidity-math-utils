@@ -19,7 +19,7 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
     for n in range(numOfHiTerms + 1):
         cur = Decimal(maxHiTermVal) / 2 ** n
         val = int(fixed1 * cur)
-        exp = int(fixed1 * cur.exp() + 1)
+        exp = int(fixed1 * cur.exp())
         hiTerms.append(HiTerm(val, exp))
 
     highest = hiTerms[0].exp - 1
