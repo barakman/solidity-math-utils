@@ -9,6 +9,10 @@ from constants import LOG_NUM_OF_HI_TERMS
 hiTerms,loTerms = AnalyticMath.optimalLogTerms(FIXED_1,LOG_MAX_HI_TERM_VAL,LOG_NUM_OF_HI_TERMS)
 
 
+hiTermMinIndex = LOG_MAX_HI_TERM_VAL-LOG_NUM_OF_HI_TERMS
+hiTermMaxIndex = LOG_MAX_HI_TERM_VAL-1
+
+
 print('    function optimalLog(uint256 x) internal pure returns (uint256) { unchecked {')
 print('        uint256 res = 0;')
 print('')
@@ -19,8 +23,8 @@ print('')
 for n in range(1,len(hiTerms)):
     str0 = hex_str(hiTerms[n].exp,hiTerms[+1].exp)
     str1 = hex_str(hiTerms[n].val,hiTerms[+1].val)
-    str2 = dec_str(n,len(hiTerms)*1-1)
-    print('        if (x >= {}) {{res += {}; x = x * FIXED_1 / {};}} // add {} / 2^{}'.format(str0,str1,str0,LOG_MAX_HI_TERM_VAL,str2))
+    str2 = '{0:+{1}d}'.format(hiTermMaxIndex-n+1,max(len(str(hiTermMinIndex)),len(str(hiTermMaxIndex))))
+    print('        if (x >= {}) {{res |= {}; x = x * FIXED_1 / {};}} // add 2^({})'.format(str0,str1,str0,str2))
 print('')
 print('        z = y = x - FIXED_1;')
 print('        w = y * y / FIXED_1;')
