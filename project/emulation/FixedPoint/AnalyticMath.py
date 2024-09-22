@@ -92,14 +92,14 @@ def fixedExp(x):
 def optimalLog(x):
     res = 0;
 
-    if (x >= 0xd3094c70f034de4b96ff7d5b6f99fcd9): res += 0x40000000000000000000000000000000; x = x * FIXED_1 // 0xd3094c70f034de4b96ff7d5b6f99fcd9; # add 1 / 2^1
-    if (x >= 0xa45af1e1f40c333b3de1db4dd55f29a8): res += 0x20000000000000000000000000000000; x = x * FIXED_1 // 0xa45af1e1f40c333b3de1db4dd55f29a8; # add 1 / 2^2
-    if (x >= 0x910b022db7ae67ce76b441c27035c6a2): res += 0x10000000000000000000000000000000; x = x * FIXED_1 // 0x910b022db7ae67ce76b441c27035c6a2; # add 1 / 2^3
-    if (x >= 0x88415abbe9a76bead8d00cf112e4d4a9): res += 0x08000000000000000000000000000000; x = x * FIXED_1 // 0x88415abbe9a76bead8d00cf112e4d4a9; # add 1 / 2^4
-    if (x >= 0x84102b00893f64c705e841d5d4064bd4): res += 0x04000000000000000000000000000000; x = x * FIXED_1 // 0x84102b00893f64c705e841d5d4064bd4; # add 1 / 2^5
-    if (x >= 0x8204055aaef1c8bd5c3259f4822735a3): res += 0x02000000000000000000000000000000; x = x * FIXED_1 // 0x8204055aaef1c8bd5c3259f4822735a3; # add 1 / 2^6
-    if (x >= 0x810100ab00222d861931c15e39b44e9a): res += 0x01000000000000000000000000000000; x = x * FIXED_1 // 0x810100ab00222d861931c15e39b44e9a; # add 1 / 2^7
-    if (x >= 0x808040155aabbbe9451521693554f734): res += 0x00800000000000000000000000000000; x = x * FIXED_1 // 0x808040155aabbbe9451521693554f734; # add 1 / 2^8
+    if (x >= 0xd3094c70f034de4b96ff7d5b6f99fcd9): res |= 0x40000000000000000000000000000000; x = x * FIXED_1 // 0xd3094c70f034de4b96ff7d5b6f99fcd9; # add 2^(-1)
+    if (x >= 0xa45af1e1f40c333b3de1db4dd55f29a8): res |= 0x20000000000000000000000000000000; x = x * FIXED_1 // 0xa45af1e1f40c333b3de1db4dd55f29a8; # add 2^(-2)
+    if (x >= 0x910b022db7ae67ce76b441c27035c6a2): res |= 0x10000000000000000000000000000000; x = x * FIXED_1 // 0x910b022db7ae67ce76b441c27035c6a2; # add 2^(-3)
+    if (x >= 0x88415abbe9a76bead8d00cf112e4d4a9): res |= 0x08000000000000000000000000000000; x = x * FIXED_1 // 0x88415abbe9a76bead8d00cf112e4d4a9; # add 2^(-4)
+    if (x >= 0x84102b00893f64c705e841d5d4064bd4): res |= 0x04000000000000000000000000000000; x = x * FIXED_1 // 0x84102b00893f64c705e841d5d4064bd4; # add 2^(-5)
+    if (x >= 0x8204055aaef1c8bd5c3259f4822735a3): res |= 0x02000000000000000000000000000000; x = x * FIXED_1 // 0x8204055aaef1c8bd5c3259f4822735a3; # add 2^(-6)
+    if (x >= 0x810100ab00222d861931c15e39b44e9a): res |= 0x01000000000000000000000000000000; x = x * FIXED_1 // 0x810100ab00222d861931c15e39b44e9a; # add 2^(-7)
+    if (x >= 0x808040155aabbbe9451521693554f734): res |= 0x00800000000000000000000000000000; x = x * FIXED_1 // 0x808040155aabbbe9451521693554f734; # add 2^(-8)
 
     z = y = x - FIXED_1;
     w = y * y // FIXED_1;
@@ -116,7 +116,7 @@ def optimalLog(x):
 
 '''
     @dev Compute exp(x / FIXED_1) * FIXED_1
-    Input range: 0 <= x <= EXP_MID * 2 - 1
+    Input range: 0 <= x <= EXP_MID - 1
     Auto-generated via 'PrintAnalyticMathOptimalExp.py'
     Detailed description:
     - Rewrite the input as a sum of binary exponents and a single residual r, as small as possible
@@ -156,6 +156,5 @@ def optimalExp(x):
     if ((x & 0x080000000000000000000000000000000) != 0): res = res * 0x0bc5ab1b16779be3575bd8f0520a9f21e // 0x0454aaa8efe072e7f6ddbab84b40a55c9; # multiply by e^2^(+0)
     if ((x & 0x100000000000000000000000000000000) != 0): res = res * 0x0454aaa8efe072e7f6ddbab84b40a55c5 // 0x00960aadc109e7a3bf4578099615711ea; # multiply by e^2^(+1)
     if ((x & 0x200000000000000000000000000000000) != 0): res = res * 0x00960aadc109e7a3bf4578099615711d7 // 0x0002bf84208204f5977f9a8cf01fdce3d; # multiply by e^2^(+2)
-    if ((x & 0x400000000000000000000000000000000) != 0): res = res * 0x0002bf84208204f5977f9a8cf01fdc307 // 0x0000003c6ab775dd0b95b4cbee7e65d11; # multiply by e^2^(+3)
 
     return res;

@@ -17,7 +17,7 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
     loTerms = [LoTerm(fixed1 * 2, fixed1 * 2)]
 
     for n in range(numOfHiTerms + 1):
-        cur = Decimal(maxHiTermVal) / 2 ** n
+        cur = Decimal(2 ** (maxHiTermVal - n))
         val = int(fixed1 * cur)
         exp = int(fixed1 * cur.exp() + 1)
         hiTerms.append(HiTerm(val, exp))
@@ -72,7 +72,7 @@ def optimalLog(x, hiTerms, loTerms, fixed1):
     res = 0
     for term in hiTerms[+1:]:
         if x >= term.exp:
-            res = checked(res + term.val)
+            res |= term.val
             x = checked(x * fixed1) // term.exp
     z = y = checked(x - fixed1)
     w = checked(y * y) // fixed1
