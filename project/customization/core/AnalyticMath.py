@@ -9,27 +9,38 @@ def scaledLn2(fixed1):
     return Decimal(2).ln() * fixed1
 
 
+def optimalLogMax(fixed1, maxHiTermVal):
+    return int(Decimal(2 ** maxHiTermVal).exp() * fixed1)
+
+
+def optimalExpMax(fixed1, maxHiTermVal):
+    return int(Decimal(2 ** maxHiTermVal) * fixed1 - 1)
+
+
 def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
-    HiTerm = namedtuple('HiTerm', 'val,exp')
-    LoTerm = namedtuple('LoTerm', 'num,den')
+    HiTerm = namedtuple('HiTerm', 'exp, bit, num, den')
+    LoTerm = namedtuple('LoTerm', 'num, den')
 
     hiTerms = []
     loTerms = [LoTerm(fixed1 * 2, fixed1 * 2)]
 
-    for n in range(numOfHiTerms + 1):
-        cur = Decimal(2 ** (maxHiTermVal - n))
-        val = int(fixed1 * cur)
-        exp = int(fixed1 * cur.exp() + 1)
-        hiTerms.append(HiTerm(val, exp))
+    top = int(Decimal(2 ** maxHiTermVal).exp() * fixed1)
+    for n in range(numOfHiTerms):
+        cur = Decimal(2 ** (maxHiTermVal - n - 1))
+        exp = int(fixed1 * cur.exp())
+        bit = int(fixed1 * cur)
+        num, den = epow(cur, top, -1)
+        top = top * num // den
+        hiTerms.append(HiTerm(exp, bit, num, den))
 
-    highest = hiTerms[0].exp - 1
-    res = optimalLog(highest, hiTerms, loTerms, fixed1)
+    mid = optimalLogMax(fixed1, maxHiTermVal)
+    res = optimalLog(mid, hiTerms, loTerms, fixed1)
 
     while True:
         n = len(loTerms)
         val = fixed1 * (2 * n + 2)
         loTermsNext = loTerms + [LoTerm(val // (2 * n + 1), val)]
-        resNext = optimalLog(highest, hiTerms, loTermsNext, fixed1)
+        resNext = optimalLog(mid, hiTerms, loTermsNext, fixed1)
         if res < resNext:
             res = resNext
             loTerms = loTermsNext
@@ -38,29 +49,28 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
 
 
 def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
-    HiTerm = namedtuple('HiTerm', 'bit,num,den')
-    LoTerm = namedtuple('LoTerm', 'val,ind')
+    HiTerm = namedtuple('HiTerm', 'bit, num, den')
+    LoTerm = namedtuple('LoTerm', 'val, ind')
 
     hiTerms = []
     loTerms = [LoTerm(1, 1)]
 
-    top = int(Decimal(2 ** (0 + maxHiTermVal - numOfHiTerms)).exp() * fixed1) - 1
-    for n in range(numOfHiTerms + 1):
-        cur = Decimal(2 ** (n + maxHiTermVal - numOfHiTerms)).exp()
-        den = int(MAX_VAL / (cur * top))
-        num = int(den * cur)
+    top = int(Decimal(2 ** (maxHiTermVal - numOfHiTerms)).exp() * fixed1) - 1
+    for n in range(numOfHiTerms):
+        cur = Decimal(2 ** (maxHiTermVal - numOfHiTerms + n))
+        bit = int(fixed1 * cur)
+        num, den = epow(cur, top, +1)
         top = top * num // den
-        bit = (fixed1 << (n + maxHiTermVal)) >> numOfHiTerms
         hiTerms.append(HiTerm(bit, num, den))
 
-    highest = hiTerms[-1].bit - 1
-    res = optimalExp(highest, hiTerms, loTerms, fixed1)
+    mid = optimalExpMax(fixed1, maxHiTermVal)
+    res = optimalExp(mid, hiTerms, loTerms, fixed1)
 
     while True:
         n = len(loTerms)
         val = factorial(n + 1)
         loTermsNext = [LoTerm(val // factorial(i + 1), i + 1) for i in range(n + 1)]
-        resNext = optimalExp(highest, hiTerms, loTermsNext, fixed1)
+        resNext = optimalExp(mid, hiTerms, loTermsNext, fixed1)
         if res < resNext:
             res = resNext
             loTerms = loTermsNext
@@ -70,9 +80,9 @@ def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
 
 def optimalLog(x, hiTerms, loTerms, fixed1):
     res = 0
-    for term in hiTerms[+1:]:
-        if x >= term.exp:
-            res |= term.val
+    for term in hiTerms:
+        if x > term.exp:
+            res |= term.bit
             x = checked(x * fixed1) // term.exp
     z = y = checked(x - fixed1)
     w = checked(y * y) // fixed1
@@ -90,7 +100,36 @@ def optimalExp(x, hiTerms, loTerms, fixed1):
         z = checked(z * y) // fixed1
         res = checked(res + checked(z * term.val))
     res = checked(checked(res // loTerms[0].val + y) + fixed1)
-    for term in hiTerms[:-1]:
+    for term in hiTerms:
         if x & term.bit:
             res = checked(res * term.num) // term.den
     return res
+
+
+def epow(cur, top, sign):
+    e = cur.exp() ** sign
+    lists = [
+        list(func(e, top)) for func in [
+            lambda e, top: epow_n_first(e, top, int.__sub__     , 0, 100000),
+            lambda e, top: epow_d_first(e, top, int.__sub__     , 0, 100000),
+            lambda e, top: epow_n_first(e, top, int.__floordiv__, 1,  10000),
+            lambda e, top: epow_d_first(e, top, int.__floordiv__, 1,  10000),
+            lambda e, top: epow_n_first(e, top, int.__rshift__  , 0,    100),
+            lambda e, top: epow_d_first(e, top, int.__rshift__  , 0,    100),
+        ]
+    ]
+    return max(sum(lists, []), key = lambda x: Decimal(x[0]) / Decimal(x[1]))
+
+
+def epow_n_first(e, top, op, bgn, end):
+    m = MAX_VAL // top
+    ns = [op(m, i) for i in range(bgn, end)]
+    ds = [(n / e).__ceil__() for n in ns]
+    return zip(ns, ds)
+
+
+def epow_d_first(e, top, op, bgn, end):
+    m = int(MAX_VAL / (top * e))
+    ds = [op(m, i) for i in range(bgn, end)]
+    ns = [(d * e).__floor__() for d in ds]
+    return zip(ns, ds)
