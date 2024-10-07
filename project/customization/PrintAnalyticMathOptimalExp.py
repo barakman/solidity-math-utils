@@ -16,6 +16,7 @@ hiTermIndexLen = max(len(str(hiTermIndexMin)),len(str(hiTermIndexMax)))
 
 str0 = hex_str(hiTerms[0].bit,hiTerms[0].bit)
 str1 = hex_str(loTerms[0].val,loTerms[0].val)
+str2 = dec_str(len(loTerms),loTerms[-1].ind)
 
 
 print('    function optimalExp(uint256 x) internal pure returns (uint256) { unchecked {')
@@ -26,10 +27,9 @@ print('        uint256 z;')
 print('')
 print('        z = y = x % {}; // get the input modulo 2^({:+d})'.format(str0,hiTermIndexMin))
 for n in range(1,len(loTerms)):
-    str2 = hex_str(loTerms[n].val,loTerms[+1].val)
-    str3 = dec_str(loTerms[n].ind,loTerms[-1].ind)
-    str4 = dec_str(len(loTerms)  ,loTerms[-1].ind)
-    print('        z = z * y / FIXED_1; res += z * {}; // add y^{} * ({}! / {}!)'.format(str2,str3,str4,str3))
+    str3 = hex_str(loTerms[n].val,loTerms[+1].val)
+    str4 = dec_str(loTerms[n].ind,loTerms[-1].ind)
+    print('        z = z * y / FIXED_1; res += z * {}; // add y^{} * ({}! / {}!)'.format(str3,str4,str2,str4))
 print('        res = res / {} + y + FIXED_1; // divide by {}! and then add y^1 / 1! + y^0 / 0!'.format(str1,len(loTerms)))
 print('')
 for n in range(len(hiTerms)):
