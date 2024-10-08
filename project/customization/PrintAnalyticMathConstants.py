@@ -5,15 +5,10 @@ from constants import LOG_MAX_HI_TERM_VAL
 from constants import EXP_MAX_HI_TERM_VAL
 
 
-scaledLn2 = AnalyticMath.scaledLn2(FIXED_1)
-optimalLogMax = AnalyticMath.optimalLogMax(FIXED_1,LOG_MAX_HI_TERM_VAL)
-optimalExpMax = AnalyticMath.optimalExpMax(FIXED_1,EXP_MAX_HI_TERM_VAL)
-
-
-LN2_MIN = scaledLn2.__floor__()
-LN2_MAX = scaledLn2.__ceil__()
-LOG_MID = optimalLogMax+1
-EXP_MID = optimalExpMax+1
+LN2_MIN = AnalyticMath.ln2Min(FIXED_1)
+LN2_MAX = AnalyticMath.ln2Max(FIXED_1)
+LOG_MID = AnalyticMath.logMid(FIXED_1,LOG_MAX_HI_TERM_VAL)
+EXP_MID = AnalyticMath.expMid(FIXED_1,EXP_MAX_HI_TERM_VAL)
 EXP_MAX = LN2_MAX*(259-len(bin(FIXED_1*2-1)))
 
 

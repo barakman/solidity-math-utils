@@ -32,7 +32,7 @@ for n in range(1,len(loTerms)):
     print('        z = z * y / FIXED_1; res += z * {}; // add y^{} * ({}! / {}!)'.format(str3,str4,str2,str4))
 print('        res = res / {} + y + FIXED_1; // divide by {}! and then add y^1 / 1! + y^0 / 0!'.format(str1,len(loTerms)))
 print('')
-for n in range(len(hiTerms)):
+for n in range(len(hiTerms)-1):
     str5 = hex_str(hiTerms[n].bit,hiTerms[-1].bit)
     str6 = hex_str(hiTerms[n].num,hiTerms[+0].num)
     str7 = hex_str(hiTerms[n].den,hiTerms[+0].den)

@@ -5,16 +5,20 @@ from math import factorial
 from collections import namedtuple
 
 
-def scaledLn2(fixed1):
-    return Decimal(2).ln() * fixed1
+def ln2Min(fixed1):
+    return (Decimal(2).ln() * fixed1).__floor__()
 
 
-def optimalLogMax(fixed1, maxHiTermVal):
-    return int(Decimal(2 ** maxHiTermVal).exp() * fixed1)
+def ln2Max(fixed1):
+    return (Decimal(2).ln() * fixed1).__ceil__()
 
 
-def optimalExpMax(fixed1, maxHiTermVal):
-    return int(Decimal(2 ** maxHiTermVal) * fixed1 - 1)
+def logMid(fixed1, maxHiTermVal):
+    return int(Decimal(2 ** maxHiTermVal).exp() * fixed1) + 1
+
+
+def expMid(fixed1, maxHiTermVal):
+    return int(Decimal(2 ** maxHiTermVal) * fixed1 - 1) + 1
 
 
 def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
@@ -33,7 +37,7 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
         top = top * num // den
         hiTerms.append(HiTerm(exp, bit, num, den))
 
-    mid = optimalLogMax(fixed1, maxHiTermVal)
+    mid = logMid(fixed1, maxHiTermVal) - 1
     res = optimalLog(mid, hiTerms, loTerms, fixed1)
 
     while True:
@@ -56,14 +60,14 @@ def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
     loTerms = [LoTerm(1, 1)]
 
     top = int(Decimal(2 ** (maxHiTermVal - numOfHiTerms)).exp() * fixed1) - 1
-    for n in range(numOfHiTerms):
+    for n in range(numOfHiTerms + 1):
         cur = Decimal(2 ** (maxHiTermVal - numOfHiTerms + n))
         bit = int(fixed1 * cur)
         num, den = epow(cur, top, +1)
         top = top * num // den
         hiTerms.append(HiTerm(bit, num, den))
 
-    mid = optimalExpMax(fixed1, maxHiTermVal)
+    mid = expMid(fixed1, maxHiTermVal) - 1
     res = optimalExp(mid, hiTerms, loTerms, fixed1)
 
     while True:
@@ -100,7 +104,7 @@ def optimalExp(x, hiTerms, loTerms, fixed1):
         z = checked(z * y) // fixed1
         res = checked(res + checked(z * term.val))
     res = checked(checked(res // loTerms[0].val + y) + fixed1)
-    for term in hiTerms:
+    for term in hiTerms[:-1]:
         if x & term.bit:
             res = checked(res * term.num) // term.den
     return res
