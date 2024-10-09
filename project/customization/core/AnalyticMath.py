@@ -87,7 +87,7 @@ def optimalLog(x, hiTerms, loTerms, fixed1):
     for term in hiTerms:
         if x > term.exp:
             res |= term.bit
-            x = checked(x * fixed1) // term.exp
+            x = checked(x * term.num) // term.den
     z = y = checked(x - fixed1)
     w = checked(y * y) // fixed1
     for term in loTerms[:-1]:
