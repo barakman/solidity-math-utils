@@ -33,7 +33,7 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
         cur = Decimal(2 ** (maxHiTermVal - n - 1))
         exp = int(fixed1 * cur.exp())
         bit = int(fixed1 * cur)
-        num, den = epow(cur, top, -1)
+        num, den = epow(-cur, top)
         top = top * num // den
         hiTerms.append(HiTerm(exp, bit, num, den))
 
@@ -63,7 +63,7 @@ def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
     for n in range(numOfHiTerms + 1):
         cur = Decimal(2 ** (maxHiTermVal - numOfHiTerms + n))
         bit = int(fixed1 * cur)
-        num, den = epow(cur, top, +1)
+        num, den = epow(+cur, top)
         top = top * num // den
         hiTerms.append(HiTerm(bit, num, den))
 
@@ -110,8 +110,8 @@ def optimalExp(x, hiTerms, loTerms, fixed1):
     return res
 
 
-def epow(cur, top, sign):
-    e = cur.exp() ** sign
+def epow(cur, top):
+    e = cur.exp()
     lists = [
         list(func(e, top)) for func in [
             lambda e, top: epow_n_first(e, top, int.__sub__     , 0, 100000),
