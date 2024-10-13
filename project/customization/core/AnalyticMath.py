@@ -1,4 +1,5 @@
 from core import Decimal
+from core import DEC_TWO
 from core import MAX_VAL
 from core import checked
 from math import factorial
@@ -6,19 +7,19 @@ from collections import namedtuple
 
 
 def ln2Min(fixed1):
-    return (Decimal(2).ln() * fixed1).__floor__()
+    return (DEC_TWO.ln() * fixed1).__floor__()
 
 
 def ln2Max(fixed1):
-    return (Decimal(2).ln() * fixed1).__ceil__()
+    return (DEC_TWO.ln() * fixed1).__ceil__()
 
 
 def logMid(fixed1, maxHiTermVal):
-    return int(Decimal(2 ** maxHiTermVal).exp() * fixed1) + 1
+    return int(two_pow(maxHiTermVal).exp() * fixed1) + 1
 
 
 def expMid(fixed1, maxHiTermVal):
-    return int(Decimal(2 ** maxHiTermVal) * fixed1 - 1) + 1
+    return int(two_pow(maxHiTermVal) * fixed1 - 1) + 1
 
 
 def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
@@ -28,9 +29,9 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
     hiTerms = []
     loTerms = [LoTerm(fixed1 * 2, fixed1 * 2)]
 
-    top = int(Decimal(2 ** maxHiTermVal).exp() * fixed1)
+    top = int(two_pow(maxHiTermVal).exp() * fixed1)
     for n in range(numOfHiTerms):
-        cur = Decimal(2 ** (maxHiTermVal - n - 1))
+        cur = two_pow(maxHiTermVal - n - 1)
         exp = int(fixed1 * cur.exp())
         bit = int(fixed1 * cur)
         num, den = epow(-cur, top)
@@ -59,9 +60,9 @@ def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
     hiTerms = []
     loTerms = [LoTerm(1, 1)]
 
-    top = int(Decimal(2 ** (maxHiTermVal - numOfHiTerms)).exp() * fixed1) - 1
+    top = int(two_pow(maxHiTermVal - numOfHiTerms).exp() * fixed1) - 1
     for n in range(numOfHiTerms + 1):
-        cur = Decimal(2 ** (maxHiTermVal - numOfHiTerms + n))
+        cur = two_pow(maxHiTermVal - numOfHiTerms + n)
         bit = int(fixed1 * cur)
         num, den = epow(+cur, top)
         top = top * num // den
@@ -137,3 +138,7 @@ def epow_d_first(e, top, op, bgn, end):
     ds = [op(m, i) for i in range(bgn, end)]
     ns = [(d * e).__floor__() for d in ds]
     return zip(ns, ds)
+
+
+def two_pow(x):
+    return DEC_TWO ** x

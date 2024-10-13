@@ -7,6 +7,7 @@ getcontext().prec = 100
 getcontext().rounding = ROUND_HALF_DOWN
 
 
+DEC_TWO = Decimal(2)
 MAX_VAL = 2 ** 256 - 1
 
 
