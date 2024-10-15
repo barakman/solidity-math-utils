@@ -111,8 +111,8 @@ describe(TestContract.contractName, () => {
     for (const z of [1, 2, 3, 4]) {
         for (const n of [1, 2, 3, 4]) {
             for (const d of [MAX_UINT256.sub(1), MAX_UINT256]) {
-                test(reducedRatio   , reducedRatioCheck(z)   , "0.0000000000000000000000000000000000000000000000000000000000000000000000000005", n.toFixed(), d.toFixed(), z);
-                test(normalizedRatio, normalizedRatioCheck(z), "0.0000000000000000000000000000000000000000000000000000000000000000000000000006", n.toFixed(), d.toFixed(), z);
+                test(reducedRatio   , reducedRatioCheck(z)   , "0.0000000000000000000000000000000000000000000000000000000000000000000000000005", n, d.toFixed(), z);
+                test(normalizedRatio, normalizedRatioCheck(z), "0.0000000000000000000000000000000000000000000000000000000000000000000000000006", n, d.toFixed(), z);
             }
         }
     }
