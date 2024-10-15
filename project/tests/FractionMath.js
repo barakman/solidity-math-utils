@@ -117,6 +117,14 @@ describe(TestContract.contractName, () => {
         }
     }
 
+    for (const n of [1, 2, 3]) {
+        for (const d of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
+            for (const z of [1, 2, 3].map(k => MAX_UINT256.sub(k))) {
+                test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000000000000000000000000000000000000000000006", n, d.toFixed(), z.toFixed());
+            }
+        }
+    }
+
     function test(method, check, maxError, ...args) {
         it(`${method.name}(${args.join(", ")})`, async () => {
             const expected = method(...args.map(x => Decimal(x)));
