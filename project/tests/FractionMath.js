@@ -71,7 +71,7 @@ describe(TestContract.contractName, () => {
     for (const z of [Decimal("1e6"), Decimal("1e18"), Decimal("1e30"), MAX_UINT128]) {
         for (let n = 0; n < 10; n++) {
             for (let d = 1; d <= 10; d++) {
-                test(reducedRatio   , reducedRatioCheck(z)   , "0.0000000", n, d, z.toFixed());
+                test(reducedRatio   , reducedRatioCheck   (z), "0.0000000", n, d, z.toFixed());
                 test(normalizedRatio, normalizedRatioCheck(z), "0.0000025", n, d, z.toFixed());
             }
         }
@@ -82,7 +82,7 @@ describe(TestContract.contractName, () => {
             const n = MAX_UINT256.divToInt(z).mul(i).add(1);
             for (let j = Decimal(1); j.lte(z); j = j.mul(10)) {
                 const d = MAX_UINT256.divToInt(z).mul(j).add(1);
-                test(reducedRatio   , reducedRatioCheck(z)   , "0.135", n.toFixed(), d.toFixed(), z.toFixed());
+                test(reducedRatio   , reducedRatioCheck   (z), "0.135", n.toFixed(), d.toFixed(), z.toFixed());
                 test(normalizedRatio, normalizedRatioCheck(z), "0.135", n.toFixed(), d.toFixed(), z.toFixed());
             }
         }
@@ -102,7 +102,7 @@ describe(TestContract.contractName, () => {
             MAX_UINT256
         ]) {
             for (const d of [MAX_UINT256.sub(1), MAX_UINT256]) {
-                test(reducedRatio   , reducedRatioCheck(z)   , "0.004", n.toFixed(), d.toFixed(), z);
+                test(reducedRatio   , reducedRatioCheck   (z), "0.004", n.toFixed(), d.toFixed(), z);
                 test(normalizedRatio, normalizedRatioCheck(z), "0.004", n.toFixed(), d.toFixed(), z);
             }
         }
@@ -111,7 +111,7 @@ describe(TestContract.contractName, () => {
     for (const z of [1, 2, 3, 4]) {
         for (const n of [1, 2, 3, 4]) {
             for (const d of [MAX_UINT256.sub(1), MAX_UINT256]) {
-                test(reducedRatio   , reducedRatioCheck(z)   , "0.0000000000000000000000000000000000000000000000000000000000000000000000000005", n, d.toFixed(), z);
+                test(reducedRatio   , reducedRatioCheck   (z), "0.0000000000000000000000000000000000000000000000000000000000000000000000000005", n, d.toFixed(), z);
                 test(normalizedRatio, normalizedRatioCheck(z), "0.0000000000000000000000000000000000000000000000000000000000000000000000000006", n, d.toFixed(), z);
             }
         }
