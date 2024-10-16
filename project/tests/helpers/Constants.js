@@ -1,4 +1,8 @@
 // Auto-generated via 'PrintTestConstants.py'
+module.exports.LOG_MAX_HI_TERM_VAL = 0;
+module.exports.LOG_NUM_OF_HI_TERMS = 8;
+module.exports.EXP_MAX_HI_TERM_VAL = 3;
+module.exports.EXP_NUM_OF_HI_TERMS = 6;
 module.exports.FIXED_1 = "0x0080000000000000000000000000000000";
 module.exports.LN2_MIN = "0x0058b90bfbe8e7bcd5e4f1d9cc01f97b57";
 module.exports.LN2_MAX = "0x0058b90bfbe8e7bcd5e4f1d9cc01f97b58";

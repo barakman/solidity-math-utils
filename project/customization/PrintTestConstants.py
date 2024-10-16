@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import constants
 
 
 stdout = sys.stdout
@@ -11,6 +12,10 @@ sys.stdout.close()
 sys.stdout = stdout
 
 
+print(f'module.exports.LOG_MAX_HI_TERM_VAL = {constants.LOG_MAX_HI_TERM_VAL};')
+print(f'module.exports.LOG_NUM_OF_HI_TERMS = {constants.LOG_NUM_OF_HI_TERMS};')
+print(f'module.exports.EXP_MAX_HI_TERM_VAL = {constants.EXP_MAX_HI_TERM_VAL};')
+print(f'module.exports.EXP_NUM_OF_HI_TERMS = {constants.EXP_NUM_OF_HI_TERMS};')
 print(f'module.exports.FIXED_1 = "{AnalyticMath.FIXED_1:#0{AnalyticMath.maxLen}x}";')
 print(f'module.exports.LN2_MIN = "{AnalyticMath.LN2_MIN:#0{AnalyticMath.maxLen}x}";')
 print(f'module.exports.LN2_MAX = "{AnalyticMath.LN2_MAX:#0{AnalyticMath.maxLen}x}";')
