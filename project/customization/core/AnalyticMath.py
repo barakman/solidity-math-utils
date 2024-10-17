@@ -23,7 +23,7 @@ def expMid(fixed1, maxHiTermVal):
 
 
 def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
-    HiTerm = namedtuple('HiTerm', 'exp, bit, num, den')
+    HiTerm = namedtuple('HiTerm', 'num, den, bit')
     LoTerm = namedtuple('LoTerm', 'num, den')
 
     hiTerms = []
@@ -32,11 +32,10 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
     top = int(two_pow(maxHiTermVal).exp() * fixed1)
     for n in range(numOfHiTerms):
         cur = two_pow(maxHiTermVal - n - 1)
-        exp = int(fixed1 * cur.exp())
-        bit = int(fixed1 * cur)
         num, den = epow(-cur, top)
+        bit = int(fixed1 * cur)
         top = top * num // den
-        hiTerms.append(HiTerm(exp, bit, num, den))
+        hiTerms.append(HiTerm(num, den, bit))
 
     mid = logMid(fixed1, maxHiTermVal) - 1
     res = optimalLog(mid, hiTerms, loTerms, fixed1)
@@ -54,7 +53,7 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
 
 
 def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
-    HiTerm = namedtuple('HiTerm', 'bit, num, den')
+    HiTerm = namedtuple('HiTerm', 'num, den, bit')
     LoTerm = namedtuple('LoTerm', 'val, ind')
 
     hiTerms = []
@@ -63,10 +62,10 @@ def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
     top = int(two_pow(maxHiTermVal - numOfHiTerms).exp() * fixed1) - 1
     for n in range(numOfHiTerms + 1):
         cur = two_pow(maxHiTermVal - numOfHiTerms + n)
-        bit = int(fixed1 * cur)
         num, den = epow(+cur, top)
+        bit = int(fixed1 * cur)
         top = top * num // den
-        hiTerms.append(HiTerm(bit, num, den))
+        hiTerms.append(HiTerm(num, den, bit))
 
     mid = expMid(fixed1, maxHiTermVal) - 1
     res = optimalExp(mid, hiTerms, loTerms, fixed1)
@@ -86,9 +85,9 @@ def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
 def optimalLog(x, hiTerms, loTerms, fixed1):
     res = 0
     for term in hiTerms:
-        if x > term.exp:
-            res |= term.bit
+        if checked(x * term.num) >= checked(term.den * fixed1):
             x = checked(x * term.num) // term.den
+            res |= term.bit
     z = y = checked(x - fixed1)
     w = checked(y * y) // fixed1
     for term in loTerms[:-1]:
