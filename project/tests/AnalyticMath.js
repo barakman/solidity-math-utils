@@ -30,6 +30,12 @@ const toFraction = (tuple) => Decimal(tuple[0].toString()).div(tuple[1].toString
 
 const portion = (min, max, percent) => min.add(max.sub(min).mul(percent).divToInt(100));
 
+const terms = (num, max) => [...Array(2 ** num - 1).keys()].map(
+    i => [...Array(num).keys()].reduce(
+        (s, j) => s.add(Decimal(2).pow(max - j - 1).mul(((i + 1) >> j) & 1)), Decimal(0)
+    )
+);
+
 describe(TestContract.contractName, () => {
     let testContract;
 
@@ -102,6 +108,20 @@ describe(TestContract.contractName, () => {
     testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000014", EXP_MID.sub(1));
     testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000031", EXP_MID.add(1));
     testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000289", EXP_MAX.sub(1));
+
+    for (const term of terms(Constants.LOG_NUM_OF_HI_TERMS, Constants.LOG_MAX_HI_TERM_VAL)) {
+        const n = term.exp().mul(FIXED_1).floor();
+        for (const k of [-1, 0, 1]) {
+            testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000004722", n.add(k));
+        }
+    }
+
+    for (const term of terms(Constants.EXP_NUM_OF_HI_TERMS, Constants.EXP_MAX_HI_TERM_VAL)) {
+        const n = term.mul(FIXED_1);
+        for (const k of [-1, 0, 1]) {
+            testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000014", n.add(k));
+        }
+    }
 
     testFailure(pow, "without a reason", MAX_MUL.add(1), ONE, ONE, ONE);
     testFailure(pow, "without a reason", ONE, MAX_MUL.add(1), ONE, ONE);
