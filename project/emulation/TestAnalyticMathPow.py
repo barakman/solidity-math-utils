@@ -9,12 +9,12 @@ def test(a, b, c, d):
     floatPoint = FloatPoint.pow(a, b, c, d, factor)
     if fixedPoint > floatPoint:
         error = ['Implementation Error:']
-        error.append('a          = {}'.format(a         ))
-        error.append('b          = {}'.format(b         ))
-        error.append('c          = {}'.format(c         ))
-        error.append('d          = {}'.format(d         ))
-        error.append('fixedPoint = {}'.format(fixedPoint))
-        error.append('floatPoint = {}'.format(floatPoint))
+        error.append(f'a          = {a         }')
+        error.append(f'b          = {b         }')
+        error.append(f'c          = {c         }')
+        error.append(f'd          = {d         }')
+        error.append(f'fixedPoint = {fixedPoint}')
+        error.append(f'floatPoint = {floatPoint}')
         raise Exception('\n'.join(error))
     return fixedPoint / floatPoint
 
@@ -40,4 +40,4 @@ for n in range(size):
     except Exception as error:
         print(error)
         break
-    print('Test #{}: accuracy = {:.24f}, worst accuracy = {:.24f}, num of failures = {}'.format(n, accuracy, worstAccuracy, numOfFailures))
+    print(f'Test #{n}: accuracy = {accuracy:.24f}, worstAccuracy = {worstAccuracy:.24f}, numOfFailures = {numOfFailures}')
