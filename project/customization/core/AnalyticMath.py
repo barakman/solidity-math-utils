@@ -35,7 +35,8 @@ def optimalLogTerms(fixed1, maxHiTermVal, numOfHiTerms):
         exp = int(fixed1 * cur.exp())
         bit = int(fixed1 * cur)
         num, den = epow(-cur, top)
-        top = top * num // den
+        assert num * (exp + 1) >= fixed1 * den
+        top = exp
         hiTerms.append(HiTerm(exp, bit, num, den))
 
     mid = logMid(fixed1, maxHiTermVal) - 1
@@ -64,7 +65,8 @@ def optimalExpTerms(fixed1, maxHiTermVal, numOfHiTerms):
     for n in range(numOfHiTerms + 1):
         cur = two_pow(maxHiTermVal - numOfHiTerms + n)
         bit = int(fixed1 * cur)
-        num, den = epow(+cur, top)
+        num, den = epow(cur, top)
+        assert num <= den * cur.exp()
         top = top * num // den
         hiTerms.append(HiTerm(bit, num, den))
 
