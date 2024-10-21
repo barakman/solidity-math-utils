@@ -30,7 +30,7 @@ const toFraction = (tuple) => Decimal(tuple[0].toString()).div(tuple[1].toString
 
 const portion = (min, max, percent) => min.add(max.sub(min).mul(percent).divToInt(100));
 
-const terms = (num, max) => [...Array(2 ** num - 1).keys()].map(i => Decimal(i + 1).mul(2 ** max).div(2 ** num));
+const terms = (num, max) => [...Array(2 ** num - 1).keys()].map(i => TWO.pow(max - num).mul(i + 1));
 
 describe(TestContract.contractName, () => {
     let testContract;
