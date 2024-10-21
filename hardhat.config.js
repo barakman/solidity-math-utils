@@ -7,7 +7,7 @@ Decimal.set({precision: 155, rounding: Decimal.ROUND_DOWN});
 
 module.exports = {
     solidity: {
-        version: "0.8.26",
+        version: "0.8.28",
         settings: {
             optimizer: {
                 enabled: true,
@@ -22,8 +22,8 @@ module.exports = {
         artifacts: "./project/artifacts"
     },
     mocha: {
+        timeout: 0,
         useColors: true,
-        enableTimeouts: false,
         reporter: "list" // https://mochajs.org/#reporters
     }
 };

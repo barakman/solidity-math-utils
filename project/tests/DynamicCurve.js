@@ -1,5 +1,4 @@
-const DynamicCurve = artifacts.require("DynamicCurve");
-
+const TestContract = artifacts.require("DynamicCurveUser");
 const Decimal = require("decimal.js");
 
 function convert(t, s, r, q, p, w1, w2) {
@@ -11,17 +10,16 @@ function convert(t, s, r, q, p, w1, w2) {
     return [y1, y2];
 }
 
-contract("DynamicCurve", () => {
-    let dynamicCurve;
+describe(TestContract.contractName, () => {
+    let testContract;
 
     before(async () => {
-        dynamicCurve = await DynamicCurve.new();
-        await dynamicCurve.init();
+        testContract = await TestContract.new();
     });
 
     async function equalize(t, s, r, q, p) {
         try {
-            return await dynamicCurve.equalize(t, s, r, q, p);
+            return await testContract.equalize(t, s, r, q, p);
         }
         catch (error) {
             return null;
