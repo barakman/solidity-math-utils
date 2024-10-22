@@ -7,11 +7,10 @@ def lambertRadius(fixed1):
     return int(Decimal(-1).exp() * fixed1)
 
 
-def lambertTerms(fixed1, maxNumOfTerms, sign):
+def lambertTerms(fixed1, maxNumOfTerms, func):
     lo = 0
     hi = maxNumOfTerms
     val = lambertRadius(fixed1)
-    func = {-1: lambertNeg1, +1: lambertPos1}[sign]
     while lo + 1 < hi:
         mid = (lo + hi) // 2
         try:
@@ -23,6 +22,14 @@ def lambertTerms(fixed1, maxNumOfTerms, sign):
         return func(hi, val, fixed1)
     except:
         return func(lo, val, fixed1)
+
+
+def lambertNeg1Terms(fixed1, maxNumOfTerms):
+    return lambertTerms(fixed1, maxNumOfTerms, lambertNeg1)
+
+
+def lambertPos1Terms(fixed1, maxNumOfTerms):
+    return lambertTerms(fixed1, maxNumOfTerms, lambertPos1)
 
 
 def lambertSamples(fixed1, sizeOfSample, numOfSamples):

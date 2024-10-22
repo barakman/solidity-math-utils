@@ -5,7 +5,7 @@ from constants import FIXED_1
 from constants import LAMBERT_MAX_TERMS
 
 
-lambertTerms = AdvancedMath.lambertTerms(FIXED_1,LAMBERT_MAX_TERMS,-1)
+lambertTerms = AdvancedMath.lambertNeg1Terms(FIXED_1,LAMBERT_MAX_TERMS)
 
 
 str0 = hex_str(lambertTerms[0],lambertTerms[0])
