@@ -1,10 +1,11 @@
 from core import Decimal
+from core import INV_EXP
 from core import checked
 from math import factorial
 
 
 def lambertRadius(fixed1):
-    return int(Decimal(-1).exp() * fixed1)
+    return int(INV_EXP * fixed1)
 
 
 def lambertNeg1Terms(fixed1, maxNumOfTerms):

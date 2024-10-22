@@ -1,17 +1,18 @@
 from core import Decimal
-from core import DEC_TWO
+from core import LOG_TWO
 from core import MAX_VAL
+from core import two_pow
 from core import checked
 from math import factorial
 from collections import namedtuple
 
 
 def ln2Min(fixed1):
-    return (DEC_TWO.ln() * fixed1).__floor__()
+    return (LOG_TWO * fixed1).__floor__()
 
 
 def ln2Max(fixed1):
-    return (DEC_TWO.ln() * fixed1).__ceil__()
+    return (LOG_TWO * fixed1).__ceil__()
 
 
 def logMid(fixed1, maxHiTermVal):
@@ -140,7 +141,3 @@ def epow_d_first(e, top, op, bgn, end):
     ds = [op(m, i) for i in range(bgn, end)]
     ns = [(d * e).__floor__() for d in ds]
     return zip(ns, ds)
-
-
-def two_pow(x):
-    return DEC_TWO ** x

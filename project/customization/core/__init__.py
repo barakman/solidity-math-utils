@@ -7,8 +7,13 @@ getcontext().prec = 100
 getcontext().rounding = ROUND_HALF_DOWN
 
 
-DEC_TWO = Decimal(2)
 MAX_VAL = 2 ** 256 - 1
+LOG_TWO = Decimal(2).ln()
+INV_EXP = Decimal(-1).exp()
+
+
+def two_pow(x):
+    return Decimal(2) ** x
 
 
 def checked(x):
