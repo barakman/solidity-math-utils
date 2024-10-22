@@ -7,6 +7,19 @@ def lambertRadius(fixed1):
     return int(Decimal(-1).exp() * fixed1)
 
 
+def lambertNeg1Terms(fixed1, maxNumOfTerms):
+    return lambertTerms(fixed1, maxNumOfTerms, lambertNeg1)
+
+
+def lambertPos1Terms(fixed1, maxNumOfTerms):
+    return lambertTerms(fixed1, maxNumOfTerms, lambertPos1)
+
+
+def lambertSamples(fixed1, sizeOfSample, numOfSamples):
+    offset = lambertRadius(fixed1) + 1
+    return [int(lambertRatio(Decimal(offset + sizeOfSample * i) / fixed1) * fixed1) for i in range(numOfSamples)]
+
+
 def lambertTerms(fixed1, maxNumOfTerms, func):
     lo = 0
     hi = maxNumOfTerms
@@ -22,19 +35,6 @@ def lambertTerms(fixed1, maxNumOfTerms, func):
         return func(hi, val, fixed1)
     except:
         return func(lo, val, fixed1)
-
-
-def lambertNeg1Terms(fixed1, maxNumOfTerms):
-    return lambertTerms(fixed1, maxNumOfTerms, lambertNeg1)
-
-
-def lambertPos1Terms(fixed1, maxNumOfTerms):
-    return lambertTerms(fixed1, maxNumOfTerms, lambertPos1)
-
-
-def lambertSamples(fixed1, sizeOfSample, numOfSamples):
-    offset = lambertRadius(fixed1) + 1
-    return [int(lambertRatio(Decimal(offset + sizeOfSample * i) / fixed1) * fixed1) for i in range(numOfSamples)]
 
 
 def lambertNeg1(numOfTerms, x, fixed1):
