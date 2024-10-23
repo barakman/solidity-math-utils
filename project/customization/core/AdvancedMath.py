@@ -62,7 +62,7 @@ def lambertPos1(numOfTerms, x, fixed1):
 
 def lambertBinomial(numOfTerms):
     maxFactorial = factorial(numOfTerms - 1)
-    return [maxFactorial * i ** (i - 1) // factorial(i) for i in range(1, numOfTerms)]
+    return [maxFactorial // factorial(i) * i ** (i - 1) for i in range(1, numOfTerms)]
 
 
 def lambertRatio(x):
