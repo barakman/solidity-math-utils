@@ -179,8 +179,8 @@ def lambertPos(x):
     Auto-generated via 'PrintAdvancedMathLambertNeg1.py'
 '''
 def lambertNeg1(x):
-    xi = x;
     res = 0;
+    xi = x;
 
     xi = (xi * x) // FIXED_1; res += xi * 0x00000000014d29a73a6e7b02c3668c7b0880000000; # add x^(03-1) * (34! * 03^(03-1) / 03!)
     xi = (xi * x) // FIXED_1; res += xi * 0x0000000002504a0cd9a7f7215b60f9be4800000000; # add x^(04-1) * (34! * 04^(04-1) / 04!)
@@ -215,7 +215,7 @@ def lambertNeg1(x):
     xi = (xi * x) // FIXED_1; res += xi * 0x5b0485a76f6646c2039db1507cdd51b08649680822; # add x^(33-1) * (34! * 33^(33-1) / 33!)
     xi = (xi * x) // FIXED_1; res += xi * 0xec983c46c49545bc17efa6b5b0055e242200000000; # add x^(34-1) * (34! * 34^(34-1) / 34!)
 
-    return res // 0xde1bc4d19efcac82445da75b00000000 + x + FIXED_1; # divide by 34! and then add x^(2-1) * (34! * 2^(2-1) / 2!) + x^(1-1) * (34! * 1^(1-1) / 1!)
+    return res // 0xde1bc4d19efcac82445da75b00000000 + FIXED_1 + x; # divide by 34! and then add x^(1-1) * (1^(1-1) / 1!) + x^(2-1) * (2^(2-1) / 2!)
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
@@ -223,8 +223,8 @@ def lambertNeg1(x):
     Auto-generated via 'PrintAdvancedMathLambertPos1.py'
 '''
 def lambertPos1(x):
+    res = 0;
     xi = x;
-    res = (FIXED_1 - x) * 0xde1bc4d19efcac82445da75b00000000; # x^(1-1) * (34! * 1^(1-1) / 1!) - x^(2-1) * (34! * 2^(2-1) / 2!)
 
     xi = (xi * x) // FIXED_1; res += xi * 0x00000000014d29a73a6e7b02c3668c7b0880000000; # add x^(03-1) * (34! * 03^(03-1) / 03!)
     xi = (xi * x) // FIXED_1; res -= xi * 0x0000000002504a0cd9a7f7215b60f9be4800000000; # sub x^(04-1) * (34! * 04^(04-1) / 04!)
@@ -259,7 +259,7 @@ def lambertPos1(x):
     xi = (xi * x) // FIXED_1; res += xi * 0x5b0485a76f6646c2039db1507cdd51b08649680822; # add x^(33-1) * (34! * 33^(33-1) / 33!)
     xi = (xi * x) // FIXED_1; res -= xi * 0xec983c46c49545bc17efa6b5b0055e242200000000; # sub x^(34-1) * (34! * 34^(34-1) / 34!)
 
-    return res // 0xde1bc4d19efcac82445da75b00000000; # divide by 34!
+    return res // 0xde1bc4d19efcac82445da75b00000000 + FIXED_1 - x; # divide by 34! and then add x^(1-1) * (1^(1-1) / 1!) - x^(2-1) * (2^(2-1) / 2!)
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
