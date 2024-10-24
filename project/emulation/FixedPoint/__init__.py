@@ -4,9 +4,6 @@ from . import BondingCurve
 from . import DynamicCurve
 
 
-[module.init() for module in [AnalyticMath, AdvancedMath, BondingCurve, DynamicCurve]]
-
-
 def pow(a, b, c, d):
     return AnalyticMath.pow(a, b, c, d)
 
@@ -57,11 +54,3 @@ def invest(supply, balance, weights, amount):
 
 def equalize(staked1, balance1, balance2, rate1, rate2):
     return DynamicCurve.equalize(staked1, balance1, balance2, rate1, rate2)
-
-
-def fixedOne():
-    return 1<<AnalyticMath.MAX_PRECISION
-
-
-def lambertRange(n):
-    return [1, AdvancedMath.LAMBERT_CONV_RADIUS+1, AdvancedMath.LAMBERT_POS2_MAXVAL+1, AdvancedMath.LAMBERT_POS3_MAXVAL+1][n-1:n+1]

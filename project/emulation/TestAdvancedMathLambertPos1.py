@@ -4,9 +4,13 @@ import FixedPoint
 import FloatPoint
 
 
+FIXED_1 = FixedPoint.AdvancedMath.FIXED_1
+MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_CONV_RADIUS + 1
+
+
 def test(x):
     fixedPoint = FixedPoint.lambertPos(x)
-    floatPoint = FloatPoint.lambertPos(x, FixedPoint.fixedOne())
+    floatPoint = FloatPoint.lambertPos(x, FIXED_1)
     return fixedPoint / floatPoint
 
 
@@ -18,8 +22,8 @@ maxRatio = float('-inf')
 
 
 for n in range(size):
-    x = random.randrange(*FixedPoint.lambertRange(1))
+    x = random.randrange(1, MAX_VAL)
     ratio = test(x)
     minRatio = min(minRatio, ratio)
     maxRatio = max(maxRatio, ratio)
-    print('Test #{}: ratio = {:.24f}, minRatio = {:.24f}, maxRatio = {:.24f}'.format(n, ratio, minRatio, maxRatio))
+    print(f'Test #{n}: ratio = {ratio:.24f}, minRatio = {minRatio:.24f}, maxRatio = {maxRatio:.24f}')
