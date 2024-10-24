@@ -40,23 +40,23 @@ def lambertTerms(fixed1, maxNumOfTerms, func):
 
 def lambertNeg1(numOfTerms, x, fixed1):
     terms = lambertBinomial(numOfTerms)
-    xi = x
     res = 0
+    xi = x
     for i in range(2, len(terms)):
         xi = checked(xi * x) // fixed1
         res = checked(res + checked(xi * terms[i]))
-    res = checked(checked(res // terms[-1] + x) + fixed1)
+    res = checked(checked(res // terms[0] + fixed1) + x)
     return terms
 
 
 def lambertPos1(numOfTerms, x, fixed1):
     terms = lambertBinomial(numOfTerms)
+    res = 0
     xi = x
-    res = checked(checked(fixed1 - x) * terms[1])
     for i in range(2, len(terms)):
         xi = checked(xi * x) // fixed1
         res = checked(res + checked(xi * terms[i]) * (-1) ** i)
-    res = res // terms[1]
+    res = checked(checked(res // terms[0] + fixed1) - x)
     return terms
 
 

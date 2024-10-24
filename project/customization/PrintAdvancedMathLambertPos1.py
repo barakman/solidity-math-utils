@@ -13,8 +13,8 @@ str1 = dec_str(len(terms),len(terms))
 
 
 print('    function lambertPos1(uint256 x) internal pure returns (uint256) { unchecked {')
+print('        uint256 res = 0;')
 print('        uint256 xi = x;')
-print('        uint256 res = (FIXED_1 - x) * {}; // x^(1-1) * ({}! * 1^(1-1) / 1!) - x^(2-1) * ({}! * 2^(2-1) / 2!)'.format(str0,str1,str1))
 print('')
 for n in range(2,len(terms)):
     str2 = hex_str(terms[n],terms[-1])
@@ -23,5 +23,5 @@ for n in range(2,len(terms)):
     str5 = ['add','sub'][n%2]
     print('        xi = (xi * x) / FIXED_1; res {}= xi * {}; // {} x^({}-1) * ({}! * {}^({}-1) / {}!)'.format(str4,str2,str5,str3,str1,str3,str3,str3))
 print('')
-print('        return res / {}; // divide by {}!'.format(str0,str1))
+print('        return res / {} + FIXED_1 - x; // divide by {}! and then add x^(1-1) * (1^(1-1) / 1!) - x^(2-1) * (2^(2-1) / 2!)'.format(str0,str1))
 print('    }}')
