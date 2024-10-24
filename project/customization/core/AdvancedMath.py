@@ -45,7 +45,7 @@ def lambertNeg1(numOfTerms, x, fixed1):
     for i in range(2, len(terms)):
         xi = checked(xi * x) // fixed1
         res = checked(res + checked(xi * terms[i]))
-    res = checked(checked(res // terms[-1] + fixed1) + x)
+    res = checked(checked(res // terms[0] + fixed1) + x)
     return terms
 
 
@@ -56,7 +56,7 @@ def lambertPos1(numOfTerms, x, fixed1):
     for i in range(2, len(terms)):
         xi = checked(xi * x) // fixed1
         res = checked(res + checked(xi * terms[i]) * (-1) ** i)
-    res = checked(checked(res // terms[-1] + fixed1) - x)
+    res = checked(checked(res // terms[0] + fixed1) - x)
     return terms
 
 
