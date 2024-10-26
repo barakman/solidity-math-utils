@@ -12,7 +12,7 @@ library AdvancedMath {
     uint256 internal constant LAMBERT_CONV_RADIUS = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
     uint256 internal constant LAMBERT_POS2_SAMPLE = 0x003060c183060c183060c183060c18306;
     uint256 internal constant LAMBERT_POS2_MAXVAL = 0x1af16ac6c59de6f8d5d6f63c1482a7c80;
-    uint256 internal constant LAMBERT_POS3_MAXVAL = 0x37475e1410f5be2158455a41358e7e5c0;
+    uint256 internal constant LAMBERT_POS3_MAXVAL = 0x37475e1410f5be2158455a41358e7e5bf;
     uint256 internal constant LAMBERT_POS2_T_SIZE = 0x000000000000000000000000000000010;
     uint256 internal constant LAMBERT_POS2_T_MASK = 0x0ffffffffffffffffffffffffffffffff;
     bytes   internal constant LAMBERT_POS2_VALUES = hex"60e393c68d20b1bd09deaabc0373b9c5"

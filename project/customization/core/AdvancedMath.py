@@ -44,12 +44,15 @@ def lambertPos3MaxVal(fixed1):
     hi = MAX_VAL
     while lo + 1 < hi:
         mid = (lo + hi) // 2
-        f = (Decimal(mid) / fixed1).ln()
-        if f.ln() * (f + 1) <= f:
+        if lambertPos3Val(mid, fixed1):
             lo = mid
         else:
             hi = mid
-    return hi
+    if lambertPos3Val(hi, fixed1):
+        return hi
+    if lambertPos3Val(lo, fixed1):
+        return lo
+    assert False
 
 
 def lambertNeg1(numOfTerms, x, fixed1):
@@ -72,6 +75,11 @@ def lambertPos1(numOfTerms, x, fixed1):
         res = checked(res + checked(xi * terms[i]) * (-1) ** i)
     res = checked(checked(res // terms[0] + fixed1) - x)
     return terms
+
+
+def lambertPos3Val(x, fixed1):
+    f = (Decimal(x) / fixed1).ln()
+    return f > (f + 1) * f.ln()
 
 
 def lambertBinomial(numOfTerms):
