@@ -288,11 +288,10 @@ def lambertPos2(x):
 '''
 def lambertPos3(x):
     a = AnalyticMath.fixedLog(x);
-    b = IntegralMath.mulDivF(a, x, FIXED_1);
-    c = IntegralMath.mulDivF(a, b, FIXED_1);
-    d = IntegralMath.mulDivF(FIXED_1, c + x, b + x);
-    e = IntegralMath.mulDivF(FIXED_1, d, x);
-    return e;
+    b = IntegralMath.mulDivF(a, a, FIXED_1);
+    c = IntegralMath.mulDivF(FIXED_1, b + FIXED_1, a + FIXED_1);
+    d = IntegralMath.mulDivF(FIXED_1, c, x);
+    return d;
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
