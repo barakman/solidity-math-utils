@@ -290,6 +290,14 @@ def lambertPos3(x):
     d = IntegralMath.mulDivF(FIXED_1, a - b + c, x);
     return d;
 
+def lambertPos4(x):
+    a = AnalyticMath.fixedLog(x);
+    b = IntegralMath.mulDivF(a, x, FIXED_1);
+    c = IntegralMath.mulDivF(a, b, FIXED_1);
+    d = IntegralMath.mulDivF(FIXED_1, c + x, b + x);
+    e = IntegralMath.mulDivF(FIXED_1, d, x);
+    return e;
+
 # auxiliary function
 def read(data, offset):
     return int(("0" * 64 + data)[offset * 2 : offset * 2 + 64], 16);

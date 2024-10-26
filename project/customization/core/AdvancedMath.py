@@ -1,5 +1,6 @@
 from core import Decimal
 from core import INV_EXP
+from core import MAX_VAL
 from core import checked
 from math import factorial
 
@@ -36,6 +37,19 @@ def lambertTerms(fixed1, maxNumOfTerms, func):
         return func(hi, val, fixed1)
     except:
         return func(lo, val, fixed1)
+
+
+def lambertPos3MaxVal(fixed1):
+    lo = fixed1
+    hi = MAX_VAL
+    while lo + 1 < hi:
+        mid = (lo + hi) // 2
+        f = (Decimal(mid) / fixed1).ln()
+        if f.ln() * (f + 1) <= f:
+            lo = mid
+        else:
+            hi = mid
+    return hi
 
 
 def lambertNeg1(numOfTerms, x, fixed1):

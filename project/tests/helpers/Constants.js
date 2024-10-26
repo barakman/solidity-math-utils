@@ -12,6 +12,7 @@ module.exports.EXP_MAX = "0x2cb53f09f05cc627c85ddebfccfeb72758";
 module.exports.LAMBERT_CONV_RADIUS = "0x02f16ac6c59de6f8d5d6f63c1482a7c86";
 module.exports.LAMBERT_POS2_SAMPLE = "0x003060c183060c183060c183060c18306";
 module.exports.LAMBERT_POS2_MAXVAL = "0x1af16ac6c59de6f8d5d6f63c1482a7c80";
+module.exports.LAMBERT_POS3_MAXVAL = "0x37475e1410f5be2158455a41358e7e5c0";
 module.exports.LAMBERT_POS2_T_SIZE = "0x000000000000000000000000000000010";
 module.exports.LAMBERT_POS2_T_MASK = "0x0ffffffffffffffffffffffffffffffff";
 module.exports.LAMBERT_POS2_VALUES = [

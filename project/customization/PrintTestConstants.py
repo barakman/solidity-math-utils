@@ -25,6 +25,7 @@ print(f'module.exports.EXP_MAX = "{AnalyticMath.EXP_MAX:#0{AnalyticMath.maxLen}x
 print(f'module.exports.LAMBERT_CONV_RADIUS = "{AdvancedMath.LAMBERT_CONV_RADIUS:#0{AdvancedMath.maxLen}x}";')
 print(f'module.exports.LAMBERT_POS2_SAMPLE = "{AdvancedMath.LAMBERT_POS2_SAMPLE:#0{AdvancedMath.maxLen}x}";')
 print(f'module.exports.LAMBERT_POS2_MAXVAL = "{AdvancedMath.LAMBERT_POS2_MAXVAL:#0{AdvancedMath.maxLen}x}";')
+print(f'module.exports.LAMBERT_POS3_MAXVAL = "{AdvancedMath.LAMBERT_POS3_MAXVAL:#0{AdvancedMath.maxLen}x}";')
 print(f'module.exports.LAMBERT_POS2_T_SIZE = "{AdvancedMath.LAMBERT_POS2_T_SIZE:#0{AdvancedMath.maxLen}x}";')
 print(f'module.exports.LAMBERT_POS2_T_MASK = "{AdvancedMath.LAMBERT_POS2_T_MASK:#0{AdvancedMath.maxLen}x}";')
 print(f'module.exports.LAMBERT_POS2_VALUES = {json.dumps(["0x"+x[4:-1] for x in AdvancedMath.LAMBERT_POS2_VALUES],indent=4)};')

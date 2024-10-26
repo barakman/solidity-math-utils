@@ -10,6 +10,7 @@ const SECTIONS = [
     Decimal(0),
     Decimal(Constants.LAMBERT_CONV_RADIUS),
     Decimal(Constants.LAMBERT_POS2_MAXVAL),
+    Decimal(Constants.LAMBERT_POS3_MAXVAL),
     Decimal(Constants.LAMBERT_POS2_MAXVAL).mul(100)
 ];
 
@@ -40,7 +41,7 @@ describe(TestContract.contractName, () => {
         for (const b of [1, 2, 3, 4, 5])
             for (const c of [1, 2, 3, 4, 5])
                 for (const d of [1, 2, 3, 4, 5])
-                    testSolve(a, b, c, d, "0.19382");
+                    testSolve(a, b, c, d, "0.17461");
 
     for (const a of [1, 2, 3, 4, 5].map(n => n + 1000))
         for (const b of [1, 2, 3, 4, 5].map(n => n + 1000))
@@ -50,10 +51,11 @@ describe(TestContract.contractName, () => {
 
     for (let percent = 0; percent <= 100; percent++) {
         testSuccess("lambertNeg", percent, -1, 0, 1, "0.13251");
-        testSuccess("lambertPos", percent, +1, 0, 3, "0.06598");
+        testSuccess("lambertPos", percent, +1, 0, 4, "0.06272");
         testSuccess("lambertPos", percent, +1, 0, 1, "0.00353");
         testSuccess("lambertPos", percent, +1, 1, 2, "0.00006");
-        testSuccess("lambertPos", percent, +1, 2, 3, "0.06620");
+        testSuccess("lambertPos", percent, +1, 2, 3, "0.06484");
+        testSuccess("lambertPos", percent, +1, 2, 4, "0.06230");
     }
 
     testFailure("lambertNeg", 0, 0, "lambertNeg: x < min");

@@ -12,6 +12,7 @@ library AdvancedMath {
     uint256 internal constant LAMBERT_CONV_RADIUS = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
     uint256 internal constant LAMBERT_POS2_SAMPLE = 0x003060c183060c183060c183060c18306;
     uint256 internal constant LAMBERT_POS2_MAXVAL = 0x1af16ac6c59de6f8d5d6f63c1482a7c80;
+    uint256 internal constant LAMBERT_POS3_MAXVAL = 0x37475e1410f5be2158455a41358e7e5c0;
     uint256 internal constant LAMBERT_POS2_T_SIZE = 0x000000000000000000000000000000010;
     uint256 internal constant LAMBERT_POS2_T_MASK = 0x0ffffffffffffffffffffffffffffffff;
     bytes   internal constant LAMBERT_POS2_VALUES = hex"60e393c68d20b1bd09deaabc0373b9c5"
@@ -176,7 +177,9 @@ library AdvancedMath {
             return lambertPos1(x);
         if (x <= LAMBERT_POS2_MAXVAL)
             return lambertPos2(x);
-        return lambertPos3(x);
+        if (x <= LAMBERT_POS3_MAXVAL)
+            return lambertPos3(x);
+        return lambertPos4(x);
     }}
 
     /**
@@ -290,9 +293,22 @@ library AdvancedMath {
 
     /**
       * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
-      * Input range: LAMBERT_POS2_MAXVAL + 1 <= x <= 2 ^ 256 - 1
+      * Input range: LAMBERT_POS2_MAXVAL + 1 <= x <= LAMBERT_POS3_MAXVAL
     */
     function lambertPos3(uint256 x) internal pure returns (uint256) { unchecked {
+        uint256 a = AnalyticMath.fixedLog(x);
+        uint256 b = IntegralMath.mulDivF(a, x, FIXED_1);
+        uint256 c = IntegralMath.mulDivF(a, b, FIXED_1);
+        uint256 d = IntegralMath.mulDivF(FIXED_1, c + x, b + x);
+        uint256 e = IntegralMath.mulDivF(FIXED_1, d, x);
+        return e;
+    }}
+
+    /**
+      * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
+      * Input range: LAMBERT_POS3_MAXVAL + 1 <= x <= 2 ^ 256 - 1
+    */
+    function lambertPos4(uint256 x) internal pure returns (uint256) { unchecked {
         uint256 a = AnalyticMath.fixedLog(x);
         uint256 b = AnalyticMath.fixedLog(a);
         uint256 c = IntegralMath.mulDivF(FIXED_1, b, a);
