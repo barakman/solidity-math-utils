@@ -12,13 +12,13 @@ MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_POS3_MAXVAL * 100 + 1
 def test(x):
     fixedPoint = FixedPoint.lambertPos(x)
     floatPoint = FloatPoint.lambertPos(x, FIXED_1)
-    if floatPoint > fixedPoint:
+    if fixedPoint < floatPoint:
         error = ['Implementation Error:']
         error.append(f'x          = {x         }')
         error.append(f'fixedPoint = {fixedPoint}')
         error.append(f'floatPoint = {floatPoint}')
         raise Exception('\n'.join(error))
-    return floatPoint / fixedPoint
+    return fixedPoint / floatPoint
 
 
 size = int(sys.argv[1] if len(sys.argv) > 1 else input('How many test-cases would you like to execute? '))
@@ -31,7 +31,7 @@ for n in range(size):
     x = random.randrange(MIN_VAL, MAX_VAL)
     try:
         accuracy = test(x)
-        worstAccuracy = min(worstAccuracy, accuracy)
+        worstAccuracy = max(worstAccuracy, accuracy)
     except Exception as error:
         print(error)
         break
