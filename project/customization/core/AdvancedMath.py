@@ -79,7 +79,7 @@ def lambertPos1(numOfTerms, x, fixed1):
 
 def lambertPos3Val(x, fixed1):
     f = (Decimal(x) / fixed1).ln()
-    return f > (f + 1) * f.ln()
+    return f >= (f + 1) * f.ln()
 
 
 def lambertBinomial(numOfTerms):
