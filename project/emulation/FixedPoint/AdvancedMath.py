@@ -9,6 +9,7 @@ FIXED_1 = AnalyticMath.FIXED_1;
 LAMBERT_CONV_RADIUS = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
 LAMBERT_POS2_SAMPLE = 0x003060c183060c183060c183060c18306;
 LAMBERT_POS2_MAXVAL = 0x1af16ac6c59de6f8d5d6f63c1482a7c80;
+LAMBERT_POS3_MAXVAL = 0x37475e1410f5be2158455a41358e7e5c0;
 LAMBERT_POS2_T_SIZE = 0x000000000000000000000000000000010;
 LAMBERT_POS2_T_MASK = 0x0ffffffffffffffffffffffffffffffff;
 LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
@@ -171,7 +172,9 @@ def lambertPos(x):
         return lambertPos1(x);
     if (x <= LAMBERT_POS2_MAXVAL):
         return lambertPos2(x);
-    return lambertPos3(x);
+    if (x <= LAMBERT_POS3_MAXVAL):
+        return lambertPos3(x);
+    return lambertPos4(x);
 
 '''
     @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
@@ -281,22 +284,26 @@ def lambertPos2(x):
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
-    Input range: LAMBERT_POS2_MAXVAL + 1 <= x <= 2 ^ 256 - 1
+    Input range: LAMBERT_POS2_MAXVAL + 1 <= x <= LAMBERT_POS3_MAXVAL
 '''
 def lambertPos3(x):
-    a = AnalyticMath.fixedLog(x);
-    b = AnalyticMath.fixedLog(a);
-    c = IntegralMath.mulDivF(FIXED_1, b, a);
-    d = IntegralMath.mulDivF(FIXED_1, a - b + c, x);
-    return d;
-
-def lambertPos4(x):
     a = AnalyticMath.fixedLog(x);
     b = IntegralMath.mulDivF(a, x, FIXED_1);
     c = IntegralMath.mulDivF(a, b, FIXED_1);
     d = IntegralMath.mulDivF(FIXED_1, c + x, b + x);
     e = IntegralMath.mulDivF(FIXED_1, d, x);
     return e;
+
+'''
+    @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
+    Input range: LAMBERT_POS3_MAXVAL + 1 <= x <= 2 ^ 256 - 1
+'''
+def lambertPos4(x):
+    a = AnalyticMath.fixedLog(x);
+    b = AnalyticMath.fixedLog(a);
+    c = IntegralMath.mulDivF(FIXED_1, b, a);
+    d = IntegralMath.mulDivF(FIXED_1, a - b + c, x);
+    return d;
 
 # auxiliary function
 def read(data, offset):
