@@ -39,8 +39,8 @@ def lambertTerms(fixed1, maxNumOfTerms, func):
         return func(lo, val, fixed1)
 
 
-def lambertPos3MaxVal(fixed1):
-    lo = fixed1
+def lambertPos3MaxVal(fixed1, minVal):
+    lo = minVal
     hi = MAX_VAL
     while lo + 1 < hi:
         mid = (lo + hi) // 2
