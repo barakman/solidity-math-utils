@@ -55,7 +55,7 @@ describe(TestContract.contractName, () => {
         testSuccess("lambertPos", percent, +1, 0, 1, "0.00353");
         testSuccess("lambertPos", percent, +1, 1, 2, "0.00006");
         testSuccess("lambertPos", percent, +1, 2, 3, "0.06484");
-        testSuccess("lambertPos", percent, +1, 2, 4, "0.06166");
+        testSuccess("lambertPos", percent, +1, 3, 4, "0.06484");
     }
 
     testFailure("lambertNeg", 0, 0, "lambertNeg: x < min");
