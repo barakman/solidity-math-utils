@@ -40,7 +40,7 @@ describe(TestContract.contractName, () => {
         for (const b of [1, 2, 3, 4, 5])
             for (const c of [1, 2, 3, 4, 5])
                 for (const d of [1, 2, 3, 4, 5])
-                    testSolve(a, b, c, d, "0.19382");
+                    testSolve(a, b, c, d, "0.09154");
 
     for (const a of [1, 2, 3, 4, 5].map(n => n + 1000))
         for (const b of [1, 2, 3, 4, 5].map(n => n + 1000))
@@ -50,10 +50,10 @@ describe(TestContract.contractName, () => {
 
     for (let percent = 0; percent <= 100; percent++) {
         testSuccess("lambertNeg", percent, -1, 0, 1, "0.13251");
-        testSuccess("lambertPos", percent, +1, 0, 3, "0.06598");
+        testSuccess("lambertPos", percent, +1, 0, 3, "0.01409");
         testSuccess("lambertPos", percent, +1, 0, 1, "0.00353");
         testSuccess("lambertPos", percent, +1, 1, 2, "0.00006");
-        testSuccess("lambertPos", percent, +1, 2, 3, "0.06620");
+        testSuccess("lambertPos", percent, +1, 2, 3, "0.04400");
     }
 
     testFailure("lambertNeg", 0, 0, "lambertNeg: x < min");
