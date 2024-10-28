@@ -287,7 +287,7 @@ def lambertPos3(x):
     a = AnalyticMath.fixedLog(x);
     b = AnalyticMath.fixedLog(a);
     c = IntegralMath.mulDivF(b, b + (a - FIXED_1) * 2, a);
-    d = IntegralMath.mulDivF(FIXED_1, c, a * 2);
+    d = IntegralMath.mulDivF(FIXED_1 // 2, c, a);
     e = IntegralMath.mulDivF(FIXED_1, a - b + d, x);
     return e;
 
