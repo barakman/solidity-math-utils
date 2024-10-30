@@ -295,9 +295,10 @@ library AdvancedMath {
     function lambertPos3(uint256 x) internal pure returns (uint256) { unchecked {
         uint256 a = AnalyticMath.fixedLog(x);
         uint256 b = AnalyticMath.fixedLog(a);
-        uint256 c = IntegralMath.mulDivF(FIXED_1, b, a);
-        uint256 d = IntegralMath.mulDivF(FIXED_1, a - b + c, x);
-        return d;
+        uint256 c = IntegralMath.mulDivF(b, b + (a - FIXED_1) * 2, a);
+        uint256 d = IntegralMath.mulDivF(FIXED_1 / 2, c, a);
+        uint256 e = IntegralMath.mulDivF(FIXED_1, a - b + d, x);
+        return e;
     }}
 
     // auxiliary function
