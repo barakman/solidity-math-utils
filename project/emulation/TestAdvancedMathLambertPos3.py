@@ -6,7 +6,7 @@ import FloatPoint
 
 FIXED_1 = FixedPoint.AdvancedMath.FIXED_1
 MIN_VAL = FixedPoint.AdvancedMath.LAMBERT_POS2_MAXVAL + 1
-MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_POS2_MAXVAL * 10 + 1
+MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_POS2_MAXVAL * 100 + 1
 
 
 def test(x):
