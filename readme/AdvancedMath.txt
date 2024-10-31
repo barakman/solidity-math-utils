@@ -12,7 +12,7 @@ Where $W$ is the Lambert W Function.
 
 In order to approximate this solution, we split the input domain $z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}$ into:
 
-$$\underbrace{-\infty\ldots-1/e}\bigg|\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots+1/e}\bigg|\underbrace{+1/e\ldots3+1/e}\bigg|\underbrace{3+1/e\ldots+\infty}$$
+$$\underbrace{-\infty\ldots-1/e}\bigg|\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots+1/e}\bigg|\underbrace{+1/e\ldots24+1/e}\bigg|\underbrace{24+1/e\ldots+\infty}$$
 
 ---
 
@@ -33,12 +33,14 @@ As you can see, when $a=b$, both formulas can be reduced to $x=\frac{c}{d}$.
 
 ---
 
-For $+1/e<z<3+1/e$, we use a lookup table which maps $128$ uniformly distributed values of $z$.
+For $+1/e<z<24+1/e$, we use a lookup table which maps $128$ uniformly distributed values of $z$.
 
 Then, we calculate $W(z')$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z'}<z_1$.
 
 ---
 
-For $z\geq3+1/e$, we rely on the fact that $W(z)\approx\log(z)-\log(\log(z))+\log(\log(z))/\log(z)$.
+For $z\geq24+1/e$, we rely on the fact that $W(z)\approx{p-q+\frac{q^2+2pq-2q}{2p^2}}$, where $p=\log(z)$ and $q=\log(p)$.
 
-Of course, $z$ is ultimately restricted by the maximum input supported in our $\log$ implementation.
+Since this method requires the calculation of $\log(log(z))$, it is actually applicable for as low as $z=e$.
+
+However, a higher starting value ($z=24+1/e$) is used here in order to achieve higher accuracy.
