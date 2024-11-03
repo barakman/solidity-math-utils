@@ -31,6 +31,14 @@ For $-1/e\leq{z}\leq+1/e$, you may observe that $x=\frac{W\Big(\log\big(\frac{a}
 
 As you can see, when $a=b$, both formulas can be reduced to $x=\frac{c}{d}$.
 
+Note that as the value of $z$ approaches $-1/e$, the value of $W(z)$ approaches $-1$ but it never actually reaches there.
+
+The function becomes increasingly steep, making its approximation via the Taylor series above increasingly inaccurate.
+
+Hence for the smallest $\%1$ of the range $-1/e\leq{z}\leq0$, we approximate $W(z)$ via Newton-Raphson convergence instead:
+
+$$\begin{cases}y_0=x\\y_{n+1}=\frac{x\cdot{e^{y_n}}-y_n^2}{1-y_n}\bigg|{n=1,\dots,4}\end{cases}$$
+
 ---
 
 For $+1/e<z<24+1/e$, we use a lookup table which maps $128$ uniformly distributed values of $z$.
