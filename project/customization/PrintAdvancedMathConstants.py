@@ -1,6 +1,8 @@
 from util import hex_len
 from core import AdvancedMath
 from constants import FIXED_1
+from constants import LAMBERT_NEG1_PART_N
+from constants import LAMBERT_NEG1_PART_D
 from constants import LAMBERT_POS2_EXTENT
 from constants import LAMBERT_POS2_SAMPLES
 
@@ -10,7 +12,7 @@ lambertSample = AdvancedMath.lambertSample(FIXED_1,LAMBERT_POS2_EXTENT,LAMBERT_P
 samples = AdvancedMath.lambertSamples(FIXED_1,lambertRadius+1,lambertSample,LAMBERT_POS2_SAMPLES)
 
 
-LAMBERT_NEG1_MAXVAL = lambertRadius*99//100
+LAMBERT_NEG1_MAXVAL = lambertRadius*LAMBERT_NEG1_PART_N//LAMBERT_NEG1_PART_D
 LAMBERT_NEG2_MAXVAL = lambertRadius
 LAMBERT_POS1_MAXVAL = lambertRadius
 LAMBERT_POS2_MAXVAL = lambertSample*(LAMBERT_POS2_SAMPLES-1)+LAMBERT_POS1_MAXVAL

@@ -2,10 +2,13 @@ from util import dec_str
 from util import hex_str
 from core import AdvancedMath
 from constants import FIXED_1
-from constants import LAMBERT_MAX_TERMS
+from constants import LAMBERT_NEG1_TERMS
+from constants import LAMBERT_NEG1_PART_N
+from constants import LAMBERT_NEG1_PART_D
 
 
-terms = AdvancedMath.lambertNeg1Terms(FIXED_1,LAMBERT_MAX_TERMS)
+maxVal = AdvancedMath.lambertRadius(FIXED_1)*LAMBERT_NEG1_PART_N//LAMBERT_NEG1_PART_D
+terms = AdvancedMath.lambertNeg1Terms(FIXED_1,LAMBERT_NEG1_TERMS,maxVal)
 
 
 str0 = hex_str(terms[0],terms[0])
