@@ -8,6 +8,10 @@ def lambertRadius(fixed1):
     return int(INV_EXP * fixed1)
 
 
+def lambertSample(fixed1, extent, numOfSamples):
+    return extent * fixed1 // (numOfSamples - 1)
+
+
 def lambertNeg1Terms(fixed1, maxNumOfTerms):
     return lambertTerms(fixed1, maxNumOfTerms, lambertNeg1)
 
@@ -16,8 +20,7 @@ def lambertPos1Terms(fixed1, maxNumOfTerms):
     return lambertTerms(fixed1, maxNumOfTerms, lambertPos1)
 
 
-def lambertSamples(fixed1, sizeOfSample, numOfSamples):
-    offset = lambertRadius(fixed1) + 1
+def lambertSamples(fixed1, offset, sizeOfSample, numOfSamples):
     return [int(lambertRatio(Decimal(offset + sizeOfSample * i) / fixed1) * fixed1) for i in range(numOfSamples)]
 
 

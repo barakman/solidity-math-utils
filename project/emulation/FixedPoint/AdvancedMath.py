@@ -6,9 +6,11 @@ from . import IntegralMath
 FIXED_1 = AnalyticMath.FIXED_1;
 
 # Auto-generated via 'PrintAdvancedMathConstants.py'
-LAMBERT_CONV_RADIUS = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
-LAMBERT_POS2_SAMPLE = 0x0183060c183060c183060c183060c1830;
+LAMBERT_NEG1_MAXVAL = 0x02e9e207581ee21a2fdc7e0328c907628;
+LAMBERT_NEG2_MAXVAL = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
+LAMBERT_POS1_MAXVAL = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
 LAMBERT_POS2_MAXVAL = 0xc2f16ac6c59de6f8d5d6f63c1482a7c56;
+LAMBERT_POS2_SAMPLE = 0x0183060c183060c183060c183060c1830;
 LAMBERT_POS2_T_SIZE = 0x000000000000000000000000000000010;
 LAMBERT_POS2_T_MASK = 0x0ffffffffffffffffffffffffffffffff;
 LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
@@ -153,12 +155,14 @@ def solve(a, b, c, d):
 
 '''
     @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
-    Input range: 1 <= x <= LAMBERT_CONV_RADIUS
+    Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
 '''
 def lambertNeg(x):
     require(x > 0, "lambertNeg: x < min");
-    if (x <= LAMBERT_CONV_RADIUS):
+    if (x <= LAMBERT_NEG1_MAXVAL):
         return lambertNeg1(x);
+    if (x <= LAMBERT_NEG2_MAXVAL):
+        return lambertNeg2(x);
     revert("lambertNeg: x > max");
 
 '''
@@ -167,7 +171,7 @@ def lambertNeg(x):
 '''
 def lambertPos(x):
     require(x > 0, "lambertPos: x < min");
-    if (x <= LAMBERT_CONV_RADIUS):
+    if (x <= LAMBERT_POS1_MAXVAL):
         return lambertPos1(x);
     if (x <= LAMBERT_POS2_MAXVAL):
         return lambertPos2(x);
@@ -175,7 +179,7 @@ def lambertPos(x):
 
 '''
     @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
-    Input range: 1 <= x <= LAMBERT_CONV_RADIUS
+    Input range: 1 <= x <= LAMBERT_NEG1_MAXVAL
     Auto-generated via 'PrintAdvancedMathLambertNeg1.py'
 '''
 def lambertNeg1(x):
@@ -219,7 +223,7 @@ def lambertNeg1(x):
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
-    Input range: 1 <= x <= LAMBERT_CONV_RADIUS
+    Input range: 1 <= x <= LAMBERT_POS1_MAXVAL
     Auto-generated via 'PrintAdvancedMathLambertPos1.py'
 '''
 def lambertPos1(x):
@@ -262,12 +266,23 @@ def lambertPos1(x):
     return res // 0xde1bc4d19efcac82445da75b00000000 + FIXED_1 - x; # divide by 34! and then add x^(1-1) * (1^(1-1) / 1!) - x^(2-1) * (2^(2-1) / 2!)
 
 '''
+    @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
+    Input range: LAMBERT_NEG1_MAXVAL + 1 <= x <= LAMBERT_NEG2_MAXVAL
+'''
+def lambertNeg2(x):
+    y = x;
+    for i in range(4):
+        z = AnalyticMath.fixedExp(y);
+        y = (x * z - y * y) // (FIXED_1 - y);
+    return IntegralMath.mulDivF(FIXED_1, y, x);
+
+'''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
-    Input range: LAMBERT_CONV_RADIUS + 1 <= x <= LAMBERT_POS2_MAXVAL
+    Input range: LAMBERT_POS1_MAXVAL + 1 <= x <= LAMBERT_POS2_MAXVAL
 '''
 def lambertPos2(x):
     values = LAMBERT_POS2_VALUES;
-    y = x - LAMBERT_CONV_RADIUS - 1;
+    y = x - LAMBERT_POS1_MAXVAL - 1;
     i = y // LAMBERT_POS2_SAMPLE;
     a = LAMBERT_POS2_SAMPLE * (i + 0);
     b = LAMBERT_POS2_SAMPLE * (i + 1);

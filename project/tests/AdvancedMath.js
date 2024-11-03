@@ -6,12 +6,15 @@ const Decimal = require("decimal.js");
 const W_MIN_X = Decimal(-1).exp().neg();
 const FIXED_1 = Decimal(Constants.FIXED_1);
 
-const SECTIONS = [
-    Decimal(0),
-    Decimal(Constants.LAMBERT_CONV_RADIUS),
-    Decimal(Constants.LAMBERT_POS2_MAXVAL),
-    Decimal(Constants.LAMBERT_POS2_MAXVAL).mul(100)
-];
+const LAMBERT_NEG0 = Decimal(0);
+const LAMBERT_NEG1 = Decimal(Constants.LAMBERT_NEG1_MAXVAL);
+const LAMBERT_NEG2 = Decimal(Constants.LAMBERT_NEG2_MAXVAL);
+const LAMBERT_POS0 = Decimal(0);
+const LAMBERT_POS1 = Decimal(Constants.LAMBERT_POS1_MAXVAL);
+const LAMBERT_POS2 = Decimal(Constants.LAMBERT_POS2_MAXVAL);
+const LAMBERT_POS3 = Decimal(Constants.LAMBERT_POS2_MAXVAL).mul(100);
+
+const SIGN = {lambertNeg: -1, lambertPos: +1};
 
 function solvable(a, b, c, d) {
     return Decimal(a).div(b).ln().mul(c).div(d).gte(W_MIN_X);
@@ -40,7 +43,7 @@ describe(TestContract.contractName, () => {
         for (const b of [1, 2, 3, 4, 5])
             for (const c of [1, 2, 3, 4, 5])
                 for (const d of [1, 2, 3, 4, 5])
-                    testSolve(a, b, c, d, "0.00883");
+                    testSolve(a, b, c, d, "0.00479");
 
     for (const a of [1, 2, 3, 4, 5].map(n => n + 1000))
         for (const b of [1, 2, 3, 4, 5].map(n => n + 1000))
@@ -49,16 +52,16 @@ describe(TestContract.contractName, () => {
                     testSolve(a, b, c, d, "0.000000000000000000000000000000002");
 
     for (let percent = 0; percent <= 100; percent++) {
-        testSuccess("lambertNeg", percent, -1, 0, 1, "0.13251");
-        testSuccess("lambertPos", percent, +1, 0, 3, "0.00261");
-        testSuccess("lambertPos", percent, +1, 0, 1, "0.00353");
-        testSuccess("lambertPos", percent, +1, 1, 2, "0.00203");
-        testSuccess("lambertPos", percent, +1, 2, 3, "0.00262");
+        testSuccess("lambertNeg", percent, LAMBERT_NEG0, LAMBERT_NEG1, "0.04459");
+        testSuccess("lambertNeg", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.05387");
+        testSuccess("lambertPos", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00353");
+        testSuccess("lambertPos", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00203");
+        testSuccess("lambertPos", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00262");
     }
 
-    testFailure("lambertNeg", 0, 0, "lambertNeg: x < min");
-    testFailure("lambertPos", 0, 0, "lambertPos: x < min");
-    testFailure("lambertNeg", 1, 1, "lambertNeg: x > max");
+    testFailure("lambertNeg", LAMBERT_NEG0.add(0), "lambertNeg: x < min");
+    testFailure("lambertPos", LAMBERT_POS0.add(0), "lambertPos: x < min");
+    testFailure("lambertNeg", LAMBERT_NEG2.add(1), "lambertNeg: x > max");
 
     function testSolve(a, b, c, d, maxError) {
         it(`solve(${a}, ${b}, ${c}, ${d})`, async () => {
@@ -74,11 +77,11 @@ describe(TestContract.contractName, () => {
         });
     }
 
-    function testSuccess(methodName, percent, sign, bgn, end, maxError) {
+    function testSuccess(methodName, percent, minVal, maxVal, maxError) {
         it(`${methodName}(${percent}%)`, async () => {
-            const x = SECTIONS[bgn].add(1).add(SECTIONS[end].sub(SECTIONS[bgn].add(1)).mul(percent).divToInt(100));
-            const actual = Decimal((await testContract[methodName](x.toFixed())).toString());
-            const expected = lambertRatio(x.mul(sign).div(FIXED_1)).mul(FIXED_1);
+            const val = minVal.add(1).add(maxVal.sub(minVal.add(1)).mul(percent).divToInt(100));
+            const actual = Decimal((await testContract[methodName](val.toFixed())).toString());
+            const expected = lambertRatio(val.mul(SIGN[methodName]).div(FIXED_1)).mul(FIXED_1);
             if (!actual.eq(expected)) {
                 const error = actual.div(expected).sub(1).abs();
                 assert(error.lte(maxError), `error = ${error.toFixed()}`);
@@ -86,9 +89,9 @@ describe(TestContract.contractName, () => {
         });
     }
 
-    function testFailure(methodName, index, add, errorMessage) {
+    function testFailure(methodName, val, errorMessage) {
         it(`${methodName} should revert with '${errorMessage}'`, async () => {
-            await Utilities.assertRevert(testContract[methodName](SECTIONS[index].add(add).toFixed()), errorMessage);
+            await Utilities.assertRevert(testContract[methodName](val.toFixed()), errorMessage);
         });
     }
 });

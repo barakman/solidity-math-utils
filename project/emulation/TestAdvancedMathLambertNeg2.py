@@ -5,7 +5,7 @@ import FloatPoint
 
 
 FIXED_1 = FixedPoint.AdvancedMath.FIXED_1
-MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_NEG1_MAXVAL + 1
+MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_NEG2_MAXVAL + 1
 
 
 def test(x):
