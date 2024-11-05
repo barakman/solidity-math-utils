@@ -53,7 +53,7 @@ describe(TestContract.contractName, () => {
 
     for (let percent = 0; percent <= 100; percent++) {
         testSuccess("lambertNeg", percent, LAMBERT_NEG0, LAMBERT_NEG1, "0.04459");
-        testSuccess("lambertNeg", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.05387");
+        testSuccess("lambertNeg", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.00657");
         testSuccess("lambertPos", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00353");
         testSuccess("lambertPos", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00203");
         testSuccess("lambertPos", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00262");
