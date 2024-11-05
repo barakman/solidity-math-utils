@@ -8,34 +8,36 @@ def lambertRadius(fixed1):
     return int(INV_EXP * fixed1)
 
 
-def lambertNeg1Terms(fixed1, maxNumOfTerms):
-    return lambertTerms(fixed1, maxNumOfTerms, lambertNeg1)
+def lambertSample(fixed1, extent, numOfSamples):
+    return extent * fixed1 // (numOfSamples - 1)
 
 
-def lambertPos1Terms(fixed1, maxNumOfTerms):
-    return lambertTerms(fixed1, maxNumOfTerms, lambertPos1)
+def lambertNeg1Terms(fixed1, maxNumOfTerms, maxVal):
+    return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertNeg1)
 
 
-def lambertSamples(fixed1, sizeOfSample, numOfSamples):
-    offset = lambertRadius(fixed1) + 1
+def lambertPos1Terms(fixed1, maxNumOfTerms, maxVal):
+    return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertPos1)
+
+
+def lambertSamples(fixed1, offset, sizeOfSample, numOfSamples):
     return [int(lambertRatio(Decimal(offset + sizeOfSample * i) / fixed1) * fixed1) for i in range(numOfSamples)]
 
 
-def lambertTerms(fixed1, maxNumOfTerms, func):
+def lambertTerms(fixed1, maxNumOfTerms, maxVal, func):
     lo = 0
     hi = maxNumOfTerms
-    val = lambertRadius(fixed1)
     while lo + 1 < hi:
         mid = (lo + hi) // 2
         try:
-            func(mid, val, fixed1)
+            func(mid, maxVal, fixed1)
             lo = mid
         except:
             hi = mid
     try:
-        return func(hi, val, fixed1)
+        return func(hi, maxVal, fixed1)
     except:
-        return func(lo, val, fixed1)
+        return func(lo, maxVal, fixed1)
 
 
 def lambertNeg1(numOfTerms, x, fixed1):

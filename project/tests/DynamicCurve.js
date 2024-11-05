@@ -31,7 +31,7 @@ describe(TestContract.contractName, () => {
             for (const r of [1, 2, 3, 4, 5])
                 for (const q of [1, 2, 3, 4, 5])
                     for (const p of [1, 2, 3, 4, 5])
-                        test(t, s, r, q, p, "0.00891");
+                        test(t, s, r, q, p, "0.00477");
 
     for (const t of [1, 2, 3, 4, 5].map(n => `${n}`.repeat(21 + (n >> 1))))
         for (const s of [1, 2, 3, 4, 5].map(n => `${n}`.repeat(21 + (n >> 1))))

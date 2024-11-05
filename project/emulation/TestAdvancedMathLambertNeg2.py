@@ -5,7 +5,8 @@ import FloatPoint
 
 
 FIXED_1 = FixedPoint.AdvancedMath.FIXED_1
-MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_NEG1_MAXVAL + 1
+MIN_VAL = FixedPoint.AdvancedMath.LAMBERT_NEG1_MAXVAL + 1
+MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_NEG2_MAXVAL + 1
 
 
 def test(x):
@@ -27,7 +28,7 @@ worstAccuracy = 1
 
 
 for n in range(size):
-    x = random.randrange(1, MAX_VAL)
+    x = random.randrange(MIN_VAL, MAX_VAL)
     try:
         accuracy = test(x)
         worstAccuracy = min(worstAccuracy, accuracy)
