@@ -9,7 +9,7 @@ library AdvancedMath {
     uint256 internal constant FIXED_1 = AnalyticMath.FIXED_1;
 
     // Auto-generated via 'PrintAdvancedMathConstants.py'
-    uint256 internal constant LAMBERT_NEG1_MAXVAL = 0x002e9e207581ee21a2fdc7e0328c907628;
+    uint256 internal constant LAMBERT_NEG1_MAXVAL = 0x002e9e207581ee21a2fdc7e0328c907634;
     uint256 internal constant LAMBERT_NEG2_MAXVAL = 0x002f16ac6c59de6f8d5d6f63c1482a7c86;
     uint256 internal constant LAMBERT_NEG2_SAMPLE = 0x0000080954b9100531c21c3bf872e8228e;
     uint256 internal constant LAMBERT_NEG2_T_SIZE = 0x0000000000000000000000000000000011;
@@ -19,22 +19,22 @@ library AdvancedMath {
     uint256 internal constant LAMBERT_POS2_SAMPLE = 0x00183060c183060c183060c183060c1830;
     uint256 internal constant LAMBERT_POS2_T_SIZE = 0x0000000000000000000000000000000010;
     uint256 internal constant LAMBERT_POS2_T_MASK = 0x00ffffffffffffffffffffffffffffffff;
-    bytes   internal constant LAMBERT_NEG2_VALUES = hex"012ff3f5b94a776318e70a4b0be31da7b0"
-                                                    hex"01314a4702ae8ae09a01a03f6933dcee15"
-                                                    hex"0132afb4b8985b32518cd371f2b5c6dc34"
-                                                    hex"0134260eac628aa55b0b35bd5ba1df0c32"
-                                                    hex"0135af881e5cbc17f5de16bb0581682464"
-                                                    hex"01374ed8520d0404e91fe8e683b8d814c0"
-                                                    hex"0139076a4780adf3619a57f1b6e40e3c79"
-                                                    hex"013adda534e8e43471fe0ae32b8bbf0a25"
-                                                    hex"013cd75f834551aa105eff810be8afce4c"
-                                                    hex"013efc9f6e12358e1f8c040050efadd088"
-                                                    hex"014158f4e68e9217def733dc63fba7e7f2"
-                                                    hex"0143fe22b87c9944205ebc3be59f41025b"
-                                                    hex"01470a158303eabda73222305243e7c2c2"
-                                                    hex"014ab733a071f0dfc80ab6c42b29b5c7dd"
-                                                    hex"014f9c668b59483575a0daad8006952059"
-                                                    hex"015aa59d425cbd5ed5a6a64da5a11047c7";
+    bytes   internal constant LAMBERT_NEG2_VALUES = hex"012ff3f5b94a776318e70a4b0be31da9a5"
+                                                    hex"01314a4702ae8ae09a01a03f6933dcf01f"
+                                                    hex"0132afb4b8985b32518cd371f2b5c6de56"
+                                                    hex"0134260eac628aa55b0b35bd5ba1df0e6e"
+                                                    hex"0135af881e5cbc17f5de16bb05816826c0"
+                                                    hex"01374ed8520d0404e91fe8e683b8d8173e"
+                                                    hex"0139076a4780adf3619a57f1b6e40e3f20"
+                                                    hex"013adda534e8e43471fe0ae32b8bbf0cfc"
+                                                    hex"013cd75f834551aa105eff810be8afd15e"
+                                                    hex"013efc9f6e12358e1f8c040050efadd3e2"
+                                                    hex"014158f4e68e9217def733dc63fba7eba9"
+                                                    hex"0143fe22b87c9944205ebc3be59f410691"
+                                                    hex"01470a158303eabda73222305243e7c7b2"
+                                                    hex"014ab733a071f0dfc80ab6c42b29b5ce07"
+                                                    hex"014f9c668b59483575a0daad8006952948"
+                                                    hex"015aa59d425cbd5ed5a6a64da5a1108555";
     bytes   internal constant LAMBERT_POS2_VALUES = hex"60e393c68d20b1bd09deaabc0373b9c5"
                                                     hex"577b97aa1fe222bb452fdf111b1f0be2"
                                                     hex"5035f241d6eae0cd7bacba119993de7b"

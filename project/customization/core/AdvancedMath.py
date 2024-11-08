@@ -4,14 +4,6 @@ from core import checked
 from math import factorial
 
 
-def lambertRadius(fixed1):
-    return int(INV_EXP * fixed1)
-
-
-def lambertSample(fixed1, extent, numOfSamples):
-    return extent * fixed1 // (numOfSamples - 1)
-
-
 def lambertNeg1Terms(fixed1, maxNumOfTerms, maxVal):
     return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertNeg1)
 
@@ -20,8 +12,32 @@ def lambertPos1Terms(fixed1, maxNumOfTerms, maxVal):
     return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertPos1)
 
 
-def lambertSamples(fixed1, offset, sizeOfSample, numOfSamples):
-    return [int(lambertRatio(Decimal(offset + sizeOfSample * i) / fixed1) * fixed1) for i in range(numOfSamples)]
+def lambertNegParams(fixed1, samples, part_n, part_d):
+    bgn, end = lambertNegLimits(fixed1, samples, part_n, part_d)
+    return bgn, end, *lambertLutParams(fixed1, samples, bgn, end, -1)
+
+
+def lambertPosParams(fixed1, samples, size_n, size_d):
+    bgn, end = lambertPosLimits(fixed1, samples, size_n, size_d)
+    return bgn, end, *lambertLutParams(fixed1, samples, bgn, end, +1)
+
+
+def lambertNegLimits(fixed1, samples, part_n, part_d):
+    radius = int(INV_EXP * fixed1)
+    return radius - radius * part_n // part_d // (samples - 1) * (samples - 1), radius
+
+
+def lambertPosLimits(fixed1, samples, size_n, size_d):
+    radius = int(INV_EXP * fixed1)
+    return radius, radius + fixed1 * size_n // size_d // (samples - 1) * (samples - 1)
+
+
+def lambertLutParams(fixed1, samples, bgn, end, sign):
+    sample = (end - (bgn + 1)) // (samples - 1) + 1
+    values = [int(lambertRatio(Decimal(sign * (bgn + 1 + sample * i)) / fixed1) * fixed1) for i in range(samples)]
+    t_size = (len(bin(max(values))) - 3) // 8 + 1
+    t_mask = (1 << (t_size * 8)) - 1
+    return sample, t_size, t_mask, values
 
 
 def lambertTerms(fixed1, maxNumOfTerms, maxVal, func):
