@@ -5,7 +5,8 @@ from . import FractionMath
 MAX_WEIGHT = 1000000;
 
 '''
-    @dev Consider a pool which implements the bonding-curve model over a primary reserve token and a secondary reserve token.
+    Abstract:
+    Consider a pool which implements the bonding-curve model over a primary reserve token and a secondary reserve token.
     Let 'on-chain price' denote the conversion rate between these tokens inside the pool (i.e., as determined by the pool).
     Let 'off-chain price' denote the conversion rate between these tokens outside the pool (i.e., as determined by the market).
     The arbitrage incentive is always to convert to the point where the on-chain price is equal to the off-chain price.
@@ -35,6 +36,10 @@ MAX_WEIGHT = 1000000;
     - P = 2 ==> 1 primary reserve token = 2 ethers
     - Q = 3 ==> 1 secondary reserve token = 3 ethers
     Then you can simply use p = Q and q = P
+'''
+
+'''
+    @dev Equalize the weights of a given pool while opting for accuracy over performance
     
     @param t The primary reserve token staked balance
     @param s The primary reserve token balance
@@ -48,8 +53,37 @@ MAX_WEIGHT = 1000000;
 '''
 def equalizeExact(t, s, r, q, p):
     return equalize(t, s, r, q, p, AdvancedMath.solveExact);
+
+'''
+    @dev Equalize the weights of a given pool while opting for performance over accuracy
+    
+    @param t The primary reserve token staked balance
+    @param s The primary reserve token balance
+    @param r The secondary reserve token balance
+    @param q The numerator of the off-chain price
+    @param p The denominator of the off-chain price
+    
+    Note that `numerator / denominator` should represent the amount of secondary tokens equal to one primary token
+    
+    @return The weight of the primary reserve token and the weight of the secondary reserve token, both in ppm units
+'''
 def equalizeQuick(t, s, r, q, p):
     return equalize(t, s, r, q, p, AdvancedMath.solveQuick);
+
+'''
+    @dev Equalize the weights of a given pool using a transcendental-equation solver
+    
+    @param t The primary reserve token staked balance
+    @param s The primary reserve token balance
+    @param r The secondary reserve token balance
+    @param q The numerator of the off-chain price
+    @param p The denominator of the off-chain price
+    @param AdvancedMath_solveFunction The solver function
+    
+    Note that `numerator / denominator` should represent the amount of secondary tokens equal to one primary token
+    
+    @return The weight of the primary reserve token and the weight of the secondary reserve token, both in ppm units
+'''
 def equalize(t, s, r, q, p, AdvancedMath_solveFunction):
     if (t == s):
         require(t > 0 or r > 0, "invalid balance");

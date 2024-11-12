@@ -362,7 +362,9 @@ def lambertPos3(x):
     e = IntegralMath.mulDivF(FIXED_1, a - b + d, x);
     return e;
 
-# auxiliary function
+'''
+    @dev Solve the equation x * (a / b) ^ x = c / d for x
+'''
 def solve(a, b, c, d, lambertNeg, lambertPos):
     if (a > b):
         return call(lambertPos, a, b, c, d);
@@ -370,10 +372,14 @@ def solve(a, b, c, d, lambertNeg, lambertPos):
         return call(lambertNeg, b, a, c, d);
     return (c, d);
 
-# auxiliary function
+'''
+    @dev Return f(log(x / y) * z / w * FIXED_1) * z / w / FIXED_1
+'''
 def call(f, x, y, z, w):
     return FractionMath.productRatio(f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w)), z, w, FIXED_1);
 
-# auxiliary function
+'''
+    @dev Read 32 bytes from a given chunk of data at a given offset
+'''
 def read(data, offset):
     return int(("0" * 64 + data)[offset * 2 : offset * 2 + 64], 16);

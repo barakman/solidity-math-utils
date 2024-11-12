@@ -7,8 +7,7 @@ MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
 MAX_UINT128 = 2 ** 128 - 1;
 
 '''
-    @dev Compute the power of a given ratio
-    while opting for accuracy over performance
+    @dev Compute the power of a given ratio while opting for accuracy over performance
     
     @param n The ratio numerator
     @param d The ratio denominator
@@ -21,8 +20,7 @@ def poweredRatioExact(n, d, exp):
     return poweredRatio(n, d, exp, productRatio);
 
 '''
-    @dev Compute the power of a given ratio
-    while opting for performance over accuracy
+    @dev Compute the power of a given ratio while opting for performance over accuracy
     
     @param n The ratio numerator
     @param d The ratio denominator
@@ -112,6 +110,17 @@ def estimatedRatio(n, d, scale):
         return (1, scale - 1); # `(n + d) / 2 < n * scale < MAX_VAL < n + d`
     return (scale // 2, scale - scale // 2); # reflect the fact that initially `n <= d`
 
+'''
+    @dev Compute the power of a given ratio
+    
+    @param n The ratio numerator
+    @param d The ratio denominator
+    @param exp The exponentiation value
+    @param safeRatio The computing function
+    
+    @return The powered ratio numerator
+    @return The powered ratio denominator
+'''
 def poweredRatio(n, d, exp, safeRatio):
     require(exp <= MAX_EXP, "exp too large");
 
