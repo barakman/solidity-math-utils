@@ -4,15 +4,27 @@ pragma solidity 0.8.28;
 import "../AdvancedMath.sol";
 
 contract AdvancedMathUser {
-    function solve(uint256 a, uint256 b, uint256 c, uint256 d) external pure returns (uint256, uint256) {
-        return AdvancedMath.solve(a, b, c, d);
+    function solveExact(uint256 a, uint256 b, uint256 c, uint256 d) external pure returns (uint256, uint256) {
+        return AdvancedMath.solveExact(a, b, c, d);
     }
 
-    function lambertNeg(uint256 x) external pure returns (uint256) {
-        return AdvancedMath.lambertNeg(x);
+    function solveQuick(uint256 a, uint256 b, uint256 c, uint256 d) external pure returns (uint256, uint256) {
+        return AdvancedMath.solveQuick(a, b, c, d);
     }
 
-    function lambertPos(uint256 x) external pure returns (uint256) {
-        return AdvancedMath.lambertPos(x);
+    function lambertNegExact(uint256 x) external pure returns (uint256) {
+        return AdvancedMath.lambertNegExact(x);
+    }
+
+    function lambertPosExact(uint256 x) external pure returns (uint256) {
+        return AdvancedMath.lambertPosExact(x);
+    }
+
+    function lambertNegQuick(uint256 x) external pure returns (uint256) {
+        return AdvancedMath.lambertNegQuick(x);
+    }
+
+    function lambertPosQuick(uint256 x) external pure returns (uint256) {
+        return AdvancedMath.lambertPosQuick(x);
     }
 }

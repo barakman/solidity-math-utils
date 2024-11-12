@@ -9,7 +9,7 @@ MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_POS1_MAXVAL + 1
 
 
 def test(x):
-    fixedPoint = FixedPoint.lambertPos(x)
+    fixedPoint = FixedPoint.lambertPosQuick(x)
     floatPoint = FloatPoint.lambertPos(x, FIXED_1)
     return fixedPoint / floatPoint
 

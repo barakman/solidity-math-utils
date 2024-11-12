@@ -10,7 +10,7 @@ MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_NEG2_MAXVAL + 1
 
 
 def test(x):
-    fixedPoint = FixedPoint.lambertNeg(x)
+    fixedPoint = FixedPoint.lambertNegQuick(x)
     floatPoint = FloatPoint.lambertNeg(x, FIXED_1)
     return fixedPoint / floatPoint
 

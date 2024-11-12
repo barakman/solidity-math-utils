@@ -9,39 +9,31 @@ library FractionMath {
     uint256 internal constant MAX_UINT128 = type(uint128).max;
 
     /**
-      * @dev Compute the power of a given ratio
+      * @dev Compute the power of a given ratio while opting for accuracy over performance
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
       * @param exp The exponentiation value
-      * @param fast Opt for performance over accuracy
       *
       * @return The powered ratio numerator
       * @return The powered ratio denominator
     */
-    function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast) internal pure returns (uint256, uint256) { unchecked {
-        require(exp <= MAX_EXP, "exp too large");
+    function poweredRatioExact(uint256 n, uint256 d, uint256 exp) internal pure returns (uint256, uint256) { unchecked {
+        return poweredRatio(n, d, exp, productRatio);
+    }}
 
-        function (uint256, uint256, uint256, uint256) pure returns (uint256, uint256) safeRatio = fast ? mulRatio128 : productRatio;
-
-        uint256[MAX_EXP_BIT_LEN] memory ns;
-        uint256[MAX_EXP_BIT_LEN] memory ds;
-
-        (ns[0], ds[0]) = safeRatio(n, 1, d, 1);
-        for (uint256 i = 0; (exp >> i) > 1; ++i) {
-            (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
-        }
-
-        n = 1;
-        d = 1;
-
-        for (uint256 i = 0; (exp >> i) > 0; ++i) {
-            if (((exp >> i) & 1) > 0) {
-                (n, d) = safeRatio(n, ns[i], d, ds[i]);
-            }
-        }
-
-        return (n, d);
+    /**
+      * @dev Compute the power of a given ratio while opting for performance over accuracy
+      *
+      * @param n The ratio numerator
+      * @param d The ratio denominator
+      * @param exp The exponentiation value
+      *
+      * @return The powered ratio numerator
+      * @return The powered ratio denominator
+    */
+    function poweredRatioQuick(uint256 n, uint256 d, uint256 exp) internal pure returns (uint256, uint256) { unchecked {
+        return poweredRatio(n, d, exp, mulRatio128);
     }}
 
     /**
@@ -129,6 +121,43 @@ library FractionMath {
             return (1, scale - 1); // `(n + d) / 2 < n * scale < MAX_VAL < n + d`
         }
         return (scale / 2, scale - scale / 2); // reflect the fact that initially `n <= d`
+    }}
+
+    /**
+      * @dev Compute the power of a given ratio
+      *
+      * @param n The ratio numerator
+      * @param d The ratio denominator
+      * @param exp The exponentiation value
+      * @param safeRatio The computing function
+      *
+      * @return The powered ratio numerator
+      * @return The powered ratio denominator
+    */
+    function poweredRatio(
+        uint256 n, uint256 d, uint256 exp,
+        function (uint256, uint256, uint256, uint256) pure returns (uint256, uint256) safeRatio
+    ) private pure returns (uint256, uint256) { unchecked {
+        require(exp <= MAX_EXP, "exp too large");
+
+        uint256[MAX_EXP_BIT_LEN] memory ns;
+        uint256[MAX_EXP_BIT_LEN] memory ds;
+
+        (ns[0], ds[0]) = safeRatio(n, 1, d, 1);
+        for (uint256 i = 0; (exp >> i) > 1; ++i) {
+            (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
+        }
+
+        n = 1;
+        d = 1;
+
+        for (uint256 i = 0; (exp >> i) > 0; ++i) {
+            if (((exp >> i) & 1) > 0) {
+                (n, d) = safeRatio(n, ns[i], d, ds[i]);
+            }
+        }
+
+        return (n, d);
     }}
 
     /**

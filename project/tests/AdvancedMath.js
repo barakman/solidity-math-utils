@@ -14,7 +14,12 @@ const LAMBERT_POS1 = Decimal(Constants.LAMBERT_POS1_MAXVAL);
 const LAMBERT_POS2 = Decimal(Constants.LAMBERT_POS2_MAXVAL);
 const LAMBERT_POS3 = Decimal(Constants.LAMBERT_POS2_MAXVAL).mul(100);
 
-const SIGN = {lambertNeg: -1, lambertPos: +1};
+const SIGN = {
+    lambertNegExact: -1,
+    lambertPosExact: +1,
+    lambertNegQuick: -1,
+    lambertPosQuick: +1,
+};
 
 function solvable(a, b, c, d) {
     return Decimal(a).div(b).ln().mul(c).div(d).gte(W_MIN_X);
@@ -39,40 +44,62 @@ describe(TestContract.contractName, () => {
         testContract = await TestContract.new();
     });
 
-    for (const a of [1, 2, 3, 4, 5])
-        for (const b of [1, 2, 3, 4, 5])
-            for (const c of [1, 2, 3, 4, 5])
-                for (const d of [1, 2, 3, 4, 5])
-                    testSolve(a, b, c, d, "0.00479");
-
-    for (const a of [1, 2, 3, 4, 5].map(n => n + 1000))
-        for (const b of [1, 2, 3, 4, 5].map(n => n + 1000))
-            for (const c of [1, 2, 3, 4, 5].map(n => n + 1000))
-                for (const d of [1, 2, 3, 4, 5].map(n => n + 1000))
-                    testSolve(a, b, c, d, "0.000000000000000000000000000000002");
-
-    for (let percent = 0; percent <= 100; percent++) {
-        testSuccess("lambertNeg", percent, LAMBERT_NEG0, LAMBERT_NEG1, "0.04459");
-        testSuccess("lambertNeg", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.00657");
-        testSuccess("lambertPos", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00353");
-        testSuccess("lambertPos", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00203");
-        testSuccess("lambertPos", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00262");
+    for (const a of [1, 2, 3, 4, 5]) {
+        for (const b of [1, 2, 3, 4, 5]) {
+            for (const c of [1, 2, 3, 4, 5]) {
+                for (const d of [1, 2, 3, 4, 5]) {
+                    testSolve("solveExact", a, b, c, d, "0.0000000000000000000002");
+                    testSolve("solveQuick", a, b, c, d, "0.0047861153703448299287");
+                }
+            }
+        }
     }
 
-    testFailure("lambertNeg", LAMBERT_NEG0.add(0), "lambertNeg: x < min");
-    testFailure("lambertPos", LAMBERT_POS0.add(0), "lambertPos: x < min");
-    testFailure("lambertNeg", LAMBERT_NEG2.add(1), "lambertNeg: x > max");
+    for (const a of [1, 2, 3, 4, 5].map(n => n + 1000)) {
+        for (const b of [1, 2, 3, 4, 5].map(n => n + 1000)) {
+            for (const c of [1, 2, 3, 4, 5].map(n => n + 1000)) {
+                for (const d of [1, 2, 3, 4, 5].map(n => n + 1000)) {
+                    testSolve("solveExact", a, b, c, d, "0.00000000000000000000000000000000002");
+                    testSolve("solveQuick", a, b, c, d, "0.00000000000000000000000000000000104");
+                }
+            }
+        }
+    }
 
-    function testSolve(a, b, c, d, maxError) {
-        it(`solve(${a}, ${b}, ${c}, ${d})`, async () => {
+    for (let percent = 0; percent <= 100; percent++) {
+        testSuccess("lambertNegExact", percent, LAMBERT_NEG0, LAMBERT_NEG1, "0.00000000000000000000000000000000000088");
+        testSuccess("lambertNegExact", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.00000000000000000000000000000000000259");
+        testSuccess("lambertPosExact", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00000000000000000000000000000000000097");
+        testSuccess("lambertPosExact", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00000000000000000000000000000000000006");
+        testSuccess("lambertPosExact", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00000000000000000000000000000000000230");
+    }
+
+    for (let percent = 0; percent <= 100; percent++) {
+        testSuccess("lambertNegQuick", percent, LAMBERT_NEG0, LAMBERT_NEG1, "0.04458843601911142612093766473768569069");
+        testSuccess("lambertNegQuick", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.00656991066935660006721266366675943493");
+        testSuccess("lambertPosQuick", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00352502537296632393189150614600911966");
+        testSuccess("lambertPosQuick", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00202834415207521945800897906620169050");
+        testSuccess("lambertPosQuick", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00261178569717540774470351850757097501");
+    }
+    
+    testFailure("lambertNegExact", LAMBERT_NEG0.add(0), "lambertNegExact: x < min");
+    testFailure("lambertPosExact", LAMBERT_POS0.add(0), "lambertPosExact: x < min");
+    testFailure("lambertNegExact", LAMBERT_NEG2.add(1), "lambertNegExact: x > max");
+
+    testFailure("lambertNegQuick", LAMBERT_NEG0.add(0), "lambertNegQuick: x < min");
+    testFailure("lambertPosQuick", LAMBERT_POS0.add(0), "lambertPosQuick: x < min");
+    testFailure("lambertNegQuick", LAMBERT_NEG2.add(1), "lambertNegQuick: x > max");
+
+    function testSolve(methodName, a, b, c, d, maxError) {
+        it(`${methodName}(${a}, ${b}, ${c}, ${d})`, async () => {
             if (solvable(a, b, c, d)) {
-                const result = await testContract.solve(a, b, c, d);
+                const result = await testContract[methodName](a, b, c, d);
                 const x = Decimal(result[0].toString()).div(result[1].toString());
                 const error = x.mul(Decimal(a).div(b).pow(x)).div(c).mul(d).sub(1).abs();
                 assert(error.lte(maxError), `error = ${error.toFixed()}`);
             }
             else {
-                await Utilities.assertRevert(testContract.solve(a, b, c, d));
+                await Utilities.assertRevert(testContract[methodName](a, b, c, d));
             }
         });
     }

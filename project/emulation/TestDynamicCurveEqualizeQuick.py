@@ -8,7 +8,7 @@ Decimal = FloatPoint.Decimal
 
 
 def test(staked1, balance1, balance2, rate1, rate2):
-    weights = FixedPoint.equalize(staked1, balance1, balance2, rate1, rate2)
+    weights = FixedPoint.equalizeQuick(staked1, balance1, balance2, rate1, rate2)
     weight1 = weights[0]
     weight2 = weights[1]
     amount1 = staked1 - balance1

@@ -90,20 +90,21 @@ For example, `floorCbrt(7)` returns 1, but the actual cubic root of 7 is ~1.91, 
 ## FractionMath
 
 This module implements the following interface:
-- `function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast)` => `(uint256, uint256)`
+- `function poweredRatioExact(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
+- `function poweredRatioQuick(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
 - `function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd)` => `(uint256, uint256)`
 - `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
 - `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
 
 ### Powered Ratio
 
-Function `poweredRatio` computes the power of a given ratio by a given exponent.
+Function `poweredRatioExact` opts for accuracy and function `poweredRatioExact` opts for performance.
+
+Each one of the two 'poweredRatio' functions computes the power of a given ratio by a given exponent.
 
 In order to avoid multiplication overflow, it may truncate the intermediate result on each iteration.
 
 Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
-
-The input argument `fast` allows to opt for either performance (using `true`) or accuracy (using `false`).
 
 This module defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
 
@@ -195,13 +196,16 @@ The full customization manual can be found [here](#customization).
 ## AdvancedMath
 
 This module implements the following interface:
-- `function solve(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
+- `function solveExact(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
+- `function solveQuick(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
 
 ### Equation Solving
 
-Function `solve(a, b, c, d)` computes a value of x which satisfies the equation x * (a / b) ^ x = c / d.
+Function `solveExact` opts for accuracy and function `solveQuick` opts for performance.
 
-A detailed description of how this function works can be found [here](readme/AdvancedMath.pdf).
+Each one of these functions computes a value of x which satisfies the equation x * (a / b) ^ x = c / d.
+
+A detailed description of how each one of these functions works can be found [here](readme/AdvancedMath.pdf).
 
 ### Module Customization
 
@@ -251,7 +255,10 @@ The bonding-curve model was conceived by [Bancor](https://github.com/bancorproto
 ## DynamicCurve
 
 This module implements the following interface:
-- `function equalize(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p)` => `(uint256, uint256)`
+- `function equalizeExact(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p)` => `(uint256, uint256)`
+- `function equalizeQuick(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p)` => `(uint256, uint256)`
+
+Function `equalizeExact` opts for accuracy and function `equalizeQuick` opts for performance.
 
 ### Equalization
 

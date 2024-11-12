@@ -8,7 +8,8 @@ library DynamicCurve {
     uint256 internal constant MAX_WEIGHT = 1000000;
 
     /**
-      * @dev Consider a pool which implements the bonding-curve model over a primary reserve token and a secondary reserve token.
+      * Abstract:
+      * Consider a pool which implements the bonding-curve model over a primary reserve token and a secondary reserve token.
       * Let 'on-chain price' denote the conversion rate between these tokens inside the pool (i.e., as determined by the pool).
       * Let 'off-chain price' denote the conversion rate between these tokens outside the pool (i.e., as determined by the market).
       * The arbitrage incentive is always to convert to the point where the on-chain price is equal to the off-chain price.
@@ -38,6 +39,10 @@ library DynamicCurve {
       * - P = 2 ==> 1 primary reserve token = 2 ethers
       * - Q = 3 ==> 1 secondary reserve token = 3 ethers
       * Then you can simply use p = Q and q = P
+    */
+
+    /**
+      * @dev Equalize the weights of a given pool while opting for accuracy over performance
       *
       * @param t The primary reserve token staked balance
       * @param s The primary reserve token balance
@@ -49,7 +54,45 @@ library DynamicCurve {
       *
       * @return The weight of the primary reserve token and the weight of the secondary reserve token, both in ppm units
     */
-    function equalize(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p) internal pure returns (uint256, uint256) { unchecked {
+    function equalizeExact(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p) internal pure returns (uint256, uint256) { unchecked {
+        return equalize(t, s, r, q, p, AdvancedMath.solveExact);
+    }}
+
+    /**
+      * @dev Equalize the weights of a given pool while opting for performance over accuracy
+      *
+      * @param t The primary reserve token staked balance
+      * @param s The primary reserve token balance
+      * @param r The secondary reserve token balance
+      * @param q The numerator of the off-chain price
+      * @param p The denominator of the off-chain price
+      *
+      * Note that `numerator / denominator` should represent the amount of secondary tokens equal to one primary token
+      *
+      * @return The weight of the primary reserve token and the weight of the secondary reserve token, both in ppm units
+    */
+    function equalizeQuick(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p) internal pure returns (uint256, uint256) { unchecked {
+        return equalize(t, s, r, q, p, AdvancedMath.solveQuick);
+    }}
+
+    /**
+      * @dev Equalize the weights of a given pool using a transcendental-equation solver
+      *
+      * @param t The primary reserve token staked balance
+      * @param s The primary reserve token balance
+      * @param r The secondary reserve token balance
+      * @param q The numerator of the off-chain price
+      * @param p The denominator of the off-chain price
+      * @param AdvancedMath_solveFunction The solver function
+      *
+      * Note that `numerator / denominator` should represent the amount of secondary tokens equal to one primary token
+      *
+      * @return The weight of the primary reserve token and the weight of the secondary reserve token, both in ppm units
+    */
+    function equalize(
+        uint256 t, uint256 s, uint256 r, uint256 q, uint256 p,
+        function (uint256, uint256, uint256, uint256) pure returns (uint256, uint256) AdvancedMath_solveFunction
+    ) private pure returns (uint256, uint256) { unchecked {
         if (t == s)
             require(t > 0 || r > 0, "invalid balance");
         else
@@ -57,7 +100,7 @@ library DynamicCurve {
         require(q > 0 && p > 0, "invalid rate");
 
         (uint256 tq, uint256 rp) = FractionMath.productRatio(t, q, r, p);
-        (uint256 xn, uint256 xd) = AdvancedMath.solve(s, t, tq, rp);
+        (uint256 xn, uint256 xd) = AdvancedMath_solveFunction(s, t, tq, rp);
         (uint256 w1, uint256 w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
 
         return (w1, w2);

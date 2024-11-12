@@ -8,35 +8,31 @@ MAX_UINT128 = 2 ** 128 - 1;
 
 '''
     @dev Compute the power of a given ratio
+    while opting for accuracy over performance
     
     @param n The ratio numerator
     @param d The ratio denominator
     @param exp The exponentiation value
-    @param fast Opt for performance over accuracy
     
     @return The powered ratio numerator
     @return The powered ratio denominator
 '''
-def poweredRatio(n, d, exp, fast):
-    require(exp <= MAX_EXP, "exp too large");
+def poweredRatioExact(n, d, exp):
+    return poweredRatio(n, d, exp, productRatio);
 
-    safeRatio = mulRatio128 if fast else productRatio;
-
-    ns = [0] * MAX_EXP_BIT_LEN;
-    ds = [0] * MAX_EXP_BIT_LEN;
-
-    (ns[0], ds[0]) = safeRatio(n, 1, d, 1);
-    for i in range(len(bin(exp)) - 3):
-        (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
-
-    n = 1;
-    d = 1;
-
-    for i in range(len(bin(exp)) - 2):
-        if (((exp >> i) & 1) > 0):
-            (n, d) = safeRatio(n, ns[i], d, ds[i]);
-
-    return (n, d);
+'''
+    @dev Compute the power of a given ratio
+    while opting for performance over accuracy
+    
+    @param n The ratio numerator
+    @param d The ratio denominator
+    @param exp The exponentiation value
+    
+    @return The powered ratio numerator
+    @return The powered ratio denominator
+'''
+def poweredRatioQuick(n, d, exp):
+    return poweredRatio(n, d, exp, mulRatio128);
 
 '''
     @dev Compute the product of two given ratios
@@ -115,6 +111,25 @@ def estimatedRatio(n, d, scale):
             return (0, scale); # `n * scale < (n + d) / 2 < MAX_VAL < n + d`
         return (1, scale - 1); # `(n + d) / 2 < n * scale < MAX_VAL < n + d`
     return (scale // 2, scale - scale // 2); # reflect the fact that initially `n <= d`
+
+def poweredRatio(n, d, exp, safeRatio):
+    require(exp <= MAX_EXP, "exp too large");
+
+    ns = [0] * MAX_EXP_BIT_LEN;
+    ds = [0] * MAX_EXP_BIT_LEN;
+
+    (ns[0], ds[0]) = safeRatio(n, 1, d, 1);
+    for i in range(len(bin(exp)) - 3):
+        (ns[i + 1], ds[i + 1]) = safeRatio(ns[i], ns[i], ds[i], ds[i]);
+
+    n = 1;
+    d = 1;
+
+    for i in range(len(bin(exp)) - 2):
+        if (((exp >> i) & 1) > 0):
+            (n, d) = safeRatio(n, ns[i], d, ds[i]);
+
+    return (n, d);
 
 '''
     @dev Compute the product of two ratios and reduce the components of the result to 128 bits,

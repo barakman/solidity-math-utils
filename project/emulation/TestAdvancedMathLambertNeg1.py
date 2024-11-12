@@ -9,7 +9,7 @@ MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_NEG1_MAXVAL + 1
 
 
 def test(x):
-    fixedPoint = FixedPoint.lambertNeg(x)
+    fixedPoint = FixedPoint.lambertNegQuick(x)
     floatPoint = FloatPoint.lambertNeg(x, FIXED_1)
     if fixedPoint > floatPoint:
         error = ['Implementation Error:']

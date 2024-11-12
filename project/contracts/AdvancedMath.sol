@@ -168,33 +168,68 @@ library AdvancedMath {
       * @dev Solve x * (a / b) ^ x = c / d
       * Solution: x = W(log(a / b) * c / d) / (log(a / b) * c / d) * c / d
     */
-    function solve(uint256 a, uint256 b, uint256 c, uint256 d) internal pure returns (uint256, uint256) { unchecked {
-        if (a > b)
-            return call(lambertPos, a, b, c, d);
-        if (b > a)
-            return call(lambertNeg, b, a, c, d);
-        return (c, d);
+    function solveExact(uint256 a, uint256 b, uint256 c, uint256 d) internal pure returns (uint256, uint256) { unchecked {
+        return solve(a, b, c, d, lambertNegExact, lambertPosExact);
+    }}
+
+    /**
+      * @dev Solve x * (a / b) ^ x = c / d
+      * Solution: x = W(log(a / b) * c / d) / (log(a / b) * c / d) * c / d
+    */
+    function solveQuick(uint256 a, uint256 b, uint256 c, uint256 d) internal pure returns (uint256, uint256) { unchecked {
+        return solve(a, b, c, d, lambertNegQuick, lambertPosQuick);
     }}
 
     /**
       * @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
       * Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
     */
-    function lambertNeg(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x > 0, "lambertNeg: x < min");
-        if (x <= LAMBERT_NEG1_MAXVAL)
-            return lambertNeg1(x);
-        if (x <= LAMBERT_NEG2_MAXVAL)
-            return lambertNeg2(x);
-        revert("lambertNeg: x > max");
+    function lambertNegExact(uint256 x) internal pure returns (uint256) { unchecked {
+        require(x > 0, "lambertNegExact: x < min");
+        require(x <= LAMBERT_NEG2_MAXVAL, "lambertNegExact: x > max");
+        uint256 y = x;
+        for (uint256 i = 0; i < 8; ++i) {
+            uint256 e = AnalyticMath.fixedExp(y);
+            y = (x * e - y * y) / (FIXED_1 - y);
+        }
+        return IntegralMath.mulDivF(FIXED_1, y, x);
     }}
 
     /**
       * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
       * Input range: 1 <= x <= 2 ^ 256 - 1
     */
-    function lambertPos(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x > 0, "lambertPos: x < min");
+    function lambertPosExact(uint256 x) internal pure returns (uint256) { unchecked {
+        require(x > 0, "lambertPosExact: x < min");
+        uint256 y = x < FIXED_1 ? x : AnalyticMath.fixedLog(x);
+        for (uint256 i = 0; i < 8; ++i) {
+            uint256 e = AnalyticMath.fixedExp(y);
+            uint256 f = IntegralMath.mulDivF(y, e, FIXED_1);
+            uint256 g = IntegralMath.mulDivF(y, f, FIXED_1);
+            y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
+        }
+        return IntegralMath.mulDivF(FIXED_1, y, x);
+    }}
+
+    /**
+      * @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
+      * Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
+    */
+    function lambertNegQuick(uint256 x) internal pure returns (uint256) { unchecked {
+        require(x > 0, "lambertNegQuick: x < min");
+        if (x <= LAMBERT_NEG1_MAXVAL)
+            return lambertNeg1(x);
+        if (x <= LAMBERT_NEG2_MAXVAL)
+            return lambertNeg2(x);
+        revert("lambertNegQuick: x > max");
+    }}
+
+    /**
+      * @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
+      * Input range: 1 <= x <= 2 ^ 256 - 1
+    */
+    function lambertPosQuick(uint256 x) internal pure returns (uint256) { unchecked {
+        require(x > 0, "lambertPosQuick: x < min");
         if (x <= LAMBERT_POS1_MAXVAL)
             return lambertPos1(x);
         if (x <= LAMBERT_POS2_MAXVAL)
@@ -343,13 +378,32 @@ library AdvancedMath {
         return e;
     }}
 
-    // auxiliary function
-    function read(bytes memory data, uint256 offset) private pure returns (uint256 result) {
-        assembly {result := mload(add(data, offset))}
-    }
+    /**
+      * @dev Solve the equation x * (a / b) ^ x = c / d for x
+    */
+    function solve(
+        uint256 a, uint256 b, uint256 c, uint256 d,
+        function (uint256) pure returns (uint256) lambertNeg,
+        function (uint256) pure returns (uint256) lambertPos
+    ) private pure returns (uint256, uint256) { unchecked {
+        if (a > b)
+            return call(lambertPos, a, b, c, d);
+        if (b > a)
+            return call(lambertNeg, b, a, c, d);
+        return (c, d);
+    }}
 
-    // auxiliary function
+    /**
+      * @dev Return f(log(x / y) * z / w * FIXED_1) * z / w / FIXED_1
+    */
     function call(function (uint256) pure returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private pure returns (uint256, uint256) {
         return FractionMath.productRatio(f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w)), z, w, FIXED_1);
+    }
+
+    /**
+      * @dev Read 32 bytes from a given chunk of data at a given offset
+    */
+    function read(bytes memory data, uint256 offset) private pure returns (uint256 result) {
+        assembly {result := mload(add(data, offset))}
     }
 }

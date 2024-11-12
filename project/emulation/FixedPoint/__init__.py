@@ -16,16 +16,28 @@ def exp(a, b):
     return AnalyticMath.exp(a, b)
 
 
-def solve(a, b, c, d):
-    return AdvancedMath.solve(a, b, c, d)
+def solveExact(a, b, c, d):
+    return AdvancedMath.solveExact(a, b, c, d)
 
 
-def lambertNeg(x):
-    return AdvancedMath.lambertNeg(x)
+def solveQuick(a, b, c, d):
+    return AdvancedMath.solveQuick(a, b, c, d)
 
 
-def lambertPos(x):
-    return AdvancedMath.lambertPos(x)
+def lambertNegExact(x):
+    return AdvancedMath.lambertNegExact(x)
+
+
+def lambertPosExact(x):
+    return AdvancedMath.lambertPosExact(x)
+
+
+def lambertNegQuick(x):
+    return AdvancedMath.lambertNegQuick(x)
+
+
+def lambertPosQuick(x):
+    return AdvancedMath.lambertPosQuick(x)
 
 
 def buy(supply, balance, weight, amount):
@@ -52,5 +64,9 @@ def invest(supply, balance, weights, amount):
     return BondingCurve.invest(supply, balance, weights, amount)
 
 
-def equalize(staked1, balance1, balance2, rate1, rate2):
-    return DynamicCurve.equalize(staked1, balance1, balance2, rate1, rate2)
+def equalizeExact(staked1, balance1, balance2, rate1, rate2):
+    return DynamicCurve.equalizeExact(staked1, balance1, balance2, rate1, rate2)
+
+
+def equalizeQuick(staked1, balance1, balance2, rate1, rate2):
+    return DynamicCurve.equalizeQuick(staked1, balance1, balance2, rate1, rate2)

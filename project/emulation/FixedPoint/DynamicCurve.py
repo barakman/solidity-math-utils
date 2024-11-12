@@ -46,7 +46,11 @@ MAX_WEIGHT = 1000000;
     
     @return The weight of the primary reserve token and the weight of the secondary reserve token, both in ppm units
 '''
-def equalize(t, s, r, q, p):
+def equalizeExact(t, s, r, q, p):
+    return equalize(t, s, r, q, p, AdvancedMath.solveExact);
+def equalizeQuick(t, s, r, q, p):
+    return equalize(t, s, r, q, p, AdvancedMath.solveQuick);
+def equalize(t, s, r, q, p, AdvancedMath_solveFunction):
     if (t == s):
         require(t > 0 or r > 0, "invalid balance");
     else:
@@ -54,7 +58,7 @@ def equalize(t, s, r, q, p):
     require(q > 0 and p > 0, "invalid rate");
 
     (tq, rp) = FractionMath.productRatio(t, q, r, p);
-    (xn, xd) = AdvancedMath.solve(s, t, tq, rp);
+    (xn, xd) = AdvancedMath_solveFunction(s, t, tq, rp);
     (w1, w2) = FractionMath.normalizedRatio(xn, xd, MAX_WEIGHT);
 
     return (w1, w2);
