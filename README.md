@@ -98,7 +98,7 @@ This module implements the following interface:
 
 ### Powered Ratio
 
-Function `poweredRatioExact` opts for accuracy and function `poweredRatioExact` opts for performance.
+Function `poweredRatioExact` opts for accuracy and function `poweredRatioQuick` opts for performance.
 
 Each one of the two 'poweredRatio' functions computes the power of a given ratio by a given exponent.
 
