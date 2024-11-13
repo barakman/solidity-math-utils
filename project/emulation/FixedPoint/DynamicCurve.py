@@ -4,39 +4,37 @@ from . import FractionMath
 
 MAX_WEIGHT = 1000000;
 
-'''
-    Abstract:
-    Consider a pool which implements the bonding-curve model over a primary reserve token and a secondary reserve token.
-    Let 'on-chain price' denote the conversion rate between these tokens inside the pool (i.e., as determined by the pool).
-    Let 'off-chain price' denote the conversion rate between these tokens outside the pool (i.e., as determined by the market).
-    The arbitrage incentive is always to convert to the point where the on-chain price is equal to the off-chain price.
-    We want this operation to also impact the primary reserve balance becoming equal to the primary reserve staked balance.
-    In other words, we want the arbitrager to convert the difference between the reserve balance and the reserve staked balance.
-    Hence we adjust the weights in order to create an arbitrage incentive which, when realized, will subsequently equalize the pool.
-    
-    Input:
-    - Let t denote the primary reserve token staked balance
-    - Let s denote the primary reserve token balance
-    - Let r denote the secondary reserve token balance
-    - Let q denote the numerator of the off-chain price
-    - Let p denote the denominator of the off-chain price
-    Where p primary tokens are equal to q secondary tokens
-    
-    Output:
-    - Solve the equation x * (s / t) ^ x = (t / r) * (q / p)
-    - Return x / (x + 1) as the weight of the primary reserve token
-    - Return 1 / (x + 1) as the weight of the secondary reserve token
-    
-    If the rate-provider provides the rates for a common unit, for example:
-    - P = 2 ==> 2 primary reserve tokens = 1 ether
-    - Q = 3 ==> 3 secondary reserve tokens = 1 ether
-    Then you can simply use p = P and q = Q
-    
-    If the rate-provider provides the rates for a single unit, for example:
-    - P = 2 ==> 1 primary reserve token = 2 ethers
-    - Q = 3 ==> 1 secondary reserve token = 3 ethers
-    Then you can simply use p = Q and q = P
-'''
+# Abstract:
+# Consider a pool which implements the bonding-curve model over a primary reserve token and a secondary reserve token.
+# Let 'on-chain price' denote the conversion rate between these tokens inside the pool (i.e., as determined by the pool).
+# Let 'off-chain price' denote the conversion rate between these tokens outside the pool (i.e., as determined by the market).
+# The arbitrage incentive is always to convert to the point where the on-chain price is equal to the off-chain price.
+# We want this operation to also impact the primary reserve balance becoming equal to the primary reserve staked balance.
+# In other words, we want the arbitrager to convert the difference between the reserve balance and the reserve staked balance.
+# Hence we adjust the weights in order to create an arbitrage incentive which, when realized, will subsequently equalize the pool.
+# 
+# Input:
+# - Let t denote the primary reserve token staked balance
+# - Let s denote the primary reserve token balance
+# - Let r denote the secondary reserve token balance
+# - Let q denote the numerator of the off-chain price
+# - Let p denote the denominator of the off-chain price
+# Where p primary tokens are equal to q secondary tokens
+# 
+# Output:
+# - Solve the equation x * (s // t) ^ x = (t // r) * (q // p)
+# - Return x // (x + 1) as the weight of the primary reserve token
+# - Return 1 // (x + 1) as the weight of the secondary reserve token
+# 
+# If the rate-provider provides the rates for a common unit, for example:
+# - P = 2 ==> 2 primary reserve tokens = 1 ether
+# - Q = 3 ==> 3 secondary reserve tokens = 1 ether
+# Then you can simply use p = P and q = Q
+# 
+# If the rate-provider provides the rates for a single unit, for example:
+# - P = 2 ==> 1 primary reserve token = 2 ethers
+# - Q = 3 ==> 1 secondary reserve token = 3 ethers
+# Then you can simply use p = Q and q = P
 
 '''
     @dev Equalize the weights of a given pool while opting for accuracy over performance
