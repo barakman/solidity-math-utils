@@ -11,12 +11,6 @@ MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_NEG1_MAXVAL + 1
 def test(x):
     fixedPoint = FixedPoint.lambertNegQuick(x)
     floatPoint = FloatPoint.lambertNeg(x, FIXED_1)
-    if fixedPoint > floatPoint:
-        error = ['Implementation Error:']
-        error.append(f'x          = {x         }')
-        error.append(f'fixedPoint = {fixedPoint}')
-        error.append(f'floatPoint = {floatPoint}')
-        raise Exception('\n'.join(error))
     return fixedPoint / floatPoint
 
 
@@ -28,10 +22,7 @@ worstAccuracy = 1
 
 for n in range(size):
     x = random.randrange(1, MAX_VAL)
-    try:
-        accuracy = test(x)
-        worstAccuracy = min(worstAccuracy, accuracy)
-    except Exception as error:
-        print(error)
-        break
+    accuracy = test(x)
+    assert accuracy <= 1, str(x)
+    worstAccuracy = min(worstAccuracy, accuracy)
     print(f'Test #{n}: accuracy = {accuracy:.24f}, worstAccuracy = {worstAccuracy:.24f}')
