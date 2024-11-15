@@ -27,14 +27,14 @@ function solvable(a, b, c, d) {
 
 function lambertRatio(x) {
     assert(x.gte(W_MIN_X));
-    let a = x.lt(1) ? x : x.ln();
+    let y = x.lt(1) ? x : x.ln();
     for (let n = 0; n < 8; n++) {
-        const e = a.exp();
-        const f = a.mul(e);
+        const e = y.exp();
+        const f = y.mul(e);
         if (f.eq(x)) break;
-        a = a.mul(f).add(x).div(f.add(e));
+        y = y.mul(f).add(x).div(f.add(e));
     }
-    return a.div(x);
+    return y.div(x);
 }
 
 describe(TestContract.contractName, () => {
