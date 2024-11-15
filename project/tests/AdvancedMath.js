@@ -48,8 +48,8 @@ describe(TestContract.contractName, () => {
         for (const b of [1, 2, 3, 4, 5]) {
             for (const c of [1, 2, 3, 4, 5]) {
                 for (const d of [1, 2, 3, 4, 5]) {
-                    testSolve("solveExact", a, b, c, d, "0.0000000000000000000002");
-                    testSolve("solveQuick", a, b, c, d, "0.0047861153703448299287");
+                    testSolve("solveExact", a, b, c, d, "0.00000000000000000000010142175418052637");
+                    testSolve("solveQuick", a, b, c, d, "0.00478611537034482992866132560056904476");
                 }
             }
         }
@@ -59,8 +59,8 @@ describe(TestContract.contractName, () => {
         for (const b of [1, 2, 3, 4, 5].map(n => n + 1000)) {
             for (const c of [1, 2, 3, 4, 5].map(n => n + 1000)) {
                 for (const d of [1, 2, 3, 4, 5].map(n => n + 1000)) {
-                    testSolve("solveExact", a, b, c, d, "0.00000000000000000000000000000000002");
-                    testSolve("solveQuick", a, b, c, d, "0.00000000000000000000000000000000104");
+                    testSolve("solveExact", a, b, c, d, "0.00000000000000000000000000000000001082");
+                    testSolve("solveQuick", a, b, c, d, "0.00000000000000000000000000000000103095");
                 }
             }
         }
