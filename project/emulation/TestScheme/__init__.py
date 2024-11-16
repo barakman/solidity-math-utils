@@ -8,30 +8,30 @@ def run(getInput, getOutput):
     maxRatio = float('-inf')
     failures = 0
 
-    for n in range(tests):
-        input = getInput()
+    for test in range(tests):
+        testInput = getInput()
         try:
-            output = getOutput(**input)
+            testOutput = getOutput(**testInput)
         except AssertionError:
             ratio = 0
             failures += 1
         else:
-            if output['success']:
-                ratio = output['actual'] / output['expected']
+            if testOutput['success']:
+                ratio = testOutput['actual'] / testOutput['expected']
                 minRatio = min(minRatio, ratio)
                 maxRatio = max(maxRatio, ratio)
             else:
-                printError(input, output)
+                printError(testInput, testOutput)
                 break
-        print(f'Test #{n}: ratio = {ratio:.30f}, min = {minRatio:.30f}, max = {maxRatio:.30f}, failures = {failures}')
+        print(f'Test #{test}: ratio = {ratio:.30f}, min = {minRatio:.30f}, max = {maxRatio:.30f}, failures = {failures}')
 
 
-def printError(input, output):
-    maxKeyLen = max(len(key) for key in input)
+def printError(testInput, testOutput):
+    maxKeyLen = max(len(key) for key in testInput)
     error = [f'Implementation Error:']
     error.append(f'- Input:')
-    error.extend(f'  - {key.ljust(maxKeyLen)} = {val}' for key, val in input.items())
+    error.extend(f'  - {key.ljust(maxKeyLen)} = {val}' for key, val in testInput.items())
     error.append(f'- Output:')
-    error.append(f'  - Expected = {output['expected']:f}')
-    error.append(f'  - Actual   = {output['actual']}')
+    error.append(f'  - Expected = {testOutput['expected']:f}')
+    error.append(f'  - Actual   = {testOutput['actual']}')
     print('\n'.join(error))
