@@ -1,3 +1,10 @@
+This library implements two different methods for solving the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$:
+
+- Function `solveExact(a, b, c, d)`, which opts for accuracy over performance
+- Function `solveQuick(a, b, c, d)`, which opts for performance over accuracy
+
+---
+
 The solution to:
 
 $$x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$$
@@ -6,13 +13,7 @@ Can be computed via:
 
 $$x=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{log\big(\frac{a}{b}\big)}$$
 
-Where $W$ is the Lambert W Function.
-
----
-
-In order to approximate this solution, we split the input domain $z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}$ into:
-
-$$\underbrace{-\infty\ldots-1/e}\bigg|\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots+1/e}\bigg|\underbrace{+1/e\ldots24+1/e}\bigg|\underbrace{24+1/e\ldots+\infty}$$
+Where $W(z)$ computes a value of $x$ which solves the equation $x\cdot{e}^x=z$.
 
 ---
 
@@ -21,6 +22,34 @@ For $z<-1/e$, the value of $W(z)$ is not real.
 Respectively, the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$ has no real solution.
 
 This is because $x\cdot\big(\frac{a}{b}\big)^x\leq\frac{1}{e\cdot\log\big(\frac{b}{a}\big)}<\frac{c}{d}$ for every real value of $x$.
+
+In order to handle the rest of the input domain, we split it into several sections.
+
+---
+---
+
+When opting for accuracy, we split the input domain $z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}$ into:
+
+$$\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots\infty}$$
+
+---
+
+For $-1/e\leq{z}<0$, we approximate $W(z)$ via the Newton-Raphson converging sequence:
+
+$$\large\begin{cases}y_0=-z\\y_{n+1}=\frac{y_n^2+e^{y_n}\cdot{z}}{y_n+1}\end{cases}$$
+
+---
+
+For $0\leq{z}<\infty$, we approximate $W(z)$ via the Newton-Raphson converging sequence:
+
+$$\large\begin{cases}y_0=\small\begin{cases}z&z<1\\\log(z)&z\geq1\end{cases}\\y_{n+1}=\frac{y_n^2\cdot{e}^{y_n}+z}{(y_n+1)\cdot{e}^{y_n}}\end{cases}$$
+
+---
+---
+
+When opting for performance, we split the input domain $z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}$ into:
+
+$$\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots1/e}\bigg|\underbrace{1/e\ldots24+1/e}\bigg|\underbrace{24+1/e\ldots\infty}$$
 
 ---
 
@@ -35,17 +64,17 @@ Note that as the value of $z$ approaches $-1/e$, the value of $W(z)$ approaches 
 
 The function becomes increasingly steep, making its approximation via the Taylor series above increasingly inaccurate.
 
-Hence for the smallest $\%1$ of the range $-1/e\leq{z}\leq0$, we approximate $W(z)$ via Newton-Raphson convergence instead:
+Hence for the smallest $\%1$ of the range $-1/e\leq{z}\leq0$:
 
-$$\begin{cases}y_0=z\\y_{n+1}=\large\frac{z\cdot{e^{y_n}}-y_n^2}{1-y_n}\bigg|{n=1,\dots,4}\bigg|\text{ return }\large\frac{y_4}{z}\end{cases}$$
-
-This method is a lot more accurate but also a lot more expensive, and it is therefore used only for a small portion of the range.
+- We precalculate a lookup table which maps $16$ uniformly distributed values of $z$ to values of $W(z)$
+- During runtime, we calculate $W(z')$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z'}<z_1$
 
 ---
 
-For $+1/e<z<24+1/e$, we use a lookup table which maps $128$ uniformly distributed values of $z$.
+For $1/e<z<24+1/e$:
 
-Then, we calculate $W(z')$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z'}<z_1$.
+- We precalculate a lookup table which maps $128$ uniformly distributed values of $z$ to values of $W(z)$
+- During runtime, we calculate $W(z')$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z'}<z_1$
 
 ---
 

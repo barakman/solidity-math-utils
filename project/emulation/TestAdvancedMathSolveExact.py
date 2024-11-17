@@ -5,7 +5,7 @@ import FloatPoint
 
 
 def test(a, b, c, d):
-    p, q = FixedPoint.solve(a, b, c, d)
+    p, q = FixedPoint.solveExact(a, b, c, d)
     a, b, c, d, p, q = [FloatPoint.Decimal(value) for value in [a, b, c, d, p, q]]
     return (p / q) * (a / b) ** (p / q) / (c / d)
 

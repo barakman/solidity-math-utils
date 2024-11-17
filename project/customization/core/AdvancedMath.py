@@ -84,10 +84,10 @@ def lambertBinomial(numOfTerms):
 
 
 def lambertRatio(x):
-    a = x if x < 1 else x.ln()
+    y = x if x < 1 else x.ln()
     for _ in range(8):
-        e = a.exp()
-        f = a * e
+        e = y.exp()
+        f = y * e
         if f == x: break
-        a = (a * f + x) / (f + e)
-    return a / x
+        y = (y * f + x) / (f + e)
+    return y / x

@@ -1,56 +1,17 @@
-from . import AnalyticMath
-from . import AdvancedMath
-from . import BondingCurve
-from . import DynamicCurve
-
-
-def pow(a, b, c, d):
-    return AnalyticMath.pow(a, b, c, d)
-
-
-def log(a, b):
-    return AnalyticMath.log(a, b)
-
-
-def exp(a, b):
-    return AnalyticMath.exp(a, b)
-
-
-def solve(a, b, c, d):
-    return AdvancedMath.solve(a, b, c, d)
-
-
-def lambertNeg(x):
-    return AdvancedMath.lambertNeg(x)
-
-
-def lambertPos(x):
-    return AdvancedMath.lambertPos(x)
-
-
-def buy(supply, balance, weight, amount):
-    return BondingCurve.buy(supply, balance, weight, amount)
-
-
-def sell(supply, balance, weight, amount):
-    return BondingCurve.sell(supply, balance, weight, amount)
-
-
-def convert(balance1, weight1, balance2, weight2, amount):
-    return BondingCurve.convert(balance1, weight1, balance2, weight2, amount)
-
-
-def deposit(supply, balance, weights, amount):
-    return BondingCurve.deposit(supply, balance, weights, amount)
-
-
-def withdraw(supply, balance, weights, amount):
-    return BondingCurve.withdraw(supply, balance, weights, amount)
-
-
-def invest(supply, balance, weights, amount):
-    return BondingCurve.invest(supply, balance, weights, amount)
-
-
-def equalize(staked1, balance1, balance2, rate1, rate2):
-    return DynamicCurve.equalize(staked1, balance1, balance2, rate1, rate2)
+from .AnalyticMath import pow
+from .AnalyticMath import log
+from .AnalyticMath import exp
+from .AdvancedMath import solveExact
+from .AdvancedMath import solveQuick
+from .AdvancedMath import lambertNegExact
+from .AdvancedMath import lambertPosExact
+from .AdvancedMath import lambertNegQuick
+from .AdvancedMath import lambertPosQuick
+from .BondingCurve import buy
+from .BondingCurve import sell
+from .BondingCurve import convert
+from .BondingCurve import deposit
+from .BondingCurve import withdraw
+from .BondingCurve import invest
+from .DynamicCurve import equalizeExact
+from .DynamicCurve import equalizeQuick

@@ -5,13 +5,13 @@ const MAX_EXP     = Decimal(2).pow(4).sub(1);
 const MAX_UINT128 = Decimal(2).pow(128).sub(1);
 const MAX_UINT256 = Decimal(2).pow(256).sub(1);
 
-const poweredRatio    = (n, d, exp)      => [n.pow(exp), d.pow(exp)];
-const productRatio    = (xn, yn, xd, yd) => [xn.mul(yn), xd.mul(yd)];
-const reducedRatio    = (n, d, max)      => [n, d].map(x => x.div(Decimal.max(n, d).div(max).ceil()));
-const normalizedRatio = (n, d, scale)    => [n, d].map(x => x.mul(scale).div(n.add(d)));
+const poweredRatioExact = (n, d, exp)      => [n.pow(exp), d.pow(exp)];
+const poweredRatioQuick = (n, d, exp)      => [n.pow(exp), d.pow(exp)];
+const productRatio      = (xn, yn, xd, yd) => [xn.mul(yn), xd.mul(yd)];
+const reducedRatio      = (n, d, max)      => [n, d].map(x => x.div(Decimal.max(n, d).div(max).ceil()));
+const normalizedRatio   = (n, d, scale)    => [n, d].map(x => x.mul(scale).div(n.add(d)));
 
-const poweredRatioCheck    = ()      => (n, d) => true;
-const productRatioCheck    = ()      => (n, d) => true;
+const noCheck              = ()      => (n, d) => true;
 const reducedRatioCheck    = (max)   => (n, d) => [n, d].every((x) => Decimal(x.toString()).lte(max));
 const normalizedRatioCheck = (scale) => (n, d) => [n, d].reduce((sum, x) => sum.add(x.toString()), Decimal(0)).eq(scale);
 
@@ -22,38 +22,33 @@ describe(TestContract.contractName, () => {
         testContract = await TestContract.new();
     });
 
-    for (const fast of [0, 1]) {
-        for (let exp = 0; exp <= MAX_EXP; exp++) {
-            for (let n = 0; n < 10; n++) {
-                for (let d = 1; d <= 10; d++) {
-                    test(poweredRatio, poweredRatioCheck, "0", n, d, exp, fast);
-                }
+    for (let exp = 0; exp <= MAX_EXP; exp++) {
+        for (let n = 0; n < 10; n++) {
+            for (let d = 1; d <= 10; d++) {
+                test(poweredRatioExact, noCheck, "0", n, d, exp);
+                test(poweredRatioQuick, noCheck, "0", n, d, exp);
             }
         }
     }
 
-    for (const fast of [0, 1]) {
-        const maxError = fast ? "0.000000000000000000000002" : "0.000000000000000000000000000000000000000000000000000000000000007";
-        for (let exp = 0; exp <= MAX_EXP; exp++) {
-            for (let i = 1; i <= 10; i++) {
-                const n = MAX_UINT128.mul(i).add(1);
-                for (let j = 1; j <= 10; j++) {
-                    const d = MAX_UINT128.mul(j).add(1);
-                    test(poweredRatio, poweredRatioCheck, maxError, n.toFixed(), d.toFixed(), exp, fast);
-                }
+    for (let exp = 0; exp <= MAX_EXP; exp++) {
+        for (let i = 1; i <= 10; i++) {
+            const n = MAX_UINT128.mul(i).add(1);
+            for (let j = 1; j <= 10; j++) {
+                const d = MAX_UINT128.mul(j).add(1);
+                test(poweredRatioExact, noCheck, "0.000000000000000000000000000000000000000000000000000000000000007", n.toFixed(), d.toFixed(), exp);
+                test(poweredRatioQuick, noCheck, "0.000000000000000000000001785081530106433016005692704322282363796", n.toFixed(), d.toFixed(), exp);
             }
         }
     }
 
-    for (const fast of [0, 1]) {
-        const maxError = fast ? "0.000000000000000000000002" : "0.000000000000000000000000000000000000000000000000000000000000009";
-        for (let exp = 0; exp <= MAX_EXP; exp++) {
-            for (let i = 1; i <= 10; i++) {
-                const n = MAX_UINT256.sub(MAX_UINT128).divToInt(i);
-                for (let j = 1; j <= 10; j++) {
-                    const d = MAX_UINT256.sub(MAX_UINT128).divToInt(j);
-                    test(poweredRatio, poweredRatioCheck, maxError, n.toFixed(), d.toFixed(), exp, fast);
-                }
+    for (let exp = 0; exp <= MAX_EXP; exp++) {
+        for (let i = 1; i <= 10; i++) {
+            const n = MAX_UINT256.sub(MAX_UINT128).divToInt(i);
+            for (let j = 1; j <= 10; j++) {
+                const d = MAX_UINT256.sub(MAX_UINT128).divToInt(j);
+                test(poweredRatioExact, noCheck, "0.000000000000000000000000000000000000000000000000000000000000009", n.toFixed(), d.toFixed(), exp);
+                test(poweredRatioQuick, noCheck, "0.000000000000000000000001785081530106396281807229507837658340714", n.toFixed(), d.toFixed(), exp);
             }
         }
     }
@@ -62,7 +57,7 @@ describe(TestContract.contractName, () => {
         for (const yn of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
             for (const xd of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
                 for (const yd of [MAX_UINT128, MAX_UINT256.divToInt(2), MAX_UINT256.sub(MAX_UINT128), MAX_UINT256]) {
-                    test(productRatio, productRatioCheck, "0.000000000000000000000000000000000000006", xn.toHex(), xd.toHex(), yn.toHex(), yd.toHex());
+                    test(productRatio, noCheck, "0.000000000000000000000000000000000000006", xn.toHex(), xd.toHex(), yn.toHex(), yd.toHex());
                 }
             }
         }

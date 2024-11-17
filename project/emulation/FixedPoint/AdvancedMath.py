@@ -165,31 +165,61 @@ LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
     @dev Solve x * (a / b) ^ x = c / d
     Solution: x = W(log(a / b) * c / d) / (log(a / b) * c / d) * c / d
 '''
-def solve(a, b, c, d):
-    if (a > b):
-        return call(lambertPos, a, b, c, d);
-    if (b > a):
-        return call(lambertNeg, b, a, c, d);
-    return (c, d);
+def solveExact(a, b, c, d):
+    return solve(a, b, c, d, lambertNegExact, lambertPosExact);
+
+'''
+    @dev Solve x * (a / b) ^ x = c / d
+    Solution: x = W(log(a / b) * c / d) / (log(a / b) * c / d) * c / d
+'''
+def solveQuick(a, b, c, d):
+    return solve(a, b, c, d, lambertNegQuick, lambertPosQuick);
 
 '''
     @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
     Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
 '''
-def lambertNeg(x):
-    require(x > 0, "lambertNeg: x < min");
-    if (x <= LAMBERT_NEG1_MAXVAL):
-        return lambertNeg1(x);
-    if (x <= LAMBERT_NEG2_MAXVAL):
-        return lambertNeg2(x);
-    revert("lambertNeg: x > max");
+def lambertNegExact(x):
+    require(x > 0, "lambertNegExact: x < min");
+    require(x <= LAMBERT_NEG2_MAXVAL, "lambertNegExact: x > max");
+    y = x;
+    for i in range(8):
+        e = AnalyticMath.fixedExp(y);
+        y = (x * e - y * y) // (FIXED_1 - y);
+    return IntegralMath.mulDivF(FIXED_1, y, x);
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
     Input range: 1 <= x <= 2 ^ 256 - 1
 '''
-def lambertPos(x):
-    require(x > 0, "lambertPos: x < min");
+def lambertPosExact(x):
+    require(x > 0, "lambertPosExact: x < min");
+    y = x if x < FIXED_1 else AnalyticMath.fixedLog(x);
+    for i in range(8):
+        e = AnalyticMath.fixedExp(y);
+        f = IntegralMath.mulDivF(y, e, FIXED_1);
+        g = IntegralMath.mulDivF(y, f, FIXED_1);
+        y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
+    return IntegralMath.mulDivF(FIXED_1, y, x);
+
+'''
+    @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
+    Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
+'''
+def lambertNegQuick(x):
+    require(x > 0, "lambertNegQuick: x < min");
+    if (x <= LAMBERT_NEG1_MAXVAL):
+        return lambertNeg1(x);
+    if (x <= LAMBERT_NEG2_MAXVAL):
+        return lambertNeg2(x);
+    revert("lambertNegQuick: x > max");
+
+'''
+    @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
+    Input range: 1 <= x <= 2 ^ 256 - 1
+'''
+def lambertPosQuick(x):
+    require(x > 0, "lambertPosQuick: x < min");
     if (x <= LAMBERT_POS1_MAXVAL):
         return lambertPos1(x);
     if (x <= LAMBERT_POS2_MAXVAL):
@@ -332,10 +362,24 @@ def lambertPos3(x):
     e = IntegralMath.mulDivF(FIXED_1, a - b + d, x);
     return e;
 
-# auxiliary function
-def read(data, offset):
-    return int(("0" * 64 + data)[offset * 2 : offset * 2 + 64], 16);
+'''
+    @dev Solve the equation x * (a / b) ^ x = c / d for x
+'''
+def solve(a, b, c, d, lambertNeg, lambertPos):
+    if (a > b):
+        return call(lambertPos, a, b, c, d);
+    if (b > a):
+        return call(lambertNeg, b, a, c, d);
+    return (c, d);
 
-# auxiliary function
+'''
+    @dev Return f(log(x / y) * z / w * FIXED_1) * z / w / FIXED_1
+'''
 def call(f, x, y, z, w):
     return FractionMath.productRatio(f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w)), z, w, FIXED_1);
+
+'''
+    @dev Read 32 bytes from a given chunk of data at a given offset
+'''
+def read(data, offset):
+    return int(("0" * 64 + data)[offset * 2 : offset * 2 + 64], 16);
