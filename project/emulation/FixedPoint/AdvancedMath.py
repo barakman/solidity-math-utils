@@ -6,13 +6,32 @@ from . import IntegralMath
 FIXED_1 = AnalyticMath.FIXED_1;
 
 # Auto-generated via 'PrintAdvancedMathConstants.py'
-LAMBERT_NEG1_MAXVAL = 0x02e9e207581ee21a2fdc7e0328c907628;
-LAMBERT_NEG2_MAXVAL = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
-LAMBERT_POS1_MAXVAL = 0x02f16ac6c59de6f8d5d6f63c1482a7c86;
-LAMBERT_POS2_MAXVAL = 0xc2f16ac6c59de6f8d5d6f63c1482a7c56;
-LAMBERT_POS2_SAMPLE = 0x0183060c183060c183060c183060c1830;
-LAMBERT_POS2_T_SIZE = 0x000000000000000000000000000000010;
-LAMBERT_POS2_T_MASK = 0x0ffffffffffffffffffffffffffffffff;
+LAMBERT_NEG1_MAXVAL = 0x002e9e207581ee21a2fdc7e0328c907634;
+LAMBERT_NEG2_MAXVAL = 0x002f16ac6c59de6f8d5d6f63c1482a7c86;
+LAMBERT_NEG2_SAMPLE = 0x0000080954b9100531c21c3bf872e8228e;
+LAMBERT_NEG2_T_SIZE = 0x0000000000000000000000000000000011;
+LAMBERT_NEG2_T_MASK = 0xffffffffffffffffffffffffffffffffff;
+LAMBERT_POS1_MAXVAL = 0x002f16ac6c59de6f8d5d6f63c1482a7c86;
+LAMBERT_POS2_MAXVAL = 0x0c2f16ac6c59de6f8d5d6f63c1482a7c56;
+LAMBERT_POS2_SAMPLE = 0x00183060c183060c183060c183060c1830;
+LAMBERT_POS2_T_SIZE = 0x0000000000000000000000000000000010;
+LAMBERT_POS2_T_MASK = 0x00ffffffffffffffffffffffffffffffff;
+LAMBERT_NEG2_VALUES = "012ff3f5b94a776318e70a4b0be31da9a5"\
+                      "01314a4702ae8ae09a01a03f6933dcf01f"\
+                      "0132afb4b8985b32518cd371f2b5c6de56"\
+                      "0134260eac628aa55b0b35bd5ba1df0e6e"\
+                      "0135af881e5cbc17f5de16bb05816826c0"\
+                      "01374ed8520d0404e91fe8e683b8d8173e"\
+                      "0139076a4780adf3619a57f1b6e40e3f20"\
+                      "013adda534e8e43471fe0ae32b8bbf0cfc"\
+                      "013cd75f834551aa105eff810be8afd15e"\
+                      "013efc9f6e12358e1f8c040050efadd3e2"\
+                      "014158f4e68e9217def733dc63fba7eba9"\
+                      "0143fe22b87c9944205ebc3be59f410691"\
+                      "01470a158303eabda73222305243e7c7b2"\
+                      "014ab733a071f0dfc80ab6c42b29b5ce07"\
+                      "014f9c668b59483575a0daad8006952948"\
+                      "015aa59d425cbd5ed5a6a64da5a1108555";
 LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
                       "577b97aa1fe222bb452fdf111b1f0be2"\
                       "5035f241d6eae0cd7bacba119993de7b"\
@@ -270,11 +289,18 @@ def lambertPos1(x):
     Input range: LAMBERT_NEG1_MAXVAL + 1 <= x <= LAMBERT_NEG2_MAXVAL
 '''
 def lambertNeg2(x):
-    y = x;
-    for i in range(4):
-        z = AnalyticMath.fixedExp(y);
-        y = (x * z - y * y) // (FIXED_1 - y);
-    return IntegralMath.mulDivF(FIXED_1, y, x);
+    values = LAMBERT_NEG2_VALUES;
+    y = x - LAMBERT_NEG1_MAXVAL - 1;
+    i = y // LAMBERT_NEG2_SAMPLE;
+    a = LAMBERT_NEG2_SAMPLE * (i + 0);
+    b = LAMBERT_NEG2_SAMPLE * (i + 1);
+    c = LAMBERT_NEG2_T_SIZE * (i + 1);
+    d = LAMBERT_NEG2_T_SIZE * (i + 2);
+    e = read(values, c) & LAMBERT_NEG2_T_MASK;
+    f = read(values, d) & LAMBERT_NEG2_T_MASK;
+    g = e * (b - y);
+    h = f * (y - a);
+    return (g + h) // LAMBERT_NEG2_SAMPLE;
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1

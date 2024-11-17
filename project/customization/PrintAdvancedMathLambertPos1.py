@@ -3,10 +3,13 @@ from util import hex_str
 from core import AdvancedMath
 from constants import FIXED_1
 from constants import LAMBERT_POS1_TERMS
+from constants import LAMBERT_POS2_SIZE_N
+from constants import LAMBERT_POS2_SIZE_D
+from constants import LAMBERT_POS2_SAMPLES
 
 
-maxVal = AdvancedMath.lambertRadius(FIXED_1)
-terms = AdvancedMath.lambertPos1Terms(FIXED_1,LAMBERT_POS1_TERMS,maxVal)
+limit = AdvancedMath.lambertPosLimits(FIXED_1,LAMBERT_POS2_SAMPLES,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D)[0]
+terms = AdvancedMath.lambertPos1Terms(FIXED_1,LAMBERT_POS1_TERMS,limit)
 
 
 str0 = hex_str(terms[0],terms[0])
