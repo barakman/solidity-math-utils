@@ -2,7 +2,7 @@ import sys
 
 
 def run(getInput, getOutput):
-    tests = int(sys.argv[1] if len(sys.argv) > 1 else input('How many test-cases would you like to execute? '))
+    tests = int(sys.argv[1] if len(sys.argv) > 1 else input('How many tests would you like to execute? '))
 
     minRatio = float('+inf')
     maxRatio = float('-inf')
