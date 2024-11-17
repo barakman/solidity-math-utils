@@ -18,7 +18,7 @@ def getInput():
 def getOutput(supply, balance, weights, amount):
     fixedPoint = FixedPoint.deposit(supply, balance, weights, amount)
     floatPoint = FloatPoint.deposit(supply, balance, weights, amount, MAX_WEIGHT)
-    return dict(actual=fixedPoint, expected=floatPoint, success=fixedPoint<=floatPoint)
+    return fixedPoint, floatPoint, fixedPoint <= floatPoint
 
 
 TestScheme.run(getInput, getOutput)

@@ -19,7 +19,7 @@ def getInput():
 def getOutput(balance1, weight1, balance2, weight2, amount):
     fixedPoint = FixedPoint.convert(balance1, weight1, balance2, weight2, amount)
     floatPoint = FloatPoint.convert(balance1, weight1, balance2, weight2, amount)
-    return dict(actual=fixedPoint, expected=floatPoint, success=fixedPoint<=floatPoint)
+    return fixedPoint, floatPoint, fixedPoint <= floatPoint
 
 
 TestScheme.run(getInput, getOutput)

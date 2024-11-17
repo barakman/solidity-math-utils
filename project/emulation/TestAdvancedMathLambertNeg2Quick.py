@@ -17,7 +17,7 @@ def getInput():
 def getOutput(x):
     fixedPoint = FixedPoint.lambertNegQuick(x)
     floatPoint = FloatPoint.lambertNeg(x, FIXED_1)
-    return dict(actual=fixedPoint, expected=floatPoint, success=True)
+    return fixedPoint, floatPoint, True
 
 
 TestScheme.run(getInput, getOutput)

@@ -15,7 +15,7 @@ def getInput():
 def getOutput(a, b, c, d):
     fixedPoint, factor = FixedPoint.pow(a, b, c, d)
     floatPoint = FloatPoint.pow(a, b, c, d, factor)
-    return dict(actual=fixedPoint, expected=floatPoint, success=fixedPoint<=floatPoint)
+    return fixedPoint, floatPoint, fixedPoint <= floatPoint
 
 
 TestScheme.run(getInput, getOutput)

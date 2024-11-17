@@ -13,7 +13,7 @@ def getInput():
 def getOutput(a, b):
     fixedPoint, factor = FixedPoint.exp(a, b)
     floatPoint = FloatPoint.exp(a, b, factor)
-    return dict(actual=fixedPoint, expected=floatPoint, success=fixedPoint<=floatPoint)
+    return fixedPoint, floatPoint, fixedPoint <= floatPoint
 
 
 TestScheme.run(getInput, getOutput)
