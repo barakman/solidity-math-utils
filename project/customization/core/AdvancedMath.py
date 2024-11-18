@@ -12,8 +12,8 @@ def lambertPos1Terms(fixed1, maxNumOfTerms, maxVal):
     return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertPos1)
 
 
-def lambertNegParams(fixed1, samples, part_n, part_d):
-    bgn, end = lambertNegLimits(fixed1, samples, part_n, part_d)
+def lambertNegParams(fixed1, samples, size_n, size_d):
+    bgn, end = lambertNegLimits(fixed1, samples, size_n, size_d)
     return bgn, end, *lambertLutParams(fixed1, samples, bgn, end, -1)
 
 
@@ -22,9 +22,9 @@ def lambertPosParams(fixed1, samples, size_n, size_d):
     return bgn, end, *lambertLutParams(fixed1, samples, bgn, end, +1)
 
 
-def lambertNegLimits(fixed1, samples, part_n, part_d):
+def lambertNegLimits(fixed1, samples, size_n, size_d):
     radius = int(INV_EXP * fixed1)
-    return radius - radius * part_n // part_d // (samples - 1) * (samples - 1), radius
+    return radius - radius * size_n // size_d // (samples - 1) * (samples - 1), radius
 
 
 def lambertPosLimits(fixed1, samples, size_n, size_d):

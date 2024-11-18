@@ -1,15 +1,15 @@
 from util import hex_len
 from core import AdvancedMath
 from constants import FIXED_1
-from constants import LAMBERT_NEG2_PART_N
-from constants import LAMBERT_NEG2_PART_D
+from constants import LAMBERT_NEG2_SIZE_N
+from constants import LAMBERT_NEG2_SIZE_D
 from constants import LAMBERT_NEG2_SAMPLES
 from constants import LAMBERT_POS2_SIZE_N
 from constants import LAMBERT_POS2_SIZE_D
 from constants import LAMBERT_POS2_SAMPLES
 
 
-lambertNegParams = AdvancedMath.lambertNegParams(FIXED_1,LAMBERT_NEG2_SAMPLES,LAMBERT_NEG2_PART_N,LAMBERT_NEG2_PART_D)
+lambertNegParams = AdvancedMath.lambertNegParams(FIXED_1,LAMBERT_NEG2_SAMPLES,LAMBERT_NEG2_SIZE_N,LAMBERT_NEG2_SIZE_D)
 lambertPosParams = AdvancedMath.lambertPosParams(FIXED_1,LAMBERT_POS2_SAMPLES,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D)
 
 
