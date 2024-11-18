@@ -36,7 +36,7 @@ $$\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots\infty}$$
 
 For $-1/e\leq{z}<0$, we approximate $W(z)$ via the Newton-Raphson converging sequence:
 
-$$\large\begin{cases}y_0=-z\\y_{n+1}=\frac{y_n^2+e^{y_n}\cdot{z}}{y_n+1}\end{cases}$$
+$$\large\begin{cases}y_0=-z\\y_{n+1}=\frac{y_n^2+e^{y_n}\cdot{z}}{y_n-1}\end{cases}$$
 
 ---
 
@@ -53,12 +53,12 @@ $$\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots1/e}\bigg|\underbrace{1/e\ldo
 
 ---
 
-For $-1/e\leq{z}\leq+1/e$, you may observe that $x=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{log\big(\frac{a}{b}\big)}=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}$:
+For $-1/e\leq{z}\leq+1/e$, you may observe that $W(z)=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{log\big(\frac{a}{b}\big)}=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}$:
 
-- For $-1/e\leq{z}\leq0$, which implies that ${a}\leq{b}$, we compute $x=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n-1}$
-- For $0\leq{z}\leq+1/e$, which implies that ${a}\geq{b}$, we compute $x=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}$
+- For $-1/e\leq{z}\leq0$, which implies that ${a}\leq{b}$, we compute $W(z)=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n-1}$
+- For $0\leq{z}\leq+1/e$, which implies that ${a}\geq{b}$, we compute $W(z)=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}$
 
-As you can see, when $a=b$, both formulas can be reduced to $x=\frac{c}{d}$.
+As you can see, when $a=b$, both formulas can be reduced to $W(z)=\frac{c}{d}$.
 
 Note that as the value of $z$ approaches $-1/e$, the value of $W(z)$ approaches $-1$ but it never actually reaches there.
 
@@ -67,14 +67,14 @@ The function becomes increasingly steep, making its approximation via the Taylor
 Hence for the smallest $\%1$ of the range $-1/e\leq{z}\leq0$:
 
 - We precalculate a lookup table which maps $16$ uniformly distributed values of $z$ to values of $W(z)$
-- During runtime, we calculate $W(z')$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z'}<z_1$
+- During runtime, we calculate $W(z)$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z}<z_1$
 
 ---
 
 For $1/e<z<24+1/e$:
 
 - We precalculate a lookup table which maps $128$ uniformly distributed values of $z$ to values of $W(z)$
-- During runtime, we calculate $W(z')$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z'}<z_1$
+- During runtime, we calculate $W(z)$ as the weighted-average of $W(z_0)$ and $W(z_1)$, where $z_0\leq{z}<z_1$
 
 ---
 
