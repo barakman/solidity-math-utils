@@ -4,37 +4,39 @@ from core import checked
 from math import factorial
 
 
-def lambertNeg1Terms(fixed1, maxNumOfTerms, maxVal):
+def lambertNeg1Terms(fixed1, maxNumOfTerms, sizeN, sizeD, numOfSamples):
+    maxVal, _ = lambertNegLimits(fixed1, sizeN, sizeD, numOfSamples)
     return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertNeg1)
 
 
-def lambertPos1Terms(fixed1, maxNumOfTerms, maxVal):
+def lambertPos1Terms(fixed1, maxNumOfTerms, sizeN, sizeD, numOfSamples):
+    maxVal, _ = lambertPosLimits(fixed1, sizeN, sizeD, numOfSamples)
     return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertPos1)
 
 
-def lambertNegParams(fixed1, samples, size_n, size_d):
-    bgn, end = lambertNegLimits(fixed1, samples, size_n, size_d)
-    return bgn, end, *lambertLutParams(fixed1, samples, bgn, end, -1)
+def lambertNegParams(fixed1, sizeN, sizeD, numOfSamples):
+    bgn, end = lambertNegLimits(fixed1, sizeN, sizeD, numOfSamples)
+    return bgn, end, *lambertLutParams(fixed1, numOfSamples, bgn, end, -1)
 
 
-def lambertPosParams(fixed1, samples, size_n, size_d):
-    bgn, end = lambertPosLimits(fixed1, samples, size_n, size_d)
-    return bgn, end, *lambertLutParams(fixed1, samples, bgn, end, +1)
+def lambertPosParams(fixed1, sizeN, sizeD, numOfSamples):
+    bgn, end = lambertPosLimits(fixed1, sizeN, sizeD, numOfSamples)
+    return bgn, end, *lambertLutParams(fixed1, numOfSamples, bgn, end, +1)
 
 
-def lambertNegLimits(fixed1, samples, size_n, size_d):
+def lambertNegLimits(fixed1, sizeN, sizeD, numOfSamples):
     radius = int(INV_EXP * fixed1)
-    return radius - radius * size_n // size_d // (samples - 1) * (samples - 1), radius
+    return radius - radius * sizeN // sizeD // (numOfSamples - 1) * (numOfSamples - 1), radius
 
 
-def lambertPosLimits(fixed1, samples, size_n, size_d):
+def lambertPosLimits(fixed1, sizeN, sizeD, numOfSamples):
     radius = int(INV_EXP * fixed1)
-    return radius, radius + fixed1 * size_n // size_d // (samples - 1) * (samples - 1)
+    return radius, radius + fixed1 * sizeN // sizeD // (numOfSamples - 1) * (numOfSamples - 1)
 
 
-def lambertLutParams(fixed1, samples, bgn, end, sign):
-    sample = (end - (bgn + 1)) // (samples - 1) + 1
-    values = [int(lambertRatio(Decimal(sign * (bgn + 1 + sample * i)) / fixed1) * fixed1) for i in range(samples)]
+def lambertLutParams(fixed1, numOfSamples, bgn, end, sign):
+    sample = (end - (bgn + 1)) // (numOfSamples - 1) + 1
+    values = [int(lambertRatio(Decimal(sign * (bgn + 1 + sample * i)) / fixed1) * fixed1) for i in range(numOfSamples)]
     t_size = (len(bin(max(values))) - 3) // 8 + 1
     t_mask = (1 << (t_size * 8)) - 1
     return sample, t_size, t_mask, values

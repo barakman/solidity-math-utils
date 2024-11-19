@@ -8,8 +8,7 @@ from constants import LAMBERT_NEG2_SIZE_D
 from constants import LAMBERT_NEG2_SAMPLES
 
 
-limit = AdvancedMath.lambertNegLimits(FIXED_1,LAMBERT_NEG2_SAMPLES,LAMBERT_NEG2_SIZE_N,LAMBERT_NEG2_SIZE_D)[0]
-terms = AdvancedMath.lambertNeg1Terms(FIXED_1,LAMBERT_NEG1_TERMS,limit)
+terms = AdvancedMath.lambertNeg1Terms(FIXED_1,LAMBERT_NEG1_TERMS,LAMBERT_NEG2_SIZE_N,LAMBERT_NEG2_SIZE_D,LAMBERT_NEG2_SAMPLES)
 
 
 str0 = hex_str(terms[0],terms[0])

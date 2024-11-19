@@ -9,8 +9,8 @@ from constants import LAMBERT_POS2_SIZE_D
 from constants import LAMBERT_POS2_SAMPLES
 
 
-lambertNegParams = AdvancedMath.lambertNegParams(FIXED_1,LAMBERT_NEG2_SAMPLES,LAMBERT_NEG2_SIZE_N,LAMBERT_NEG2_SIZE_D)
-lambertPosParams = AdvancedMath.lambertPosParams(FIXED_1,LAMBERT_POS2_SAMPLES,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D)
+lambertNegParams = AdvancedMath.lambertNegParams(FIXED_1,LAMBERT_NEG2_SIZE_N,LAMBERT_NEG2_SIZE_D,LAMBERT_NEG2_SAMPLES)
+lambertPosParams = AdvancedMath.lambertPosParams(FIXED_1,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D,LAMBERT_POS2_SAMPLES)
 
 
 LAMBERT_NEG1_MAXVAL = lambertNegParams[0]

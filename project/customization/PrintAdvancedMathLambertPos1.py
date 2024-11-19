@@ -8,8 +8,7 @@ from constants import LAMBERT_POS2_SIZE_D
 from constants import LAMBERT_POS2_SAMPLES
 
 
-limit = AdvancedMath.lambertPosLimits(FIXED_1,LAMBERT_POS2_SAMPLES,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D)[0]
-terms = AdvancedMath.lambertPos1Terms(FIXED_1,LAMBERT_POS1_TERMS,limit)
+terms = AdvancedMath.lambertPos1Terms(FIXED_1,LAMBERT_POS1_TERMS,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D,LAMBERT_POS2_SAMPLES)
 
 
 str0 = hex_str(terms[0],terms[0])
