@@ -90,9 +90,11 @@ describe(TestContract.contractName, () => {
         testSuccess("lambertPosQuick", percent, LAMBERT_POS3, LAMBERT_POS_QUICK_MAX_VAL, "0.04077461765786128270949836764496569026");
     }
 
-    for (let i = 0; i <= 10; i++) {
-        testFailure("lambertPosExact", LAMBERT_POS_EXACT_MAX_VAL.add(2 ** i), "with panic code");
-        testFailure("lambertPosExact", LAMBERT_POS_QUICK_MAX_VAL.sub(2 ** i), "without a reason");
+    for (let i = 1; i <= 50; i++) {
+        for (let j = 0; j <= i; j++) {
+            testFailure("lambertPosExact", LAMBERT_POS_EXACT_MAX_VAL.add(2 ** i - j), "with panic code");
+            testFailure("lambertPosExact", LAMBERT_POS_QUICK_MAX_VAL.sub(2 ** i - j), "without a reason");
+        }
     }
 
     testFailure("lambertNegExact", LAMBERT_NEG0.add(0), "lambertNegExact: x < min");
