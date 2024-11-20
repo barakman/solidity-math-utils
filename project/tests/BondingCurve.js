@@ -4,6 +4,8 @@ const Decimal = require("decimal.js");
 const ONE        = Decimal(1);
 const MAX_WEIGHT = Decimal(1000000);
 
+const lte = max => arg => Decimal(arg).lte(max);
+
 const buy      = (supply, balance, weight, amount)              => supply.mul((ONE.add(amount.div(balance))).pow(weight.div(MAX_WEIGHT)).sub(ONE));
 const sell     = (supply, balance, weight, amount)              => balance.mul(ONE.sub(ONE.sub(amount.div(supply)).pow((MAX_WEIGHT.div(weight)))));
 const convert  = (balance1, weight1, balance2, weight2, amount) => balance2.mul(ONE.sub(balance1.div(balance1.add(amount)).pow(weight1.div(weight2))));
@@ -27,9 +29,8 @@ describe(TestContract.contractName, () => {
     for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
         for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
             for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`))
-                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)))
-                    if (Decimal(amount).lte(supply))
-                        test(sell, "0.000000000000003", supply, balance, weight, amount);
+                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)).filter(lte(supply)))
+                    test(sell, "0.000000000000003", supply, balance, weight, amount);
 
     for (const balance1 of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
         for (const weight1 of [10, 20, 50, 100].map(p => `${p * 10000}`))
@@ -47,9 +48,8 @@ describe(TestContract.contractName, () => {
     for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
         for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
             for (const weights of [10, 50, 100, 200].map(p => `${p * 10000}`))
-                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)))
-                    if (Decimal(amount).lte(supply))
-                        test(withdraw, "0.000000000000004", supply, balance, weights, amount);
+                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)).filter(lte(supply)))
+                    test(withdraw, "0.000000000000004", supply, balance, weights, amount);
 
     for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
         for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
