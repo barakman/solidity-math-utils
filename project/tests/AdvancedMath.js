@@ -132,9 +132,9 @@ describe(TestContract.contractName, () => {
         });
     }
 
-    function testFailure(methodName, val, errorMessage) {
-        it(`${methodName} should revert with '${errorMessage}'`, async () => {
-            await Utilities.assertRevert(testContract[methodName](val.toFixed()), errorMessage);
+    function testFailure(methodName, val, errorMsg) {
+        it(`${methodName}(${val.toHex()})`, async () => {
+            await Utilities.assertRevert(testContract[methodName](val.toFixed()), errorMsg);
         });
     }
 });
