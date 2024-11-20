@@ -4,6 +4,8 @@ from . import IntegralMath
 
 MAX_EXP_BIT_LEN = 4;
 MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
+
+MAX_UINT256 = 2 ** 256 - 1;
 MAX_UINT128 = 2 ** 128 - 1;
 
 '''
@@ -90,7 +92,7 @@ def normalizedRatio(n, d, scale):
     @return The estimated ratio denominator
 '''
 def estimatedRatio(n, d, scale):
-    x = MAX_VAL // scale;
+    x = MAX_UINT256 // scale;
     if (n > x):
         # `n * scale` will overflow
         y = (n - 1) // x + 1;
@@ -106,8 +108,8 @@ def estimatedRatio(n, d, scale):
             r = IntegralMath.roundDiv(p, q);
             return (r, scale - r); # `r = n * scale / (n + d) < scale`
         if (p < d - (d - n) // 2):
-            return (0, scale); # `n * scale < (n + d) / 2 < MAX_VAL < n + d`
-        return (1, scale - 1); # `(n + d) / 2 < n * scale < MAX_VAL < n + d`
+            return (0, scale); # `n * scale < (n + d) / 2 < MAX_UINT256 < n + d`
+        return (1, scale - 1); # `(n + d) / 2 < n * scale < MAX_UINT256 < n + d`
     return (scale // 2, scale - scale // 2); # reflect the fact that initially `n <= d`
 
 '''

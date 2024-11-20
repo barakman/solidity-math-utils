@@ -6,6 +6,8 @@ import "./IntegralMath.sol";
 library FractionMath {
     uint256 internal constant MAX_EXP_BIT_LEN = 4;
     uint256 internal constant MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
+
+    uint256 internal constant MAX_UINT256 = type(uint256).max;
     uint256 internal constant MAX_UINT128 = type(uint128).max;
 
     /**
@@ -98,7 +100,7 @@ library FractionMath {
       * @return The estimated ratio denominator
     */
     function estimatedRatio(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
-        uint256 x = MAX_VAL / scale;
+        uint256 x = MAX_UINT256 / scale;
         if (n > x) {
             // `n * scale` will overflow
             uint256 y = (n - 1) / x + 1;
@@ -116,9 +118,9 @@ library FractionMath {
                 return (r, scale - r); // `r = n * scale / (n + d) < scale`
             }
             if (p < d - (d - n) / 2) {
-                return (0, scale); // `n * scale < (n + d) / 2 < MAX_VAL < n + d`
+                return (0, scale); // `n * scale < (n + d) / 2 < MAX_UINT256 < n + d`
             }
-            return (1, scale - 1); // `(n + d) / 2 < n * scale < MAX_VAL < n + d`
+            return (1, scale - 1); // `(n + d) / 2 < n * scale < MAX_UINT256 < n + d`
         }
         return (scale / 2, scale - scale / 2); // reflect the fact that initially `n <= d`
     }}
