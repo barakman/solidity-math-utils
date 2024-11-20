@@ -97,12 +97,13 @@ describe(TestContract.contractName, () => {
         }
     }
 
-    testFailure("lambertNegExact", LAMBERT_NEG0.add(0), "lambertNegExact: x < min");
     testFailure("lambertPosExact", LAMBERT_POS0.add(0), "lambertPosExact: x < min");
-    testFailure("lambertNegExact", LAMBERT_NEG2.add(1), "lambertNegExact: x > max");
-
-    testFailure("lambertNegQuick", LAMBERT_NEG0.add(0), "lambertNegQuick: x < min");
     testFailure("lambertPosQuick", LAMBERT_POS0.add(0), "lambertPosQuick: x < min");
+
+    testFailure("lambertNegExact", LAMBERT_NEG0.add(0), "lambertNegExact: x < min");
+    testFailure("lambertNegQuick", LAMBERT_NEG0.add(0), "lambertNegQuick: x < min");
+
+    testFailure("lambertNegExact", LAMBERT_NEG2.add(1), "lambertNegExact: x > max");
     testFailure("lambertNegQuick", LAMBERT_NEG2.add(1), "lambertNegQuick: x > max");
 
     function testSolve(methodName, a, b, c, d, maxError) {
