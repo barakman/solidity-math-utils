@@ -377,7 +377,17 @@ def solve(a, b, c, d, lambertNeg, lambertPos):
     @dev Return f(log(x / y) * z / w * FIXED_1) * z / w / FIXED_1
 '''
 def call(f, x, y, z, w):
-    return FractionMath.productRatio(f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w)), z, w, FIXED_1);
+    return FractionMath.productRatio(
+        f(
+            IntegralMath.mulDivF(
+                AnalyticMath.fixedLog(
+                    IntegralMath.mulDivF(
+                        FIXED_1, x, y
+                    )
+                ), z, w
+            )
+        ), z, w, FIXED_1
+    );
 
 '''
     @dev Read 32 bytes from a given chunk of data at a given offset

@@ -396,14 +396,27 @@ library AdvancedMath {
     /**
       * @dev Return f(log(x / y) * z / w * FIXED_1) * z / w / FIXED_1
     */
-    function call(function (uint256) pure returns (uint256) f, uint256 x, uint256 y, uint256 z, uint256 w) private pure returns (uint256, uint256) {
-        return FractionMath.productRatio(f(IntegralMath.mulDivF(AnalyticMath.fixedLog(IntegralMath.mulDivF(FIXED_1, x, y)), z, w)), z, w, FIXED_1);
-    }
+    function call(
+        function (uint256) pure returns (uint256) f,
+        uint256 x, uint256 y, uint256 z, uint256 w
+    ) private pure returns (uint256, uint256) { unchecked {
+        return FractionMath.productRatio(
+            f(
+                IntegralMath.mulDivF(
+                    AnalyticMath.fixedLog(
+                        IntegralMath.mulDivF(
+                            FIXED_1, x, y
+                        )
+                    ), z, w
+                )
+            ), z, w, FIXED_1
+        );
+    }}
 
     /**
       * @dev Read 32 bytes from a given chunk of data at a given offset
     */
-    function read(bytes memory data, uint256 offset) private pure returns (uint256 result) {
+    function read(bytes memory data, uint256 offset) private pure returns (uint256 result) { unchecked {
         assembly {result := mload(add(data, offset))}
-    }
+    }}
 }
