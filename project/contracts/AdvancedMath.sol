@@ -206,7 +206,7 @@ library AdvancedMath {
             uint256 e = AnalyticMath.fixedExp(y);
             uint256 f = IntegralMath.mulDivF(y, e, FIXED_1);
             uint256 g = IntegralMath.mulDivF(y, f, FIXED_1);
-            y = IntegralMath.mulDivF(FIXED_1, safeAdd(g, x), safeAdd(f, e));
+            y = IntegralMath.mulDivF(FIXED_1, safeAdd(g, x), f + e);
         }
         return IntegralMath.mulDivF(FIXED_1, y, x);
     }}
