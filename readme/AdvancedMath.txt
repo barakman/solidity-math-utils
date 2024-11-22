@@ -17,11 +17,12 @@ Where $W(z)$ computes a value of $x$ which solves the equation $x\cdot{e}^x=z$.
 
 ---
 
-For $z<-1/e$, the value of $W(z)$ is not real.
+The function $f(x)=x\cdot{e}^x$ reaches a global minimum at $x=-1$:
 
-Respectively, the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$ has no real solution.
+- $f'(x)=(x+1)\cdot{e}^x$ hence $f'(x)=0\iff{x=-1}$
+- $f''(x)=(x+2)\cdot{e}^x$ hence $f''(-1)=1/e>0$
 
-This is because $x\cdot\big(\frac{a}{b}\big)^x\leq\frac{1}{e\cdot\log\big(\frac{b}{a}\big)}<\frac{c}{d}$ for every real value of $x$.
+Since $f(-1)=-1/e$, the equation $x\cdot{e}^x=z$ has no solution for $z<-1/e$.
 
 In order to handle the rest of the input domain, we split it into several sections.
 
@@ -82,4 +83,13 @@ For $z\geq24+1/e$, we rely on the fact that $W(z)\approx{p-q+\frac{q^2+2pq-2q}{2
 
 Since this method requires the calculation of $\log(log(z))$, it is actually applicable for as low as $z=e$.
 
-However, a higher starting value ($z=24+1/e$) is used here in order to achieve higher accuracy.
+However, for $e\leq{z}<24+1/e$, the previous method achieves better accuracy than this method.
+
+---
+---
+
+Note that due to practical reasons, this library internally implements the calculation of $W(z)/z$ instead of $W(z)$.
+
+This means that instead of calculating $\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{log\big(\frac{a}{b}\big)}$, 
+it first calculates $\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{log\big(\frac{a}{b}\big)\cdot\frac{c}{d}}$, 
+and then multiplies the result by $\frac{c}{d}$.
