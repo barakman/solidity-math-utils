@@ -1,10 +1,9 @@
 from .common.BuiltIn import *
+from .common.Uint import *
 from . import IntegralMath
 
 MAX_EXP_BIT_LEN = 4;
 MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
-
-MAX_UINT256 = 2 ** 256 - 1;
 MAX_UINT128 = 2 ** 128 - 1;
 
 '''

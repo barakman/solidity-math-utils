@@ -72,7 +72,7 @@ def roundDiv(n, d):
 '''
 def minFactor(x, y):
     (hi, lo) = mul512(x, y);
-    return hi + 2 if hi > MAX_VAL - lo else hi + 1;
+    return hi + 2 if hi > MAX_UINT256 - lo else hi + 1;
     # General:
     # - find the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`
     # - the value of `x * y` is represented via `2 ^ 256 * hi + lo`

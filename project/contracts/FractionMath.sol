@@ -6,8 +6,6 @@ import "./IntegralMath.sol";
 library FractionMath {
     uint256 internal constant MAX_EXP_BIT_LEN = 4;
     uint256 internal constant MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
-
-    uint256 internal constant MAX_UINT256 = type(uint256).max;
     uint256 internal constant MAX_UINT128 = type(uint128).max;
 
     /**
