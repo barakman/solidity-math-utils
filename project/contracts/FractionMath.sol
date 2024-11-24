@@ -102,25 +102,24 @@ library FractionMath {
     function estimatedRatio(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
         uint256 x = MAX_UINT256 / scale;
         if (n > x) {
-            // `n * scale` will overflow
+            // `scale * n` will overflow
             uint256 y = (n - 1) / x + 1;
             n /= y;
             d /= y;
-            // `n * scale` will not overflow
+            // `scale * n` will not overflow
         }
 
         if (n < d) {
-            uint256 p = n * scale;
-            uint256 q = unsafeAdd(n, d); // `n + d` can overflow
-            if (q >= n) {
-                // `n + d` did not overflow
-                uint256 r = IntegralMath.roundDiv(p, q);
-                return (r, scale - r); // `r = n * scale / (n + d) < scale`
+            uint256 z = scale * n;
+            if (n <= ~d) {
+                // `n + d` will not overflow
+                uint256 w = IntegralMath.roundDiv(z, n + d);
+                return (w, scale - w); // `w = scale * n / (n + d) < scale`
             }
-            if (p < d - (d - n) / 2) {
-                return (0, scale); // `n * scale < (n + d) / 2 < MAX_UINT256 < n + d`
+            if (z < d - (d - n) / 2) {
+                return (0, scale); // `scale * n < (n + d) / 2 < MAX_UINT256 < n + d`
             }
-            return (1, scale - 1); // `(n + d) / 2 < n * scale < MAX_UINT256 < n + d`
+            return (1, scale - 1); // `(n + d) / 2 < scale * n < MAX_UINT256 < n + d`
         }
         return (scale / 2, scale - scale / 2); // reflect the fact that initially `n <= d`
     }}

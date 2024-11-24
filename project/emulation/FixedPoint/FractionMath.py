@@ -1,5 +1,4 @@
 from .common.BuiltIn import *
-from .common.Uint import *
 from . import IntegralMath
 
 MAX_EXP_BIT_LEN = 4;
@@ -94,22 +93,21 @@ def normalizedRatio(n, d, scale):
 def estimatedRatio(n, d, scale):
     x = MAX_UINT256 // scale;
     if (n > x):
-        # `n * scale` will overflow
+        # `scale * n` will overflow
         y = (n - 1) // x + 1;
         n //= y;
         d //= y;
-        # `n * scale` will not overflow
+        # `scale * n` will not overflow
 
     if (n < d):
-        p = n * scale;
-        q = unsafeAdd(n, d); # `n + d` can overflow
-        if (q >= n):
-            # `n + d` did not overflow
-            r = IntegralMath.roundDiv(p, q);
-            return (r, scale - r); # `r = n * scale / (n + d) < scale`
-        if (p < d - (d - n) // 2):
-            return (0, scale); # `n * scale < (n + d) / 2 < MAX_UINT256 < n + d`
-        return (1, scale - 1); # `(n + d) / 2 < n * scale < MAX_UINT256 < n + d`
+        z = scale * n;
+        if (n <= MAX_UINT256 - d):
+            # `n + d` will not overflow
+            w = IntegralMath.roundDiv(z, n + d);
+            return (w, scale - w); # `w = scale * n / (n + d) < scale`
+        if (z < d - (d - n) // 2):
+            return (0, scale); # `scale * n < (n + d) / 2 < MAX_UINT256 < n + d`
+        return (1, scale - 1); # `(n + d) / 2 < scale * n < MAX_UINT256 < n + d`
     return (scale // 2, scale - scale // 2); # reflect the fact that initially `n <= d`
 
 '''
