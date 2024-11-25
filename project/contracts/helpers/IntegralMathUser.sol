@@ -40,6 +40,10 @@ contract IntegralMathUser {
         return IntegralMath.mulDivC(x, y, z);
     }
 
+    function mulDivR(uint256 x, uint256 y, uint256 z) external pure returns (uint256) {
+        return IntegralMath.mulDivR(x, y, z);
+    }
+
     function mulDivExF(uint256 x, uint256 y, uint256 z, uint256 w) external pure returns (uint256) {
         return IntegralMath.mulDivExF(x, y, z, w);
     }

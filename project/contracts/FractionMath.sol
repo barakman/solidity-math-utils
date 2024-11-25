@@ -105,9 +105,8 @@ library FractionMath {
             d -= x - y;
         }
 
-        uint256 z = n + d;
-        uint256 w = IntegralMath.mulDivF(scale, n, z) + mulMod(scale, n, z) / ((z - 1) / 2 + 1);
-        return(w, scale - w);
+        uint256 z = IntegralMath.mulDivR(scale, n, n + d);
+        return(z, scale - z);
     }}
 
     /**

@@ -97,9 +97,8 @@ def estimatedRatio(n, d, scale):
         n -= y;
         d -= x - y;
 
-    z = n + d;
-    w = IntegralMath.mulDivF(scale, n, z) + mulMod(scale, n, z) // ((z - 1) // 2 + 1);
-    return(w, scale - w);
+    z = IntegralMath.mulDivR(scale, n, n + d);
+    return(z, scale - z);
 
 '''
     @dev Compute the power of a given ratio
