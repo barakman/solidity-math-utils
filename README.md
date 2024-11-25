@@ -68,7 +68,7 @@ Function `mulDivExF(x, y, z, w)` computes the largest integer smaller than or eq
 
 Function `mulDivExC(x, y, z, w)` computes the smallest integer larger than or equal to `(x * y) / (z * w)`.
 
-Note that each one of the "mulDiv" functions reverts when the **actual** result is larger than 256 bits.
+Note that each one of the 'mulDiv' functions reverts when the **actual** result is larger than 256 bits.
 
 Note that function `floorSqrt` and function `ceilSqrt` are guaranteed to return the correct output for every input.
 
