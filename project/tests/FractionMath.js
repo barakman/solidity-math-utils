@@ -116,7 +116,7 @@ describe(TestContract.contractName, () => {
         ]) {
             for (const d of [MAX_UINT256.sub(1), MAX_UINT256]) {
                 test(reducedRatio   , reducedRatioCheck   (z), "0.0039216", n.toHex(), d.toHex(), z);
-                test(normalizedRatio, normalizedRatioCheck(z), "0.0035295", n.toHex(), d.toHex(), z);
+                test(normalizedRatio, normalizedRatioCheck(z), "0.0035088", n.toHex(), d.toHex(), z);
             }
         }
     }
@@ -140,7 +140,7 @@ describe(TestContract.contractName, () => {
     for (const n of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
         for (const d of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
             for (const z of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
-                test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000000587747175411143753984368268611122838917", n.toHex(), d.toHex(), z.toHex());
+                test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000000587747175411143753984368268611122838918", n.toHex(), d.toHex(), z.toHex());
             }
         }
     }
