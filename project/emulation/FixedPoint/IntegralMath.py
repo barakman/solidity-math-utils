@@ -1,5 +1,5 @@
 from .common.BuiltIn import *
-from .common.Uint import *
+from .common.Uint256 import *
 
 '''
     @dev Compute the largest integer smaller than or equal to the binary logarithm of `n`

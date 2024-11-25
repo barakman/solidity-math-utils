@@ -1,5 +1,5 @@
 from .common.BuiltIn import *
-from .common.Uint import *
+from .common.Uint256 import *
 from . import AnalyticMath
 from . import FractionMath
 from . import IntegralMath

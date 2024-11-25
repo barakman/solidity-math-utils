@@ -1,5 +1,5 @@
 from .common.BuiltIn import *
-from .common.Uint import *
+from .common.Uint256 import *
 from . import IntegralMath
 
 MAX_EXP_BIT_LEN = 4;
