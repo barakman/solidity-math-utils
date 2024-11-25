@@ -20,7 +20,3 @@ def unsafeMul(x, y):
 # does not overflow
 def mulModMax(x, y):
     return (x * y) % MAX_VAL
-
-# does not overflow
-def mulMod(x, y, z):
-    return (x * y) % z

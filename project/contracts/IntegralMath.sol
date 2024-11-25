@@ -153,7 +153,7 @@ library IntegralMath {
             return xyl / z;
         }
         if (xyh < z) { // `x * y / z < 2 ^ 256`
-            uint256 m = mulMod(x, y, z);                    // `m = x * y % z`
+            uint256 m = mulmod(x, y, z);                    // `m = x * y % z`
             (uint256 nh, uint256 nl) = sub512(xyh, xyl, m); // `n = x * y - m` hence `n / z = floor(x * y / z)`
             if (nh == 0) { // `n < 2 ^ 256`
                 return nl / z;
@@ -171,7 +171,7 @@ library IntegralMath {
     */
     function mulDivC(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
-        if (mulMod(x, y, z) > 0)
+        if (mulmod(x, y, z) > 0)
             return safeAdd(w, 1);
         return w;
     }}
@@ -181,7 +181,7 @@ library IntegralMath {
     */
     function mulDivR(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
-        if (mulMod(x, y, z) > (z - 1) / 2)
+        if (mulmod(x, y, z) > (z - 1) / 2)
             return safeAdd(w, 1);
         return w;
     }}

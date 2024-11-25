@@ -133,7 +133,7 @@ def mulDivF(x, y, z):
     if (xyh == 0): # `x * y < 2 ^ 256`
         return xyl // z;
     if (xyh < z): # `x * y / z < 2 ^ 256`
-        m = mulMod(x, y, z);            # `m = x * y % z`
+        m = mulmod(x, y, z);            # `m = x * y % z`
         (nh, nl) = sub512(xyh, xyl, m); # `n = x * y - m` hence `n / z = floor(x * y / z)`
         if (nh == 0): # `n < 2 ^ 256`
             return nl // z;
@@ -148,7 +148,7 @@ def mulDivF(x, y, z):
 '''
 def mulDivC(x, y, z):
     w = mulDivF(x, y, z);
-    if (mulMod(x, y, z) > 0):
+    if (mulmod(x, y, z) > 0):
         return safeAdd(w, 1);
     return w;
 
@@ -157,7 +157,7 @@ def mulDivC(x, y, z):
 '''
 def mulDivR(x, y, z):
     w = mulDivF(x, y, z);
-    if (mulMod(x, y, z) > (z - 1) // 2):
+    if (mulmod(x, y, z) > (z - 1) // 2):
         return safeAdd(w, 1);
     return w;
 

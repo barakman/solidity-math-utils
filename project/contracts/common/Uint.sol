@@ -27,8 +27,3 @@ function unsafeMul(uint256 x, uint256 y) pure returns (uint256) { unchecked {
 function mulModMax(uint256 x, uint256 y) pure returns (uint256) { unchecked {
     return mulmod(x, y, MAX_VAL);
 }}
-
-// does not overflow
-function mulMod(uint256 x, uint256 y, uint256 z) pure returns (uint256) { unchecked {
-    return mulmod(x, y, z);
-}}
