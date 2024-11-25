@@ -40,6 +40,7 @@ This module implements the following interface:
 - `function roundDiv(uint256 n, uint256 d)` => `(uint256)`
 - `function mulDivF(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 - `function mulDivC(uint256 x, uint256 y, uint256 z)` => `(uint256)`
+- `function mulDivR(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 - `function mulDivExF(uint256 x, uint256 y, uint256 z, uint256 w)` => `(uint256)`
 - `function mulDivExC(uint256 x, uint256 y, uint256 z, uint256 w)` => `(uint256)`
 
@@ -61,13 +62,13 @@ Function `mulDivF(x, y, z)` computes the largest integer smaller than or equal t
 
 Function `mulDivC(x, y, z)` computes the smallest integer larger than or equal to `x * y / z`.
 
+Function `mulDivR(x, y, z)` computes the nearest integer smaller than or larger than `x * y / z`.
+
 Function `mulDivExF(x, y, z, w)` computes the largest integer smaller than or equal to `(x * y) / (z * w)`.
 
 Function `mulDivExC(x, y, z, w)` computes the smallest integer larger than or equal to `(x * y) / (z * w)`.
 
-Note that function `mulDivF` and function `mulDivC` revert when the **actual** result is larger than 256 bits.
-
-Note that function `mulDivExF` and function `mulDivExC` revert when the **actual** result is larger than 256 bits.
+Note that each one of the "mulDiv" functions reverts when the **actual** result is larger than 256 bits.
 
 Note that function `floorSqrt` and function `ceilSqrt` are guaranteed to return the correct output for every input.
 

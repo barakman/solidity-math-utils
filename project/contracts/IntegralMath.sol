@@ -177,7 +177,7 @@ library IntegralMath {
     }}
 
     /**
-      * @dev Compute the nearest integer to `x * y / z`
+      * @dev Compute the nearest integer smaller than or larger than `x * y / z`
     */
     function mulDivR(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);

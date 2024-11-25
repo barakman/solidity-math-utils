@@ -153,7 +153,7 @@ def mulDivC(x, y, z):
     return w;
 
 '''
-    @dev Compute the nearest integer to `x * y / z`
+    @dev Compute the nearest integer smaller than or larger than `x * y / z`
 '''
 def mulDivR(x, y, z):
     w = mulDivF(x, y, z);
