@@ -4,8 +4,6 @@ from . import IntegralMath
 
 MAX_EXP_BIT_LEN = 4;
 MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
-
-MAX_UINT256 = 2 ** 256 - 1;
 MAX_UINT128 = 2 ** 128 - 1;
 
 '''
@@ -76,13 +74,14 @@ def reducedRatio(n, d, max):
     @return The normalized ratio denominator
 '''
 def normalizedRatio(n, d, scale):
-    if (n <= d):
-        return estimatedRatio(n, d, scale);
-    (d, n) = estimatedRatio(d, n, scale);
+    if (n < d):
+        (n, d) = estimatedRatio(n, d, scale);
+    else:
+        (d, n) = estimatedRatio(d, n, scale);
     return (n, d);
 
 '''
-    @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n <= d`
+    @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n < d`
     
     @param n The ratio numerator
     @param d The ratio denominator
@@ -92,25 +91,14 @@ def normalizedRatio(n, d, scale):
     @return The estimated ratio denominator
 '''
 def estimatedRatio(n, d, scale):
-    x = MAX_UINT256 // scale;
-    if (n > x):
-        # `n * scale` will overflow
-        y = (n - 1) // x + 1;
-        n //= y;
-        d //= y;
-        # `n * scale` will not overflow
+    if (n > MAX_VAL - d):
+        x = unsafeAdd(n, d) + 1;
+        y = IntegralMath.mulDivF(x, n // 2, n // 2 + d // 2);
+        n -= y;
+        d -= x - y;
 
-    if (n < d):
-        p = n * scale;
-        q = unsafeAdd(n, d); # `n + d` can overflow
-        if (q >= n):
-            # `n + d` did not overflow
-            r = IntegralMath.roundDiv(p, q);
-            return (r, scale - r); # `r = n * scale / (n + d) < scale`
-        if (p < d - (d - n) // 2):
-            return (0, scale); # `n * scale < (n + d) / 2 < MAX_UINT256 < n + d`
-        return (1, scale - 1); # `(n + d) / 2 < n * scale < MAX_UINT256 < n + d`
-    return (scale // 2, scale - scale // 2); # reflect the fact that initially `n <= d`
+    z = IntegralMath.mulDivR(scale, n, n + d);
+    return(z, scale - z);
 
 '''
     @dev Compute the power of a given ratio

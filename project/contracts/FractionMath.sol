@@ -6,8 +6,6 @@ import "./IntegralMath.sol";
 library FractionMath {
     uint256 internal constant MAX_EXP_BIT_LEN = 4;
     uint256 internal constant MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
-
-    uint256 internal constant MAX_UINT256 = type(uint256).max;
     uint256 internal constant MAX_UINT128 = type(uint128).max;
 
     /**
@@ -82,15 +80,15 @@ library FractionMath {
       * @return The normalized ratio denominator
     */
     function normalizedRatio(uint256 n, uint256 d, uint256 scale) internal pure returns (uint256, uint256) { unchecked {
-        if (n <= d) {
-            return estimatedRatio(n, d, scale);
-        }
-        (d, n) = estimatedRatio(d, n, scale);
+        if (n < d)
+            (n, d) = estimatedRatio(n, d, scale);
+        else
+            (d, n) = estimatedRatio(d, n, scale);
         return (n, d);
     }}
 
     /**
-      * @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n <= d`
+      * @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n < d`
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
@@ -100,29 +98,15 @@ library FractionMath {
       * @return The estimated ratio denominator
     */
     function estimatedRatio(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
-        uint256 x = MAX_UINT256 / scale;
-        if (n > x) {
-            // `n * scale` will overflow
-            uint256 y = (n - 1) / x + 1;
-            n /= y;
-            d /= y;
-            // `n * scale` will not overflow
+        if (n > ~d) {
+            uint256 x = unsafeAdd(n, d) + 1;
+            uint256 y = IntegralMath.mulDivF(x, n / 2, n / 2 + d / 2);
+            n -= y;
+            d -= x - y;
         }
 
-        if (n < d) {
-            uint256 p = n * scale;
-            uint256 q = unsafeAdd(n, d); // `n + d` can overflow
-            if (q >= n) {
-                // `n + d` did not overflow
-                uint256 r = IntegralMath.roundDiv(p, q);
-                return (r, scale - r); // `r = n * scale / (n + d) < scale`
-            }
-            if (p < d - (d - n) / 2) {
-                return (0, scale); // `n * scale < (n + d) / 2 < MAX_UINT256 < n + d`
-            }
-            return (1, scale - 1); // `(n + d) / 2 < n * scale < MAX_UINT256 < n + d`
-        }
-        return (scale / 2, scale - scale / 2); // reflect the fact that initially `n <= d`
+        uint256 z = IntegralMath.mulDivR(scale, n, n + d);
+        return(z, scale - z);
     }}
 
     /**

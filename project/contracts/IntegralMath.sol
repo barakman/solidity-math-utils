@@ -177,6 +177,16 @@ library IntegralMath {
     }}
 
     /**
+      * @dev Compute the nearest integer smaller than or larger than `x * y / z`
+    */
+    function mulDivR(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
+        uint256 w = mulDivF(x, y, z);
+        if (mulMod(x, y, z) > (z - 1) / 2)
+            return safeAdd(w, 1);
+        return w;
+    }}
+
+    /**
       * @dev Compute the largest integer smaller than or equal to `(x * y) / (z * w)`
     */
     function mulDivExF(uint256 x, uint256 y, uint256 z, uint256 w) internal pure returns (uint256) { unchecked {

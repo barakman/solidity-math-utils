@@ -12,6 +12,7 @@ const ceilCbrt  = (n)          => n.cbrt().ceil();
 const roundDiv  = (n, d)       => n.div(d).add(0.5).floor();
 const mulDivF   = (x, y, z)    => x.mul(y).div(z).floor();
 const mulDivC   = (x, y, z)    => x.mul(y).div(z).ceil();
+const mulDivR   = (x, y, z)    => x.mul(y).div(z).add(0.5).floor();
 const mulDivExF = (x, y, z, w) => x.mul(y).div(z.mul(w)).floor();
 const mulDivExC = (x, y, z, w) => x.mul(y).div(z.mul(w)).ceil();
 const minFactor = (x, y)       => Decimal.max(mulDivC(x, y, MAX_UINT256), 1);
@@ -78,7 +79,7 @@ describe(TestContract.contractName, () => {
         }
     }
 
-    for (const method of [mulDivF, mulDivC, mulDivExF, mulDivExC]) {
+    for (const method of [mulDivF, mulDivC, mulDivR, mulDivExF, mulDivExC]) {
         for (const px of [0, 64, 128, 192, 255, 256]) {
             for (const py of [0, 64, 128, 192, 255, 256]) {
                 for (const pz of [1, 64, 128, 192, 255, 256]) {
@@ -97,7 +98,7 @@ describe(TestContract.contractName, () => {
         }
     }
 
-    for (const method of [mulDivF, mulDivC, mulDivExF, mulDivExC]) {
+    for (const method of [mulDivF, mulDivC, mulDivR, mulDivExF, mulDivExC]) {
         for (const px of [64, 128, 192, 256]) {
             for (const py of [64, 128, 192, 256]) {
                 for (const pz of [64, 128, 192, 256]) {
@@ -116,7 +117,7 @@ describe(TestContract.contractName, () => {
         }
     }
 
-    for (const method of [mulDivF, mulDivC, mulDivExF, mulDivExC]) {
+    for (const method of [mulDivF, mulDivC, mulDivR, mulDivExF, mulDivExC]) {
         for (const px of [128, 192, 256]) {
             for (const py of [128, 192, 256]) {
                 for (const pz of [128, 192, 256]) {

@@ -32,12 +32,30 @@ describe(TestContract.contractName, () => {
     }
 
     for (let exp = 0; exp <= MAX_EXP; exp++) {
+        for (const n of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
+            for (const d of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
+                test(poweredRatioExact, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000000000000000004", n.toHex(), d.toHex(), exp);
+                test(poweredRatioQuick, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000000000000000817", n.toHex(), d.toHex(), exp);
+            }
+        }
+    }
+
+    for (let exp = 0; exp <= MAX_EXP; exp++) {
+        for (const n of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
+            for (const d of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
+                test(poweredRatioExact, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000000000000000013", n.toHex(), d.toHex(), exp);
+                test(poweredRatioQuick, noCheck, "0.00000000000000000000000000000000000004408103815583578154882762014583421292015", n.toHex(), d.toHex(), exp);
+            }
+        }
+    }
+
+    for (let exp = 0; exp <= MAX_EXP; exp++) {
         for (let i = 1; i <= 10; i++) {
             const n = MAX_UINT128.mul(i).add(1);
             for (let j = 1; j <= 10; j++) {
                 const d = MAX_UINT128.mul(j).add(1);
-                test(poweredRatioExact, noCheck, "0.000000000000000000000000000000000000000000000000000000000000007", n.toFixed(), d.toFixed(), exp);
-                test(poweredRatioQuick, noCheck, "0.000000000000000000000001785081530106433016005692704322282363796", n.toFixed(), d.toFixed(), exp);
+                test(poweredRatioExact, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000683775553857226", n.toHex(), d.toHex(), exp);
+                test(poweredRatioQuick, noCheck, "0.00000000000000000000000178508153010643301600569270432228236379578356423344952", n.toHex(), d.toHex(), exp);
             }
         }
     }
@@ -47,8 +65,8 @@ describe(TestContract.contractName, () => {
             const n = MAX_UINT256.sub(MAX_UINT128).divToInt(i);
             for (let j = 1; j <= 10; j++) {
                 const d = MAX_UINT256.sub(MAX_UINT128).divToInt(j);
-                test(poweredRatioExact, noCheck, "0.000000000000000000000000000000000000000000000000000000000000009", n.toFixed(), d.toFixed(), exp);
-                test(poweredRatioQuick, noCheck, "0.000000000000000000000001785081530106396281807229507837658340714", n.toFixed(), d.toFixed(), exp);
+                test(poweredRatioExact, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000856782943372566", n.toHex(), d.toHex(), exp);
+                test(poweredRatioQuick, noCheck, "0.00000000000000000000000178508153010639628180722950783765834071342182985610216", n.toHex(), d.toHex(), exp);
             }
         }
     }
@@ -66,8 +84,8 @@ describe(TestContract.contractName, () => {
     for (const z of [Decimal("1e6"), Decimal("1e18"), Decimal("1e30"), MAX_UINT128]) {
         for (let n = 0; n < 10; n++) {
             for (let d = 1; d <= 10; d++) {
-                test(reducedRatio   , reducedRatioCheck   (z), "0.0000000", n, d, z.toFixed());
-                test(normalizedRatio, normalizedRatioCheck(z), "0.0000025", n, d, z.toFixed());
+                test(reducedRatio   , reducedRatioCheck   (z), "0.0000000", n, d, z.toHex());
+                test(normalizedRatio, normalizedRatioCheck(z), "0.0000025", n, d, z.toHex());
             }
         }
     }
@@ -77,8 +95,8 @@ describe(TestContract.contractName, () => {
             const n = MAX_UINT256.divToInt(z).mul(i).add(1);
             for (let j = Decimal(1); j.lte(z); j = j.mul(10)) {
                 const d = MAX_UINT256.divToInt(z).mul(j).add(1);
-                test(reducedRatio   , reducedRatioCheck   (z), "0.135", n.toFixed(), d.toFixed(), z.toFixed());
-                test(normalizedRatio, normalizedRatioCheck(z), "0.135", n.toFixed(), d.toFixed(), z.toFixed());
+                test(reducedRatio   , reducedRatioCheck   (z), "0.1342746", n.toHex(), d.toHex(), z.toHex());
+                test(normalizedRatio, normalizedRatioCheck(z), "0.1342746", n.toHex(), d.toHex(), z.toHex());
             }
         }
     }
@@ -97,25 +115,32 @@ describe(TestContract.contractName, () => {
             MAX_UINT256
         ]) {
             for (const d of [MAX_UINT256.sub(1), MAX_UINT256]) {
-                test(reducedRatio   , reducedRatioCheck   (z), "0.004", n.toFixed(), d.toFixed(), z);
-                test(normalizedRatio, normalizedRatioCheck(z), "0.004", n.toFixed(), d.toFixed(), z);
+                test(reducedRatio   , reducedRatioCheck   (z), "0.0039216", n.toHex(), d.toHex(), z);
+                test(normalizedRatio, normalizedRatioCheck(z), "0.0035088", n.toHex(), d.toHex(), z);
             }
         }
     }
 
-    for (const z of [1, 2, 3, 4]) {
-        for (const n of [1, 2, 3, 4]) {
-            for (const d of [MAX_UINT256.sub(1), MAX_UINT256]) {
-                test(reducedRatio   , reducedRatioCheck   (z), "0.0000000000000000000000000000000000000000000000000000000000000000000000000005", n, d.toFixed(), z);
-                test(normalizedRatio, normalizedRatioCheck(z), "0.0000000000000000000000000000000000000000000000000000000000000000000000000006", n, d.toFixed(), z);
+    for (const n of [1, 2, 3, 4]) {
+        for (const d of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
+            for (const z of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
+                test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000002057115113939003138945288940138929936189", n, d.toHex(), z.toHex());
             }
         }
     }
 
-    for (const n of [1, 2, 3]) {
+    for (const n of [1, 2, 3, 4]) {
         for (const d of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
-            for (const z of [1, 2, 3].map(k => MAX_UINT256.sub(k))) {
-                test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000000000000000000000000000000000000000000006", n, d.toFixed(), z.toFixed());
+            for (const z of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
+                test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000000000000000000000000000000000000000000007", n, d.toHex(), z.toHex());
+            }
+        }
+    }
+
+    for (const n of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
+        for (const d of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
+            for (const z of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
+                test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000000587747175411143753984368268611122838918", n.toHex(), d.toHex(), z.toHex());
             }
         }
     }
@@ -126,10 +151,11 @@ describe(TestContract.contractName, () => {
             const actual = await testContract[method.name](...args);
             const x = expected[0].mul(actual[1].toString());
             const y = expected[1].mul(actual[0].toString());
-            const delta = x.sub(y).abs();
-            const error = x.mul(y).gt(0) ? delta.div(y) : delta;
-            assert(check(actual[0], actual[1]), "critical error");
-            assert(error.lte(maxError), `error = ${error.toFixed()}`);
+            if (!x.eq(y)) {
+                const error = x.sub(y).abs().div(y);
+                assert(check(actual[0], actual[1]), "critical error");
+                assert(error.lte(maxError), `error = ${error.toFixed()}`);
+            }
         });
     }
 });
