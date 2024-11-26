@@ -59,13 +59,13 @@ library FractionMath {
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
-      * @param max The maximum desired value
+      * @param cap The desired threshold
       *
       * @return The reduced ratio numerator
       * @return The reduced ratio denominator
     */
-    function reducedRatio(uint256 n, uint256 d, uint256 max) internal pure returns (uint256, uint256) { unchecked {
-        uint256 scale = ((n > d ? n : d) - 1) / max + 1;
+    function reducedRatio(uint256 n, uint256 d, uint256 cap) internal pure returns (uint256, uint256) { unchecked {
+        uint256 scale = ((n > d ? n : d) - 1) / cap + 1;
         return (n / scale, d / scale);
     }}
 
@@ -81,23 +81,24 @@ library FractionMath {
     */
     function normalizedRatio(uint256 n, uint256 d, uint256 scale) internal pure returns (uint256, uint256) { unchecked {
         if (n < d)
-            (n, d) = estimatedRatio(n, d, scale);
+            (n, d) = normalizedRatioCalc(n, d, scale);
         else
-            (d, n) = estimatedRatio(d, n, scale);
+            (d, n) = normalizedRatioCalc(d, n, scale);
         return (n, d);
     }}
 
     /**
-      * @dev Compute `scale * n / (n + d)` and `scale * d / (n + d)` assuming that `n < d`
+      * @dev Normalize the components of a given ratio to sum up to a given scale
+      * under the implicit assumption that the given ratio is smaller than one
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
       * @param scale The desired scale
       *
-      * @return The estimated ratio numerator
-      * @return The estimated ratio denominator
+      * @return The normalized ratio numerator
+      * @return The normalized ratio denominator
     */
-    function estimatedRatio(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
+    function normalizedRatioCalc(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
         if (n > ~d) {
             uint256 x = unsafeAdd(n, d) + 1;
             uint256 y = IntegralMath.mulDivF(x, n / 2, n / 2 + d / 2);

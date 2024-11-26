@@ -54,13 +54,13 @@ def productRatio(xn, yn, xd, yd):
     
     @param n The ratio numerator
     @param d The ratio denominator
-    @param max The maximum desired value
+    @param cap The desired threshold
     
     @return The reduced ratio numerator
     @return The reduced ratio denominator
 '''
-def reducedRatio(n, d, max):
-    scale = ((n if n > d else d) - 1) // max + 1;
+def reducedRatio(n, d, cap):
+    scale = ((n if n > d else d) - 1) // cap + 1;
     return (n // scale, d // scale);
 
 '''
@@ -75,22 +75,23 @@ def reducedRatio(n, d, max):
 '''
 def normalizedRatio(n, d, scale):
     if (n < d):
-        (n, d) = estimatedRatio(n, d, scale);
+        (n, d) = normalizedRatioCalc(n, d, scale);
     else:
-        (d, n) = estimatedRatio(d, n, scale);
+        (d, n) = normalizedRatioCalc(d, n, scale);
     return (n, d);
 
 '''
-    @dev Compute `scale * n / (n + d)` and `scale * d / (n + d)` assuming that `n < d`
+    @dev Normalize the components of a given ratio to sum up to a given scale
+    under the implicit assumption that the given ratio is smaller than one
     
     @param n The ratio numerator
     @param d The ratio denominator
     @param scale The desired scale
     
-    @return The estimated ratio numerator
-    @return The estimated ratio denominator
+    @return The normalized ratio numerator
+    @return The normalized ratio denominator
 '''
-def estimatedRatio(n, d, scale):
+def normalizedRatioCalc(n, d, scale):
     if (n > MAX_VAL - d):
         x = unsafeAdd(n, d) + 1;
         y = IntegralMath.mulDivF(x, n // 2, n // 2 + d // 2);
