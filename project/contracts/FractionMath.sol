@@ -65,8 +65,11 @@ library FractionMath {
       * @return The reduced ratio denominator
     */
     function reducedRatio(uint256 n, uint256 d, uint256 cap) internal pure returns (uint256, uint256) { unchecked {
-        uint256 scale = ((n > d ? n : d) - 1) / cap + 1;
-        return (n / scale, d / scale);
+        if (n < d)
+            (n, d) = reducedRatioCalc(n, d, cap);
+        else
+            (d, n) = reducedRatioCalc(d, n, cap);
+        return (n, d);
     }}
 
     /**
@@ -121,6 +124,25 @@ library FractionMath {
             }
         }
 
+        return (n, d);
+    }}
+
+    /**
+      * @dev Reduce the components of a given ratio to fit up to a given threshold
+      * under the implicit assumption that the given ratio is smaller than one
+      *
+      * @param n The ratio numerator
+      * @param d The ratio denominator
+      * @param cap The desired threshold
+      *
+      * @return The reduced ratio numerator
+      * @return The reduced ratio denominator
+    */
+    function reducedRatioCalc(uint256 n, uint256 d, uint256 cap) private pure returns (uint256, uint256) { unchecked {
+        if (d > cap) {
+            n = IntegralMath.mulDivR(n, cap, d);
+            d = cap;
+        }
         return (n, d);
     }}
 
