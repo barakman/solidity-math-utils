@@ -44,7 +44,7 @@ describe(TestContract.contractName, () => {
         for (const n of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
             for (const d of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
                 test(poweredRatioExact, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000000000000000013", n.toHex(), d.toHex(), exp);
-                test(poweredRatioQuick, noCheck, "0.00000000000000000000000000000000000004408103815583578154882762014583421292015", n.toHex(), d.toHex(), exp);
+                test(poweredRatioQuick, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000000000000000039", n.toHex(), d.toHex(), exp);
             }
         }
     }
@@ -55,7 +55,7 @@ describe(TestContract.contractName, () => {
             for (let j = 1; j <= 10; j++) {
                 const d = MAX_UINT128.mul(j).add(1);
                 test(poweredRatioExact, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000683775553857226", n.toHex(), d.toHex(), exp);
-                test(poweredRatioQuick, noCheck, "0.00000000000000000000000178508153010643301600569270432228236379578356423344952", n.toHex(), d.toHex(), exp);
+                test(poweredRatioQuick, noCheck, "0.00000000000000000000000115365434694928281518027476953063103593095316751502886", n.toHex(), d.toHex(), exp);
             }
         }
     }
@@ -66,7 +66,7 @@ describe(TestContract.contractName, () => {
             for (let j = 1; j <= 10; j++) {
                 const d = MAX_UINT256.sub(MAX_UINT128).divToInt(j);
                 test(poweredRatioExact, noCheck, "0.00000000000000000000000000000000000000000000000000000000000000856782943372566", n.toHex(), d.toHex(), exp);
-                test(poweredRatioQuick, noCheck, "0.00000000000000000000000178508153010639628180722950783765834071342182985610216", n.toHex(), d.toHex(), exp);
+                test(poweredRatioQuick, noCheck, "0.00000000000000000000000115365434694932248811461502173402498083485327146452151", n.toHex(), d.toHex(), exp);
             }
         }
     }
@@ -115,7 +115,7 @@ describe(TestContract.contractName, () => {
             MAX_UINT256
         ]) {
             for (const d of [MAX_UINT256.sub(1), MAX_UINT256]) {
-                test(reducedRatio   , reducedRatioCheck   (z), "0.0039216", n.toHex(), d.toHex(), z);
+                test(reducedRatio   , reducedRatioCheck   (z), "0.0019513", n.toHex(), d.toHex(), z);
                 test(normalizedRatio, normalizedRatioCheck(z), "0.0035088", n.toHex(), d.toHex(), z);
             }
         }
@@ -124,6 +124,7 @@ describe(TestContract.contractName, () => {
     for (const n of [1, 2, 3, 4]) {
         for (const d of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
             for (const z of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
+                test(reducedRatio   , reducedRatioCheck   (z), "0.00000000000000000000000000000000000000881620763116715630976552402916684258367", n, d.toHex(), z.toHex());
                 test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000002057115113939003138945288940138929936189", n, d.toHex(), z.toHex());
             }
         }
@@ -132,6 +133,7 @@ describe(TestContract.contractName, () => {
     for (const n of [1, 2, 3, 4]) {
         for (const d of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
             for (const z of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
+                test(reducedRatio   , reducedRatioCheck   (z), "0.00000000000000000000000000000000000000000000000000000000000000000000000000003", n, d.toHex(), z.toHex());
                 test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000000000000000000000000000000000000000000007", n, d.toHex(), z.toHex());
             }
         }
@@ -140,6 +142,7 @@ describe(TestContract.contractName, () => {
     for (const n of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
         for (const d of [0, 1, 2, 3].map(k => MAX_UINT256.sub(k))) {
             for (const z of [0, 1, 2, 3].map(k => MAX_UINT128.sub(k))) {
+                test(reducedRatio   , reducedRatioCheck   (z), "0.00000000000000000000000000000000000000000000000000000000000000000000000000003", n.toHex(), d.toHex(), z.toHex());
                 test(normalizedRatio, normalizedRatioCheck(z), "0.00000000000000000000000000000000000000587747175411143753984368268611122838918", n.toHex(), d.toHex(), z.toHex());
             }
         }
