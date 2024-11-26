@@ -117,7 +117,7 @@ If either one of the intermediate components is larger than 256 bits, then both 
 
 ### Reduced Ratio
 
-Function `reducedRatio` computes the nearest ratio whose components (numerator and denominator) are not larger than the input threshold.
+Function `reducedRatio` computes the nearest ratio whose components (numerator and denominator) fit up to a given threshold.
 
 Note that function `reducedRatio` is not meant to replace GCD, nor does it strive to achieve better accuracy.
 
@@ -133,7 +133,7 @@ However, without knowing specific characteristics of that ratio (e.g., each one 
 
 ### Normalized Ratio
 
-Function `normalizedRatio` computes the nearest ratio whose sum of components (numerator + denominator) equals the input scale.
+Function `normalizedRatio` computes the nearest ratio whose components (numerator and denominator) sum up to a given scale.
 
 Note that the output ratio can be larger than the input ratio in some cases, and smaller than the input ratio in other cases.
 

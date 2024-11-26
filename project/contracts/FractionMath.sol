@@ -55,7 +55,7 @@ library FractionMath {
     }}
 
     /**
-      * @dev Reduce the components of a given ratio
+      * @dev Reduce the components of a given ratio to fit up to a given threshold
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
@@ -70,7 +70,7 @@ library FractionMath {
     }}
 
     /**
-      * @dev Compute a normalized ratio as `scale * n / (n + d)` and `scale * d / (n + d)`
+      * @dev Normalize the components of a given ratio to sum up to a given scale
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
@@ -88,7 +88,7 @@ library FractionMath {
     }}
 
     /**
-      * @dev Compute an estimated ratio as `scale * n / (n + d)` and `scale * d / (n + d)`, assuming that `n < d`
+      * @dev Compute `scale * n / (n + d)` and `scale * d / (n + d)` assuming that `n < d`
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
