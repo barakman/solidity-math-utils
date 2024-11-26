@@ -128,8 +128,8 @@ library FractionMath {
     }}
 
     /**
-      * @dev Reduce the components of a given ratio to fit up to a given threshold
-      * under the implicit assumption that the given ratio is smaller than one
+      * @dev Reduce the components of a given ratio to fit up to a given threshold,
+      * under the implicit assumption that the ratio is smaller than or equal to 1
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
@@ -147,8 +147,8 @@ library FractionMath {
     }}
 
     /**
-      * @dev Normalize the components of a given ratio to sum up to a given scale
-      * under the implicit assumption that the given ratio is smaller than one
+      * @dev Normalize the components of a given ratio to sum up to a given scale,
+      * under the implicit assumption that the ratio is smaller than or equal to 1
       *
       * @param n The ratio numerator
       * @param d The ratio denominator
@@ -164,7 +164,6 @@ library FractionMath {
             n -= y;
             d -= x - y;
         }
-
         uint256 z = IntegralMath.mulDivR(scale, n, n + d);
         return(z, scale - z);
     }}

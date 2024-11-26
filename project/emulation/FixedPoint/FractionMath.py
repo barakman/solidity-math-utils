@@ -114,8 +114,8 @@ def poweredRatio(n, d, exp, safeRatio):
     return (n, d);
 
 '''
-    @dev Reduce the components of a given ratio to fit up to a given threshold
-    under the implicit assumption that the given ratio is smaller than one
+    @dev Reduce the components of a given ratio to fit up to a given threshold,
+    under the implicit assumption that the ratio is smaller than or equal to 1
     
     @param n The ratio numerator
     @param d The ratio denominator
@@ -131,8 +131,8 @@ def reducedRatioCalc(n, d, cap):
     return (n, d);
 
 '''
-    @dev Normalize the components of a given ratio to sum up to a given scale
-    under the implicit assumption that the given ratio is smaller than one
+    @dev Normalize the components of a given ratio to sum up to a given scale,
+    under the implicit assumption that the ratio is smaller than or equal to 1
     
     @param n The ratio numerator
     @param d The ratio denominator
@@ -147,7 +147,6 @@ def normalizedRatioCalc(n, d, scale):
         y = IntegralMath.mulDivF(x, n // 2, n // 2 + d // 2);
         n -= y;
         d -= x - y;
-
     z = IntegralMath.mulDivR(scale, n, n + d);
     return(z, scale - z);
 
