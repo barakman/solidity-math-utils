@@ -21,7 +21,7 @@
         "@nomiclabs/hardhat-truffle5": "2.0.7",
         "@nomiclabs/hardhat-web3": "2.0.0",
         "decimal.js": "10.4.3",
-        "hardhat": "2.22.13",
-        "solidity-coverage": "0.8.13"
+        "hardhat": "2.22.16",
+        "solidity-coverage": "0.8.14"
     }
 }
