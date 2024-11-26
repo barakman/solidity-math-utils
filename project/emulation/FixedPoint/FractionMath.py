@@ -81,27 +81,6 @@ def normalizedRatio(n, d, scale):
     return (n, d);
 
 '''
-    @dev Normalize the components of a given ratio to sum up to a given scale
-    under the implicit assumption that the given ratio is smaller than one
-    
-    @param n The ratio numerator
-    @param d The ratio denominator
-    @param scale The desired scale
-    
-    @return The normalized ratio numerator
-    @return The normalized ratio denominator
-'''
-def normalizedRatioCalc(n, d, scale):
-    if (n > MAX_VAL - d):
-        x = unsafeAdd(n, d) + 1;
-        y = IntegralMath.mulDivF(x, n // 2, n // 2 + d // 2);
-        n -= y;
-        d -= x - y;
-
-    z = IntegralMath.mulDivR(scale, n, n + d);
-    return(z, scale - z);
-
-'''
     @dev Compute the power of a given ratio
     
     @param n The ratio numerator
@@ -130,6 +109,27 @@ def poweredRatio(n, d, exp, safeRatio):
             (n, d) = safeRatio(n, ns[i], d, ds[i]);
 
     return (n, d);
+
+'''
+    @dev Normalize the components of a given ratio to sum up to a given scale
+    under the implicit assumption that the given ratio is smaller than one
+    
+    @param n The ratio numerator
+    @param d The ratio denominator
+    @param scale The desired scale
+    
+    @return The normalized ratio numerator
+    @return The normalized ratio denominator
+'''
+def normalizedRatioCalc(n, d, scale):
+    if (n > MAX_VAL - d):
+        x = unsafeAdd(n, d) + 1;
+        y = IntegralMath.mulDivF(x, n // 2, n // 2 + d // 2);
+        n -= y;
+        d -= x - y;
+
+    z = IntegralMath.mulDivR(scale, n, n + d);
+    return(z, scale - z);
 
 '''
     @dev Compute the product of two ratios and reduce the components of the result to 128 bits,

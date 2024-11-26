@@ -88,29 +88,6 @@ library FractionMath {
     }}
 
     /**
-      * @dev Normalize the components of a given ratio to sum up to a given scale
-      * under the implicit assumption that the given ratio is smaller than one
-      *
-      * @param n The ratio numerator
-      * @param d The ratio denominator
-      * @param scale The desired scale
-      *
-      * @return The normalized ratio numerator
-      * @return The normalized ratio denominator
-    */
-    function normalizedRatioCalc(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
-        if (n > ~d) {
-            uint256 x = unsafeAdd(n, d) + 1;
-            uint256 y = IntegralMath.mulDivF(x, n / 2, n / 2 + d / 2);
-            n -= y;
-            d -= x - y;
-        }
-
-        uint256 z = IntegralMath.mulDivR(scale, n, n + d);
-        return(z, scale - z);
-    }}
-
-    /**
       * @dev Compute the power of a given ratio
       *
       * @param n The ratio numerator
@@ -145,6 +122,29 @@ library FractionMath {
         }
 
         return (n, d);
+    }}
+
+    /**
+      * @dev Normalize the components of a given ratio to sum up to a given scale
+      * under the implicit assumption that the given ratio is smaller than one
+      *
+      * @param n The ratio numerator
+      * @param d The ratio denominator
+      * @param scale The desired scale
+      *
+      * @return The normalized ratio numerator
+      * @return The normalized ratio denominator
+    */
+    function normalizedRatioCalc(uint256 n, uint256 d, uint256 scale) private pure returns (uint256, uint256) { unchecked {
+        if (n > ~d) {
+            uint256 x = unsafeAdd(n, d) + 1;
+            uint256 y = IntegralMath.mulDivF(x, n / 2, n / 2 + d / 2);
+            n -= y;
+            d -= x - y;
+        }
+
+        uint256 z = IntegralMath.mulDivR(scale, n, n + d);
+        return(z, scale - z);
     }}
 
     /**
