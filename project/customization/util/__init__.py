@@ -1,6 +1,5 @@
 def hex_len(n):
-    length = len(hex(n))
-    return 44 if 41 <= length <= 43 else length
+    return 44 if 41 <= len(hex(n)) <= 44 else len(hex(n))
 
 
 def dec_str(value, max_value):
