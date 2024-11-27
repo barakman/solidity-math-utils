@@ -138,8 +138,8 @@ Function `normalizedRatio` computes the nearest ratio whose components (numerato
 Note that the output ratio can be larger than the input ratio in some cases, and smaller than the input ratio in other cases.
 
 For example:
-- `normalizedRatio(12, 34, 100)` returns `(26 74)`; the output ratio is smaller than the input ratio (26 / 74 = 0.351 < 0.352 = 12 / 34)
-- `normalizedRatio(1234, 5678, 100)` returns `(18 82)`; the output ratio is larger than the input ratio (18 / 82 = 0.219 > 0.217 = 1234 / 5678)
+- `normalizedRatio(12, 34, 100)` returns `(26, 74)`; the output ratio is smaller than the input ratio (26 / 74 = 0.351 < 0.352 = 12 / 34)
+- `normalizedRatio(1234, 5678, 100)` returns `(18, 82)`; the output ratio is larger than the input ratio (18 / 82 = 0.219 > 0.217 = 1234 / 5678)
 
 Keep in mind that it is an important consideration to take when choosing to use this function.
 
