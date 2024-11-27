@@ -95,8 +95,6 @@ def normalizedRatio(n, d, scale):
     @return The powered ratio denominator
 '''
 def poweredRatio(n, d, exp, safeRatio):
-    if (exp == 0): return (1, 1);
-    if (exp == 1): return (n, d);
     require(exp <= MAX_EXP, "exp too large");
 
     ns = [0] * MAX_EXP_BIT_LEN;

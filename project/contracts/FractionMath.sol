@@ -105,8 +105,6 @@ library FractionMath {
         uint256 n, uint256 d, uint256 exp,
         function (uint256, uint256, uint256, uint256) pure returns (uint256, uint256) safeRatio
     ) private pure returns (uint256, uint256) { unchecked {
-        if (exp == 0) return (1, 1);
-        if (exp == 1) return (n, d);
         require(exp <= MAX_EXP, "exp too large");
 
         uint256[MAX_EXP_BIT_LEN] memory ns;
