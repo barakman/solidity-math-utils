@@ -69,14 +69,14 @@ def equalizeQuick(t, s, r, q, p):
     return equalize(t, s, r, q, p, AdvancedMath.solveQuick);
 
 '''
-    @dev Equalize the weights of a given pool using a transcendental-equation solver
+    @dev Equalize the weights of a given pool
     
     @param t The primary reserve token staked balance
     @param s The primary reserve token balance
     @param r The secondary reserve token balance
     @param q The numerator of the off-chain price
     @param p The denominator of the off-chain price
-    @param AdvancedMath_solveFunction The solver function
+    @param AdvancedMath_solveFunction An equation solver
     
     Note that `numerator / denominator` should represent the amount of secondary tokens equal to one primary token
     
