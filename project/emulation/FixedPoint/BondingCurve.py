@@ -3,7 +3,6 @@ from .common.Uint256 import *
 from . import AnalyticMath
 from . import IntegralMath
 
-MIN_WEIGHT = 1;
 MAX_WEIGHT = 1000000;
 
 '''
@@ -17,12 +16,8 @@ MAX_WEIGHT = 1000000;
     @return supply * ((1 + amount / balance) ^ (weight / MAX_WEIGHT) - 1)
 '''
 def buy(supply, balance, weight, amount):
-    require(supply > 0, "invalid supply");
-    require(balance > 0, "invalid balance");
-    require(MIN_WEIGHT <= weight and weight <= MAX_WEIGHT, "invalid weight");
-
-    if (amount == 0):
-        return 0;
+    require(supply > 0 and balance > 0 and weight > 0, "invalid input");
+    require(weight <= MAX_WEIGHT, "weight out of bound");
 
     if (weight == MAX_WEIGHT):
         return IntegralMath.mulDivF(amount, supply, balance);
@@ -41,13 +36,9 @@ def buy(supply, balance, weight, amount):
     @return balance * (1 - (1 - amount / supply) ^ (MAX_WEIGHT / weight))
 '''
 def sell(supply, balance, weight, amount):
-    require(supply > 0, "invalid supply");
-    require(balance > 0, "invalid balance");
-    require(MIN_WEIGHT <= weight and weight <= MAX_WEIGHT, "invalid weight");
+    require(supply > 0 and balance > 0 and weight > 0, "invalid input");
+    require(weight <= MAX_WEIGHT, "weight out of bound");
     require(amount <= supply, "amount larger than supply");
-
-    if (amount == 0):
-        return 0;
 
     if (amount == supply):
         return balance;
@@ -70,10 +61,8 @@ def sell(supply, balance, weight, amount):
     @return balance2 * (1 - (balance1 / (balance1 + amount)) ^ (weight1 / weight2))
 '''
 def convert(balance1, weight1, balance2, weight2, amount):
-    require(0 < balance1, "invalid source balance");
-    require(0 < balance2, "invalid target balance");
-    require(MIN_WEIGHT <= weight1 and weight1 <= MAX_WEIGHT, "invalid source weight");
-    require(MIN_WEIGHT <= weight2 and weight2 <= MAX_WEIGHT, "invalid target weight");
+    require(balance1 > 0 and balance2 > 0 and weight1 > 0 and weight2 > 0, "invalid input");
+    require(weight1 <= MAX_WEIGHT and weight2 <= MAX_WEIGHT, "weights out of bound");
 
     if (weight1 == weight2):
         return IntegralMath.mulDivF(balance2, amount, safeAdd(balance1, amount));
@@ -92,12 +81,8 @@ def convert(balance1, weight1, balance2, weight2, amount):
     @return supply * ((amount / balance + 1) ^ (weights / MAX_WEIGHT) - 1)
 '''
 def deposit(supply, balance, weights, amount):
-    require(supply > 0, "invalid supply");
-    require(balance > 0, "invalid balance");
-    require(MIN_WEIGHT * 2 <= weights and weights <= MAX_WEIGHT * 2, "invalid weights");
-
-    if (amount == 0):
-        return 0;
+    require(supply > 0 and balance > 0 and weights > 0, "invalid input");
+    require(weights <= MAX_WEIGHT * 2, "weights out of bound");
 
     if (weights == MAX_WEIGHT):
         return IntegralMath.mulDivF(amount, supply, balance);
@@ -116,13 +101,9 @@ def deposit(supply, balance, weights, amount):
     @return balance * (1 - ((supply - amount) / supply) ^ (MAX_WEIGHT / weights))
 '''
 def withdraw(supply, balance, weights, amount):
-    require(supply > 0, "invalid supply");
-    require(balance > 0, "invalid balance");
-    require(MIN_WEIGHT * 2 <= weights and weights <= MAX_WEIGHT * 2, "invalid weights");
+    require(supply > 0 and balance > 0 and weights > 0, "invalid input");
+    require(weights <= MAX_WEIGHT * 2, "weights out of bound");
     require(amount <= supply, "amount larger than supply");
-
-    if (amount == 0):
-        return 0;
 
     if (amount == supply):
         return balance;
@@ -144,12 +125,8 @@ def withdraw(supply, balance, weights, amount):
     @return balance * (((supply + amount) / supply) ^ (MAX_WEIGHT / weights) - 1)
 '''
 def invest(supply, balance, weights, amount):
-    require(supply > 0, "invalid supply");
-    require(balance > 0, "invalid balance");
-    require(MIN_WEIGHT * 2 <= weights and weights <= MAX_WEIGHT * 2, "invalid weights");
-
-    if (amount == 0):
-        return 0;
+    require(supply > 0 and balance > 0 and weights > 0, "invalid input");
+    require(weights <= MAX_WEIGHT * 2, "weights out of bound");
 
     if (weights == MAX_WEIGHT):
         return IntegralMath.mulDivC(amount, balance, supply);
