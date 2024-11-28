@@ -20,42 +20,78 @@ describe(TestContract.contractName, () => {
         testContract = await TestContract.new();
     });
 
-    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-            for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`))
-                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)))
+    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+            for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
+                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n))) {
                     test(buy, "0.000000000000015", supply, balance, weight, amount);
+                    test(buy, "0.000000000000001", supply, balance, weight, supply);
+                    test(buy, "0.000000000000000", supply, balance, weight, 0);
+                }
+            }
+        }
+    }
 
-    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-            for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`))
-                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)).filter(lte(supply)))
+    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+            for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
+                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)).filter(lte(supply))) {
                     test(sell, "0.000000000000003", supply, balance, weight, amount);
+                    test(sell, "0.000000000000000", supply, balance, weight, supply);
+                    test(sell, "0.000000000000000", supply, balance, weight, 0);
+                }
+            }
+        }
+    }
 
-    for (const balance1 of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-        for (const weight1 of [10, 20, 50, 100].map(p => `${p * 10000}`))
-            for (const balance2 of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-                for (const weight2 of [10, 20, 50, 100].map(p => `${p * 10000}`))
-                    for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)))
+    for (const balance1 of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+        for (const weight1 of [10, 20, 50, 100].map(p => `${p * 10000}`)) {
+            for (const balance2 of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+                for (const weight2 of [10, 20, 50, 100].map(p => `${p * 10000}`)) {
+                    for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n))) {
                         test(convert, "0.000000000000014", balance1, weight1, balance2, weight2, amount);
+                        test(convert, "0.000000000000000", balance1, weight1, balance2, weight2, 0);
+                    }
+                }
+            }
+        }
+    }
 
-    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-            for (const weights of [10, 50, 100, 200].map(p => `${p * 10000}`))
-                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)))
+    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+            for (const weights of [10, 50, 100, 200].map(p => `${p * 10000}`)) {
+                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n))) {
                     test(deposit, "0.000000000000010", supply, balance, weights, amount);
+                    test(deposit, "0.000000000000001", supply, balance, weights, supply);
+                    test(deposit, "0.000000000000000", supply, balance, weights, 0);
+                }
+            }
+        }
+    }
 
-    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-            for (const weights of [10, 50, 100, 200].map(p => `${p * 10000}`))
-                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)).filter(lte(supply)))
+    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+            for (const weights of [10, 50, 100, 200].map(p => `${p * 10000}`)) {
+                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)).filter(lte(supply))) {
                     test(withdraw, "0.000000000000004", supply, balance, weights, amount);
+                    test(withdraw, "0.000000000000000", supply, balance, weights, supply);
+                    test(withdraw, "0.000000000000000", supply, balance, weights, 0);
+                }
+            }
+        }
+    }
 
-    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n)))
-            for (const weights of [10, 50, 100, 200].map(p => `${p * 10000}`))
-                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)))
+    for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+        for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
+            for (const weights of [10, 50, 100, 200].map(p => `${p * 10000}`)) {
+                for (const amount of [1, 2, 3, 4].map(n => `${n}`.repeat(18 + n))) {
                     test(invest, "0.000000000000005", supply, balance, weights, amount);
+                    test(invest, "0.000000000000001", supply, balance, weights, supply);
+                    test(invest, "0.000000000000000", supply, balance, weights, 0);
+                }
+            }
+        }
+    }
 
     function test(method, maxError, ...args) {
         it(`${method.name}(${args.join(", ")})`, async () => {
