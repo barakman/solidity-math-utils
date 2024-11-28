@@ -44,7 +44,7 @@ def sell(supply, balance, weight, amount):
     require(supply > 0, "invalid supply");
     require(balance > 0, "invalid balance");
     require(MIN_WEIGHT <= weight and weight <= MAX_WEIGHT, "invalid weight");
-    require(amount <= supply, "invalid amount");
+    require(amount <= supply, "amount larger than supply");
 
     if (amount == 0):
         return 0;
@@ -119,7 +119,7 @@ def withdraw(supply, balance, weights, amount):
     require(supply > 0, "invalid supply");
     require(balance > 0, "invalid balance");
     require(MIN_WEIGHT * 2 <= weights and weights <= MAX_WEIGHT * 2, "invalid weights");
-    require(amount <= supply, "invalid amount");
+    require(amount <= supply, "amount larger than supply");
 
     if (amount == 0):
         return 0;

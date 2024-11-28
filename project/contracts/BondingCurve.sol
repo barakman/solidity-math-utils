@@ -47,7 +47,7 @@ library BondingCurve {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
         require(MIN_WEIGHT <= weight && weight <= MAX_WEIGHT, "invalid weight");
-        require(amount <= supply, "invalid amount");
+        require(amount <= supply, "amount larger than supply");
 
         if (amount == 0)
             return 0;
@@ -125,7 +125,7 @@ library BondingCurve {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
         require(MIN_WEIGHT * 2 <= weights && weights <= MAX_WEIGHT * 2, "invalid weights");
-        require(amount <= supply, "invalid amount");
+        require(amount <= supply, "amount larger than supply");
 
         if (amount == 0)
             return 0;
