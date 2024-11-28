@@ -21,10 +21,8 @@ library BondingCurve {
     function buy(uint256 supply, uint256 balance, uint256 weight, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
-        require(MIN_WEIGHT <= weight && weight <= MAX_WEIGHT, "invalid weight");
-
-        if (amount == 0)
-            return 0;
+        require(weight > 0, "invalid weight");
+        require(weight <= MAX_WEIGHT, "weight out of bound");
 
         if (weight == MAX_WEIGHT)
             return IntegralMath.mulDivF(amount, supply, balance);
@@ -46,11 +44,9 @@ library BondingCurve {
     function sell(uint256 supply, uint256 balance, uint256 weight, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
-        require(MIN_WEIGHT <= weight && weight <= MAX_WEIGHT, "invalid weight");
+        require(weight > 0, "invalid weight");
+        require(weight <= MAX_WEIGHT, "weight out of bound");
         require(amount <= supply, "amount larger than supply");
-
-        if (amount == 0)
-            return 0;
 
         if (amount == supply)
             return balance;
@@ -74,10 +70,12 @@ library BondingCurve {
       * @return balance2 * (1 - (balance1 / (balance1 + amount)) ^ (weight1 / weight2))
     */
     function convert(uint256 balance1, uint256 weight1, uint256 balance2, uint256 weight2, uint256 amount) internal pure returns (uint256) { unchecked {
-        require(0 < balance1, "invalid source balance");
-        require(0 < balance2, "invalid target balance");
-        require(MIN_WEIGHT <= weight1 && weight1 <= MAX_WEIGHT, "invalid source weight");
-        require(MIN_WEIGHT <= weight2 && weight2 <= MAX_WEIGHT, "invalid target weight");
+        require(balance1 > 0, "invalid source balance");
+        require(balance2 > 0, "invalid target balance");
+        require(weight1 > 0, "invalid source weight");
+        require(weight2 > 0, "invalid target weight");
+        require(weight1 <= MAX_WEIGHT, "source weight out of bound");
+        require(weight2 <= MAX_WEIGHT, "target weight out of bound");
 
         if (weight1 == weight2)
             return IntegralMath.mulDivF(balance2, amount, safeAdd(balance1, amount));
@@ -99,10 +97,8 @@ library BondingCurve {
     function deposit(uint256 supply, uint256 balance, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
-        require(MIN_WEIGHT * 2 <= weights && weights <= MAX_WEIGHT * 2, "invalid weights");
-
-        if (amount == 0)
-            return 0;
+        require(weights > 0, "invalid weights");
+        require(weights <= MAX_WEIGHT * 2, "weights out of bound");
 
         if (weights == MAX_WEIGHT)
             return IntegralMath.mulDivF(amount, supply, balance);
@@ -124,11 +120,9 @@ library BondingCurve {
     function withdraw(uint256 supply, uint256 balance, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
-        require(MIN_WEIGHT * 2 <= weights && weights <= MAX_WEIGHT * 2, "invalid weights");
+        require(weights > 0, "invalid weights");
+        require(weights <= MAX_WEIGHT * 2, "weights out of bound");
         require(amount <= supply, "amount larger than supply");
-
-        if (amount == 0)
-            return 0;
 
         if (amount == supply)
             return balance;
@@ -153,10 +147,8 @@ library BondingCurve {
     function invest(uint256 supply, uint256 balance, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0, "invalid supply");
         require(balance > 0, "invalid balance");
-        require(MIN_WEIGHT * 2 <= weights && weights <= MAX_WEIGHT * 2, "invalid weights");
-
-        if (amount == 0)
-            return 0;
+        require(weights > 0, "invalid weights");
+        require(weights <= MAX_WEIGHT * 2, "weights out of bound");
 
         if (weights == MAX_WEIGHT)
             return IntegralMath.mulDivC(amount, balance, supply);
