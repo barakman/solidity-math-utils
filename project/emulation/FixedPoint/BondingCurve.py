@@ -3,7 +3,6 @@ from .common.Uint256 import *
 from . import AnalyticMath
 from . import IntegralMath
 
-MIN_WEIGHT = 1;
 MAX_WEIGHT = 1000000;
 
 '''

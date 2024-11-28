@@ -5,7 +5,6 @@ import "./AnalyticMath.sol";
 import "./IntegralMath.sol";
 
 library BondingCurve {
-    uint256 internal constant MIN_WEIGHT = 1;
     uint256 internal constant MAX_WEIGHT = 1000000;
 
     /**
