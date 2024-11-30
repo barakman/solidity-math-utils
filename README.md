@@ -3,7 +3,7 @@
 This package consists of the following modules:
 - [IntegralMath](#integralmath) - a set of functions, each of which returning an integer result
 - [FractionMath](#fractionmath) - a set of functions, each of which returning a rational result
-- [AnalyticMath](#analyticmath) - a set of exponential and logarithmic functions
+- [AnalyticMath](#analyticmath) - a set of functions for exponential and logarithmic operations
 - [AdvancedMath](#advancedmath) - a set of functions for solving equations of the form xA^x = B
 - [BondingCurve](#bondingcurve) - a set of functions implementing the bonding-curve mechanism
 - [DynamicCurve](#dynamiccurve) - a set of functions for equalizing the weights in a bonding-curve model
