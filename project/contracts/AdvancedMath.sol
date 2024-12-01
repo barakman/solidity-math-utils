@@ -163,7 +163,7 @@ library AdvancedMath {
                                                     hex"0c70400ac3df22f2e73d2a54bee3b3ee"
                                                     hex"0c5ece9e174cd59d6c32f900259dd921"
                                                     hex"0c4d950c7eed66993aa3f25a85ea9e43";
-    uint256 internal constant LAMBERT_EXACT_LIMIT = 0x2580f4feabfdfbf98c5e6038ba4522294e5ea58f5226008351f02aff7e485;
+    uint256 internal constant LAMBERT_EXACT_LIMIT = 0x25810a0b5f40abb2c1fc1014120e6015f99be2a9cfe49abda9b16bc2946c4;
 
     /**
       * @dev Solve x * (a / b) ^ x = c / d

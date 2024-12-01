@@ -160,7 +160,7 @@ LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
                       "0c70400ac3df22f2e73d2a54bee3b3ee"\
                       "0c5ece9e174cd59d6c32f900259dd921"\
                       "0c4d950c7eed66993aa3f25a85ea9e43";
-LAMBERT_EXACT_LIMIT = 0x2580f4feabfdfbf98c5e6038ba4522294e5ea58f5226008351f02aff7e485;
+LAMBERT_EXACT_LIMIT = 0x25810a0b5f40abb2c1fc1014120e6015f99be2a9cfe49abda9b16bc2946c4;
 
 '''
     @dev Solve x * (a / b) ^ x = c / d
