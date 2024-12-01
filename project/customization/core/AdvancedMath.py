@@ -36,12 +36,13 @@ def lambertPosLimits(fixed1, sizeN, sizeD, numOfSamples):
 
 
 def lambertExactLimit(fixed1):
-    m = x = Decimal(MAX_VAL) / fixed1
+    init = Decimal(MAX_VAL) / fixed1
+    curr = init
     while True:
-        y = m / (x.ln() ** 2 + 1)
-        if x == y:
-            return int(x * fixed1)
-        x = y
+        next = init / (curr.ln() ** 2 + 1)
+        if curr == next:
+            return int(curr * fixed1)
+        curr = next
 
 
 def lambertLutParams(fixed1, numOfSamples, bgn, end, sign):
