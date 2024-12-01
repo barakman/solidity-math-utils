@@ -5,8 +5,8 @@ import TestScheme
 
 
 FIXED_1 = FixedPoint.AdvancedMath.FIXED_1
-MIN_VAL = FixedPoint.AdvancedMath.LAMBERT_POS2_MAXVAL + 1
-MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_EXACT_LIMIT + 1
+MIN_VAL = FixedPoint.AdvancedMath.LAMBERT_EXACT_LIMIT + 1
+MAX_VAL = 2 ** 256
 
 
 def getInput():

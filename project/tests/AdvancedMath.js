@@ -12,10 +12,8 @@ const LAMBERT_NEG2 = Decimal(Constants.LAMBERT_NEG2_MAXVAL);
 const LAMBERT_POS0 = Decimal(0);
 const LAMBERT_POS1 = Decimal(Constants.LAMBERT_POS1_MAXVAL);
 const LAMBERT_POS2 = Decimal(Constants.LAMBERT_POS2_MAXVAL);
-const LAMBERT_POS3 = Decimal(Constants.LAMBERT_POS2_MAXVAL).mul(100);
-
-const LAMBERT_POS_EXACT_MAX_VAL = Decimal("0x000a13db974da98db99f369a126e720f563fffffffffffffffffffffffffffff");
-const LAMBERT_POS_QUICK_MAX_VAL = Decimal("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+const LAMBERT_POS3 = Decimal(Constants.LAMBERT_EXACT_LIMIT);
+const LAMBERT_POS4 = Decimal(2).pow(256).sub(1);
 
 const SIGN = {
     lambertNegExact: -1,
@@ -74,7 +72,8 @@ describe(TestContract.contractName, () => {
         testSuccess("lambertNegExact", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.00000000000000000000000000000000000259");
         testSuccess("lambertPosExact", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00000000000000000000000000000000000097");
         testSuccess("lambertPosExact", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00000000000000000000000000000000000006");
-        testSuccess("lambertPosExact", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00000000000000000000000000000000000230");
+        testSuccess("lambertPosExact", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00000159840066167516629187689576713049");
+        testSuccess("lambertPosExact", percent, LAMBERT_POS3, LAMBERT_POS4, "0.04077356893208067153455300247259377817");
     }
 
     for (let percent = 0; percent <= 100; percent++) {
@@ -82,19 +81,8 @@ describe(TestContract.contractName, () => {
         testSuccess("lambertNegQuick", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.00656991066935660006721266366675943493");
         testSuccess("lambertPosQuick", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00352502537296632393189150614600911966");
         testSuccess("lambertPosQuick", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00202834415207521945800897906620169050");
-        testSuccess("lambertPosQuick", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00261178569717540774470351850757097501");
-    }
-
-    for (let percent = 0; percent <= 100; percent++) {
-        testSuccess("lambertPosExact", percent, LAMBERT_POS3, LAMBERT_POS_EXACT_MAX_VAL, "0.00000724581731315842051513071553963081");
-        testSuccess("lambertPosQuick", percent, LAMBERT_POS3, LAMBERT_POS_QUICK_MAX_VAL, "0.04077461765786128270949836764496569026");
-    }
-
-    for (let i = 1; i <= 50; i++) {
-        for (let j = 0; j <= i; j++) {
-            testFailure("lambertPosExact", LAMBERT_POS_EXACT_MAX_VAL.add(2 ** i - j), "with panic code");
-            testFailure("lambertPosExact", LAMBERT_POS_QUICK_MAX_VAL.sub(2 ** i - j), "without a reason");
-        }
+        testSuccess("lambertPosQuick", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00250533328316541877372004036689769731");
+        testSuccess("lambertPosQuick", percent, LAMBERT_POS3, LAMBERT_POS4, "0.04077356893208067153455300247259377817");
     }
 
     testFailure("lambertPosExact", LAMBERT_POS0.add(0), "lambertPosExact: x < min");

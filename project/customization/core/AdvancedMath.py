@@ -1,4 +1,5 @@
 from core import Decimal
+from core import MAX_VAL
 from core import INV_EXP
 from core import checked
 from math import factorial
@@ -32,6 +33,14 @@ def lambertNegLimits(fixed1, sizeN, sizeD, numOfSamples):
 def lambertPosLimits(fixed1, sizeN, sizeD, numOfSamples):
     radius = int(INV_EXP * fixed1)
     return radius, radius + fixed1 * sizeN // sizeD // (numOfSamples - 1) * (numOfSamples - 1)
+
+
+def lambertExactLimit():
+    x = MAX_VAL
+    while True:
+        y = MAX_VAL // int(Decimal(x).ln() ** 2 + 1)
+        if x == y: return x
+        x = y
 
 
 def lambertLutParams(fixed1, numOfSamples, bgn, end, sign):

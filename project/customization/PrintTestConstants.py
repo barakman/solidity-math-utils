@@ -23,3 +23,4 @@ print(f'module.exports.LAMBERT_NEG1_MAXVAL = "{AdvancedMath.LAMBERT_NEG1_MAXVAL:
 print(f'module.exports.LAMBERT_NEG2_MAXVAL = "{AdvancedMath.LAMBERT_NEG2_MAXVAL:#0{AdvancedMath.maxLen}x}";')
 print(f'module.exports.LAMBERT_POS1_MAXVAL = "{AdvancedMath.LAMBERT_POS1_MAXVAL:#0{AdvancedMath.maxLen}x}";')
 print(f'module.exports.LAMBERT_POS2_MAXVAL = "{AdvancedMath.LAMBERT_POS2_MAXVAL:#0{AdvancedMath.maxLen}x}";')
+print(f'module.exports.LAMBERT_EXACT_LIMIT = "{AdvancedMath.LAMBERT_EXACT_LIMIT:#x}";')
