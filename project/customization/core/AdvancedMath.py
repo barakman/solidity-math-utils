@@ -35,12 +35,21 @@ def lambertPosLimits(fixed1, sizeN, sizeD, numOfSamples):
     return radius, radius + fixed1 * sizeN // sizeD // (numOfSamples - 1) * (numOfSamples - 1)
 
 
-def lambertExactLimit():
-    x = MAX_VAL
-    while True:
-        y = MAX_VAL // int(Decimal(x).ln() ** 2 + 1)
-        if x == y: return x
-        x = y
+def lambertExactLimit(fixed1):
+    lo = (Decimal(1).exp() * fixed1).__ceil__()
+    hi = MAX_VAL
+    while lo + 1 < hi:
+        mid = (lo + hi) // 2
+        if lambertPosExact(mid, fixed1):
+            lo = mid
+        else:
+            hi = mid
+    return hi if lambertPosExact(hi, fixed1) else lo
+
+
+def lambertPosExact(x, fixed1):
+    y = Decimal(x) / fixed1
+    return y * (y.ln() ** 2 + 1) * fixed1 <= MAX_VAL
 
 
 def lambertLutParams(fixed1, numOfSamples, bgn, end, sign):

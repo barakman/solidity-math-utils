@@ -13,7 +13,7 @@ lambertNegParams = AdvancedMath.lambertNegParams(FIXED_1,LAMBERT_NEG2_SIZE_N,LAM
 lambertPosParams = AdvancedMath.lambertPosParams(FIXED_1,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D,LAMBERT_POS2_SAMPLES)
 
 
-LAMBERT_EXACT_LIMIT = AdvancedMath.lambertExactLimit()
+LAMBERT_EXACT_LIMIT = AdvancedMath.lambertExactLimit(FIXED_1)
 
 
 LAMBERT_NEG1_MAXVAL = lambertNegParams[0]
@@ -59,4 +59,4 @@ print(f'    uint256 internal constant LAMBERT_POS2_T_SIZE = {LAMBERT_POS2_T_SIZE
 print(f'    uint256 internal constant LAMBERT_POS2_T_MASK = {LAMBERT_POS2_T_MASK:#0{maxLen}x};')
 print(f'    bytes   internal constant LAMBERT_NEG2_VALUES = {format(LAMBERT_NEG2_VALUES,LAMBERT_NEG2_T_SIZE)};')
 print(f'    bytes   internal constant LAMBERT_POS2_VALUES = {format(LAMBERT_POS2_VALUES,LAMBERT_POS2_T_SIZE)};')
-print(f'    uint256 internal constant LAMBERT_EXACT_LIMIT = {LAMBERT_EXACT_LIMIT:#x};')
+print(f'    uint256 internal constant LAMBERT_EXACT_LIMIT = {LAMBERT_EXACT_LIMIT:#066x};')
