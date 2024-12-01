@@ -36,7 +36,7 @@ def lambertPosLimits(fixed1, sizeN, sizeD, numOfSamples):
 
 
 def lambertExactLimit(fixed1):
-    x = m = Decimal(MAX_VAL) / fixed1
+    m = x = Decimal(MAX_VAL) / fixed1
     while True:
         y = m / (x.ln() ** 2 + 1)
         if x == y:
