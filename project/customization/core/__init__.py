@@ -19,3 +19,17 @@ def two_pow(x):
 def checked(x):
     assert 0 <= x <= MAX_VAL
     return x
+
+
+def bsearch(func, lo, hi, *args):
+    while lo + 1 < hi:
+        mid = (lo + hi) // 2
+        try:
+            func(mid, *args)
+            lo = mid
+        except:
+            hi = mid
+    try:
+        return func(hi, *args)
+    except:
+        return func(lo, *args)

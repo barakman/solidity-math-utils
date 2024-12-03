@@ -72,8 +72,8 @@ describe(TestContract.contractName, () => {
         testSuccess("lambertNegExact", percent, LAMBERT_NEG1, LAMBERT_NEG2, "0.00000000000000000000000000000000000259");
         testSuccess("lambertPosExact", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00000000000000000000000000000000000097");
         testSuccess("lambertPosExact", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00000000000000000000000000000000000006");
-        testSuccess("lambertPosExact", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00000724581731315842051513071554033523");
-        testSuccess("lambertPosExact", percent, LAMBERT_POS3, LAMBERT_POS4, "0.04077010883516512005881448457825866715");
+        testSuccess("lambertPosExact", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00001793478206167702476852962356511687");
+        testSuccess("lambertPosExact", percent, LAMBERT_POS3, LAMBERT_POS4, "0.04076265753190620535671784581901863592");
     }
 
     for (let percent = 0; percent <= 100; percent++) {

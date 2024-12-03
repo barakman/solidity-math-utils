@@ -160,7 +160,7 @@ LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
                       "0c70400ac3df22f2e73d2a54bee3b3ee"\
                       "0c5ece9e174cd59d6c32f900259dd921"\
                       "0c4d950c7eed66993aa3f25a85ea9e43";
-LAMBERT_EXACT_LIMIT = 0x000a13db974da98db99f369a126e720f4ca21f398d38fbe7d3c0530b46194089;
+LAMBERT_EXACT_LIMIT = 0x001abb58194f861a372fc4a5e2a64806c77ee7849dd0a347ea7ddf2ba582711b;
 
 '''
     @dev Solve x * (a / b) ^ x = c / d
@@ -196,15 +196,34 @@ def lambertNegExact(x):
 '''
 def lambertPosExact(x):
     require(x > 0, "lambertPosExact: x < min");
-    if (x <= LAMBERT_EXACT_LIMIT):
-        y = x if x < FIXED_1 else AnalyticMath.fixedLog(x);
+    if (x < FIXED_1):
+        y = x;
         for i in range(8):
             e = AnalyticMath.fixedExp(y);
             f = IntegralMath.mulDivF(y, e, FIXED_1);
             g = IntegralMath.mulDivF(y, f, FIXED_1);
             y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
         return IntegralMath.mulDivF(FIXED_1, y, x);
-    return lambertPos3(x);
+    elif (x <= LAMBERT_EXACT_LIMIT):
+        y = AnalyticMath.fixedLog(x);
+        z = IntegralMath.mulDivF(y, y, FIXED_1);
+        y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
+        for i in range(7):
+            e = AnalyticMath.fixedExp(y);
+            f = IntegralMath.mulDivF(y, e, FIXED_1);
+            g = IntegralMath.mulDivF(y, f, FIXED_1);
+            y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
+        return IntegralMath.mulDivF(FIXED_1, y, x);
+    else:
+        y = AnalyticMath.fixedLog(x);
+        z = IntegralMath.mulDivF(y, y, FIXED_1);
+        y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
+        for i in range(7):
+            e = AnalyticMath.fixedExp(y);
+            f = IntegralMath.mulDivF(FIXED_1, x, e);
+            g = IntegralMath.mulDivF(y, y, FIXED_1);
+            y = IntegralMath.mulDivF(FIXED_1, g + f, y + FIXED_1);
+        return IntegralMath.mulDivF(FIXED_1, y, x);
 
 '''
     @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
