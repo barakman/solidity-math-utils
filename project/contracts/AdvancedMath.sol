@@ -163,6 +163,7 @@ library AdvancedMath {
                                                     hex"0c70400ac3df22f2e73d2a54bee3b3ee"
                                                     hex"0c5ece9e174cd59d6c32f900259dd921"
                                                     hex"0c4d950c7eed66993aa3f25a85ea9e43";
+    uint256 internal constant LAMBERT_EXACT_LIMIT = 0x001abb58194f861a372fc4a5e2a64806c77ee7849dd0a347ea7ddf2ba582711b;
 
     /**
       * @dev Solve x * (a / b) ^ x = c / d
@@ -186,13 +187,15 @@ library AdvancedMath {
     */
     function lambertNegExact(uint256 x) internal pure returns (uint256) { unchecked {
         require(x > 0, "lambertNegExact: x < min");
-        require(x <= LAMBERT_NEG2_MAXVAL, "lambertNegExact: x > max");
-        uint256 y = x;
-        for (uint256 i = 0; i < 8; ++i) {
-            uint256 e = AnalyticMath.fixedExp(y);
-            y = (x * e - y * y) / (FIXED_1 - y);
+        if (x <= LAMBERT_NEG2_MAXVAL) {
+            uint256 y = x;
+            for (uint256 i = 0; i < 8; ++i) {
+                uint256 e = AnalyticMath.fixedExp(y);
+                y = (x * e - y * y) / (FIXED_1 - y);
+            }
+            return IntegralMath.mulDivF(FIXED_1, y, x);
         }
-        return IntegralMath.mulDivF(FIXED_1, y, x);
+        revert("lambertNegExact: x > max");
     }}
 
     /**
@@ -201,14 +204,27 @@ library AdvancedMath {
     */
     function lambertPosExact(uint256 x) internal pure returns (uint256) { unchecked {
         require(x > 0, "lambertPosExact: x < min");
-        uint256 y = x < FIXED_1 ? x : AnalyticMath.fixedLog(x);
-        for (uint256 i = 0; i < 8; ++i) {
-            uint256 e = AnalyticMath.fixedExp(y);
-            uint256 f = IntegralMath.mulDivF(y, e, FIXED_1);
-            uint256 g = IntegralMath.mulDivF(y, f, FIXED_1);
-            y = IntegralMath.mulDivF(FIXED_1, safeAdd(g, x), f + e);
+        if (x <= LAMBERT_EXACT_LIMIT) {
+            uint256 y;
+            if (x < FIXED_1) {
+                uint256 p = AnalyticMath.fixedExp(x);
+                uint256 q = IntegralMath.mulDivF(x, p, FIXED_1);
+                y = IntegralMath.mulDivF(x, q + FIXED_1, q + p);
+            }
+            else {
+                uint256 p = AnalyticMath.fixedLog(x);
+                uint256 q = IntegralMath.mulDivF(p, p, FIXED_1);
+                y = IntegralMath.mulDivF(FIXED_1, q + FIXED_1, p + FIXED_1);
+            }
+            for (uint256 i = 0; i < 7; ++i) {
+                uint256 e = AnalyticMath.fixedExp(y);
+                uint256 f = IntegralMath.mulDivF(y, e, FIXED_1);
+                uint256 g = IntegralMath.mulDivF(y, f, FIXED_1);
+                y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
+            }
+            return IntegralMath.mulDivF(FIXED_1, y, x);
         }
-        return IntegralMath.mulDivF(FIXED_1, y, x);
+        return lambertPos3(x);
     }}
 
     /**

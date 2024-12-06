@@ -1,17 +1,23 @@
 from core import Decimal
+from core import MAX_VAL
 from core import INV_EXP
 from core import checked
+from core import bsearch
 from math import factorial
+
+
+def lambertExactLimit(fixed1):
+    return bsearch(lambertPosExact, fixed1, MAX_VAL, fixed1)
 
 
 def lambertNeg1Terms(fixed1, maxNumOfTerms, sizeN, sizeD, numOfSamples):
     maxVal, _ = lambertNegLimits(fixed1, sizeN, sizeD, numOfSamples)
-    return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertNeg1)
+    return bsearch(lambertNeg1, 0, maxNumOfTerms, maxVal, fixed1)
 
 
 def lambertPos1Terms(fixed1, maxNumOfTerms, sizeN, sizeD, numOfSamples):
     maxVal, _ = lambertPosLimits(fixed1, sizeN, sizeD, numOfSamples)
-    return lambertTerms(fixed1, maxNumOfTerms, maxVal, lambertPos1)
+    return bsearch(lambertPos1, 0, maxNumOfTerms, maxVal, fixed1)
 
 
 def lambertNegParams(fixed1, sizeN, sizeD, numOfSamples):
@@ -42,20 +48,16 @@ def lambertLutParams(fixed1, numOfSamples, bgn, end, sign):
     return sample, t_size, t_mask, values
 
 
-def lambertTerms(fixed1, maxNumOfTerms, maxVal, func):
-    lo = 0
-    hi = maxNumOfTerms
-    while lo + 1 < hi:
-        mid = (lo + hi) // 2
-        try:
-            func(mid, maxVal, fixed1)
-            lo = mid
-        except:
-            hi = mid
-    try:
-        return func(hi, maxVal, fixed1)
-    except:
-        return func(lo, maxVal, fixed1)
+def lambertPosExact(x, fixed1):
+    y = int((Decimal(x) / fixed1).ln() * fixed1)
+    z = y * y // fixed1
+    y = fixed1 * (z + fixed1) // (y + fixed1)
+    for _ in range(7):
+        e = checked(int((Decimal(y) / fixed1).exp() * fixed1))
+        f = checked(y * e // fixed1)
+        g = checked(y * f // fixed1)
+        y = checked(fixed1 * checked(g + x) // checked(f + e))
+    return x
 
 
 def lambertNeg1(numOfTerms, x, fixed1):

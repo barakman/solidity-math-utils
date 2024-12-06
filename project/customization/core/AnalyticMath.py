@@ -1,6 +1,6 @@
 from core import Decimal
-from core import LOG_TWO
 from core import MAX_VAL
+from core import LOG_TWO
 from core import two_pow
 from core import checked
 from math import factorial

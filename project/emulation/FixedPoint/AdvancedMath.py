@@ -1,5 +1,4 @@
 from .common.BuiltIn import *
-from .common.Uint256 import *
 from . import AnalyticMath
 from . import FractionMath
 from . import IntegralMath
@@ -161,6 +160,7 @@ LAMBERT_POS2_VALUES = "60e393c68d20b1bd09deaabc0373b9c5"\
                       "0c70400ac3df22f2e73d2a54bee3b3ee"\
                       "0c5ece9e174cd59d6c32f900259dd921"\
                       "0c4d950c7eed66993aa3f25a85ea9e43";
+LAMBERT_EXACT_LIMIT = 0x001abb58194f861a372fc4a5e2a64806c77ee7849dd0a347ea7ddf2ba582711b;
 
 '''
     @dev Solve x * (a / b) ^ x = c / d
@@ -182,12 +182,13 @@ def solveQuick(a, b, c, d):
 '''
 def lambertNegExact(x):
     require(x > 0, "lambertNegExact: x < min");
-    require(x <= LAMBERT_NEG2_MAXVAL, "lambertNegExact: x > max");
-    y = x;
-    for i in range(8):
-        e = AnalyticMath.fixedExp(y);
-        y = (x * e - y * y) // (FIXED_1 - y);
-    return IntegralMath.mulDivF(FIXED_1, y, x);
+    if (x <= LAMBERT_NEG2_MAXVAL):
+        y = x;
+        for i in range(8):
+            e = AnalyticMath.fixedExp(y);
+            y = (x * e - y * y) // (FIXED_1 - y);
+        return IntegralMath.mulDivF(FIXED_1, y, x);
+    revert("lambertNegExact: x > max");
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
@@ -195,13 +196,22 @@ def lambertNegExact(x):
 '''
 def lambertPosExact(x):
     require(x > 0, "lambertPosExact: x < min");
-    y = x if x < FIXED_1 else AnalyticMath.fixedLog(x);
-    for i in range(8):
-        e = AnalyticMath.fixedExp(y);
-        f = IntegralMath.mulDivF(y, e, FIXED_1);
-        g = IntegralMath.mulDivF(y, f, FIXED_1);
-        y = IntegralMath.mulDivF(FIXED_1, safeAdd(g, x), f + e);
-    return IntegralMath.mulDivF(FIXED_1, y, x);
+    if (x <= LAMBERT_EXACT_LIMIT):
+        if (x < FIXED_1):
+            p = AnalyticMath.fixedExp(x);
+            q = IntegralMath.mulDivF(x, p, FIXED_1);
+            y = IntegralMath.mulDivF(x, q + FIXED_1, q + p);
+        else:
+            p = AnalyticMath.fixedLog(x);
+            q = IntegralMath.mulDivF(p, p, FIXED_1);
+            y = IntegralMath.mulDivF(FIXED_1, q + FIXED_1, p + FIXED_1);
+        for i in range(7):
+            e = AnalyticMath.fixedExp(y);
+            f = IntegralMath.mulDivF(y, e, FIXED_1);
+            g = IntegralMath.mulDivF(y, f, FIXED_1);
+            y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
+        return IntegralMath.mulDivF(FIXED_1, y, x);
+    return lambertPos3(x);
 
 '''
     @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1
