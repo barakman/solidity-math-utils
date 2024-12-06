@@ -204,20 +204,18 @@ library AdvancedMath {
     */
     function lambertPosExact(uint256 x) internal pure returns (uint256) { unchecked {
         require(x > 0, "lambertPosExact: x < min");
-        if (x < FIXED_1) {
-            uint256 y = x;
-            for (uint256 i = 0; i < 8; ++i) {
-                uint256 e = AnalyticMath.fixedExp(y);
-                uint256 f = IntegralMath.mulDivF(y, e, FIXED_1);
-                uint256 g = IntegralMath.mulDivF(y, f, FIXED_1);
-                y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
-            }
-            return IntegralMath.mulDivF(FIXED_1, y, x);
-        }
         if (x <= LAMBERT_EXACT_LIMIT) {
-            uint256 y = AnalyticMath.fixedLog(x);
-            uint256 z = IntegralMath.mulDivF(y, y, FIXED_1);
-            y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
+            uint256 y;
+            if (x < FIXED_1) {
+                uint256 p = AnalyticMath.fixedExp(x);
+                uint256 q = IntegralMath.mulDivF(x, p, FIXED_1);
+                y = IntegralMath.mulDivF(x, q + FIXED_1, q + p);
+            }
+            else {
+                uint256 p = AnalyticMath.fixedLog(x);
+                uint256 q = IntegralMath.mulDivF(p, p, FIXED_1);
+                y = IntegralMath.mulDivF(FIXED_1, q + FIXED_1, p + FIXED_1);
+            }
             for (uint256 i = 0; i < 7; ++i) {
                 uint256 e = AnalyticMath.fixedExp(y);
                 uint256 f = IntegralMath.mulDivF(y, e, FIXED_1);

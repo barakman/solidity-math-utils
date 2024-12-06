@@ -196,18 +196,15 @@ def lambertNegExact(x):
 '''
 def lambertPosExact(x):
     require(x > 0, "lambertPosExact: x < min");
-    if (x < FIXED_1):
-        y = x;
-        for i in range(8):
-            e = AnalyticMath.fixedExp(y);
-            f = IntegralMath.mulDivF(y, e, FIXED_1);
-            g = IntegralMath.mulDivF(y, f, FIXED_1);
-            y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
-        return IntegralMath.mulDivF(FIXED_1, y, x);
     if (x <= LAMBERT_EXACT_LIMIT):
-        y = AnalyticMath.fixedLog(x);
-        z = IntegralMath.mulDivF(y, y, FIXED_1);
-        y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
+        if (x < FIXED_1):
+            p = AnalyticMath.fixedExp(x);
+            q = IntegralMath.mulDivF(x, p, FIXED_1);
+            y = IntegralMath.mulDivF(x, q + FIXED_1, q + p);
+        else:
+            p = AnalyticMath.fixedLog(x);
+            q = IntegralMath.mulDivF(p, p, FIXED_1);
+            y = IntegralMath.mulDivF(FIXED_1, q + FIXED_1, p + FIXED_1);
         for i in range(7):
             e = AnalyticMath.fixedExp(y);
             f = IntegralMath.mulDivF(y, e, FIXED_1);
