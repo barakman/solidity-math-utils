@@ -204,7 +204,7 @@ def lambertPosExact(x):
             g = IntegralMath.mulDivF(y, f, FIXED_1);
             y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
         return IntegralMath.mulDivF(FIXED_1, y, x);
-    elif (x <= LAMBERT_EXACT_LIMIT):
+    if (x <= LAMBERT_EXACT_LIMIT):
         y = AnalyticMath.fixedLog(x);
         z = IntegralMath.mulDivF(y, y, FIXED_1);
         y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
@@ -214,16 +214,7 @@ def lambertPosExact(x):
             g = IntegralMath.mulDivF(y, f, FIXED_1);
             y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
         return IntegralMath.mulDivF(FIXED_1, y, x);
-    else:
-        y = AnalyticMath.fixedLog(x);
-        z = IntegralMath.mulDivF(y, y, FIXED_1);
-        y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
-        for i in range(7):
-            e = AnalyticMath.fixedExp(y);
-            f = IntegralMath.mulDivF(FIXED_1, x, e);
-            g = IntegralMath.mulDivF(y, y, FIXED_1);
-            y = IntegralMath.mulDivF(FIXED_1, g + f, y + FIXED_1);
-        return IntegralMath.mulDivF(FIXED_1, y, x);
+    return lambertPos3(x);
 
 '''
     @dev Compute W(-x / FIXED_1) / (-x / FIXED_1) * FIXED_1

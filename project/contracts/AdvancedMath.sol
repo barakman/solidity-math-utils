@@ -214,7 +214,7 @@ library AdvancedMath {
             }
             return IntegralMath.mulDivF(FIXED_1, y, x);
         }
-        else if (x <= LAMBERT_EXACT_LIMIT) {
+        if (x <= LAMBERT_EXACT_LIMIT-1) {
             uint256 y = AnalyticMath.fixedLog(x);
             uint256 z = IntegralMath.mulDivF(y, y, FIXED_1);
             y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
@@ -226,18 +226,7 @@ library AdvancedMath {
             }
             return IntegralMath.mulDivF(FIXED_1, y, x);
         }
-        else {
-            uint256 y = AnalyticMath.fixedLog(x);
-            uint256 z = IntegralMath.mulDivF(y, y, FIXED_1);
-            y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
-            for (uint256 i = 0; i < 7; ++i) {
-                uint256 e = AnalyticMath.fixedExp(y);
-                uint256 f = IntegralMath.mulDivF(FIXED_1, x, e);
-                uint256 g = IntegralMath.mulDivF(y, y, FIXED_1);
-                y = IntegralMath.mulDivF(FIXED_1, g + f, y + FIXED_1);
-            }
-            return IntegralMath.mulDivF(FIXED_1, y, x);
-        }
+        return lambertPos3(x);
     }}
 
     /**
