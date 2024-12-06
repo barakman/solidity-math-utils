@@ -214,7 +214,7 @@ library AdvancedMath {
             }
             return IntegralMath.mulDivF(FIXED_1, y, x);
         }
-        if (x <= LAMBERT_EXACT_LIMIT-1) {
+        if (x <= LAMBERT_EXACT_LIMIT) {
             uint256 y = AnalyticMath.fixedLog(x);
             uint256 z = IntegralMath.mulDivF(y, y, FIXED_1);
             y = IntegralMath.mulDivF(FIXED_1, z + FIXED_1, y + FIXED_1);
