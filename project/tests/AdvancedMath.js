@@ -82,7 +82,7 @@ describe(TestContract.contractName, () => {
         testSuccess("lambertPosQuick", percent, LAMBERT_POS0, LAMBERT_POS1, "0.00352502537296632393189150614600911966");
         testSuccess("lambertPosQuick", percent, LAMBERT_POS1, LAMBERT_POS2, "0.00202834415207521945800897906620169050");
         testSuccess("lambertPosQuick", percent, LAMBERT_POS2, LAMBERT_POS3, "0.00250533328316541877372004036689769731");
-        testSuccess("lambertPosQuick", percent, LAMBERT_POS3, LAMBERT_POS4, "0.04077010883516512005881448457825866715");
+        testSuccess("lambertPosQuick", percent, LAMBERT_POS3, LAMBERT_POS4, "0.04076265753190620535671784581901863592");
     }
 
     testFailure("lambertPosExact", LAMBERT_POS0.add(0), "lambertPosExact: x < min");
