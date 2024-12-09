@@ -13,9 +13,9 @@ def getInput():
 
 
 def getOutput(a, b, c, d):
-    fixedPoint, factor = FixedPoint.pow(a, b, c, d)
-    floatPoint = FloatPoint.pow(a, b, c, d, factor)
-    return fixedPoint, floatPoint, fixedPoint <= floatPoint
+    fixedPointN, fixedPointD = FixedPoint.pow(a, b, c, d)
+    floatPoint = FloatPoint.pow(a, b, c, d) * fixedPointD
+    return fixedPointN, floatPoint, fixedPointN <= floatPoint
 
 
 TestScheme.run(getInput, getOutput)
