@@ -15,12 +15,9 @@ def getInput():
 
 
 def getOutput(staked1, balance1, balance2, rate1, rate2):
-    weights = FixedPoint.equalizeExact(staked1, balance1, balance2, rate1, rate2)
-    weight1 = weights[0]
-    weight2 = weights[1]
-    amount1 = staked1 - balance1
-    amount2 = FloatPoint.convert(balance1, weight1, balance2, weight2, amount1)
-    return (balance1 + amount1) * rate1 * weight2, (balance2 - amount2) * rate2 * weight1, True
+    weight1, weight2 = FixedPoint.equalizeExact(staked1, balance1, balance2, rate1, rate2)
+    floatPoint = FloatPoint.equalize(staked1, balance1, balance2, rate1, rate2, weight1, weight2)
+    return 1, floatPoint, True
 
 
 TestScheme.run(getInput, getOutput)
