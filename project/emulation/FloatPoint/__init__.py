@@ -22,14 +22,9 @@ def exp(a, b, factor):
     return (a / b).exp() * factor
 
 
-def lambertNeg(x, factor):
+def lambert(x, factor):
     x, factor = [Decimal(value) for value in vars().values()]
-    return lambertRatio(-x / factor) * factor
-
-
-def lambertPos(x, factor):
-    x, factor = [Decimal(value) for value in vars().values()]
-    return lambertRatio(+x / factor) * factor
+    return lambertRatio(x / factor) * factor
 
 
 def buy(supply, balance, weight, amount, max_weight):

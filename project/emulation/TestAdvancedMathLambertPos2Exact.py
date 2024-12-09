@@ -16,7 +16,7 @@ def getInput():
 
 def getOutput(x):
     fixedPoint = FixedPoint.lambertPosExact(x)
-    floatPoint = FloatPoint.lambertPos(x, FIXED_1)
+    floatPoint = FloatPoint.lambert(+x, FIXED_1)
     return fixedPoint, floatPoint, True
 
 
