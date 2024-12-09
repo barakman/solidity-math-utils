@@ -16,8 +16,8 @@ def getInput():
 
 def getOutput(staked1, balance1, balance2, rate1, rate2):
     weight1, weight2 = FixedPoint.equalizeQuick(staked1, balance1, balance2, rate1, rate2)
-    floatPoint = FloatPoint.equalize(staked1, balance1, balance2, rate1, rate2, weight1, weight2)
-    return 1, floatPoint, True
+    ratio = FloatPoint.equalize(staked1, balance1, balance2, rate1, rate2, weight1, weight2)
+    return 1, ratio, True
 
 
 TestScheme.run(getInput, getOutput)

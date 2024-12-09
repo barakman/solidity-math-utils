@@ -14,8 +14,8 @@ def getInput():
 
 def getOutput(a, b, c, d):
     x, y = FixedPoint.solveExact(a, b, c, d)
-    z = FloatPoint.solve(a, b, c, d, x, y)
-    return 1, z, True
+    ratio = FloatPoint.solve(a, b, c, d, x, y)
+    return 1, ratio, True
 
 
 TestScheme.run(getInput, getOutput)
