@@ -27,6 +27,11 @@ def lambert(x, factor):
     return lambertRatio(x / factor) * factor
 
 
+def solve(a, b, c, d, x, y):
+    a, b, c, d, x, y = [Decimal(value) for value in vars().values()]
+    return (x / y) * (a / b) ** (x / y) / (c / d)
+
+
 def buy(supply, balance, weight, amount, max_weight):
     supply, balance, weight, amount, max_weight = [Decimal(value) for value in vars().values()]
     return supply * ((1 + amount / balance) ** (weight / max_weight) - 1)
