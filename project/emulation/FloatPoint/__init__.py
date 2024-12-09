@@ -11,28 +11,28 @@ parse = lambda args: [Decimal(arg) for arg in args]
 
 
 def pow(*args):
-    a, b, c, d = parse(args)
-    return (a / b) ** (c / d)
+    a, b, c, d, factor = parse(args)
+    return (a / b) ** (c / d) * factor
 
 
 def log(*args):
-    a, b = parse(args)
-    return (a / b).ln()
+    a, b, factor = parse(args)
+    return (a / b).ln() * factor
 
 
 def exp(*args):
-    a, b = parse(args)
-    return (a / b).exp()
-
-
-def solve(*args):
-    a, b, c, d, x, y = parse(args)
-    return (x / y) * (a / b) ** (x / y) / (c / d)
+    a, b, factor = parse(args)
+    return (a / b).exp() * factor
 
 
 def lambert(*args):
     x, factor = parse(args)
     return lambertRatio(x / factor) * factor
+
+
+def solve(*args):
+    a, b, c, d, x, y = parse(args)
+    return (x / y) * (a / b) ** (x / y) / (c / d)
 
 
 def buy(*args):

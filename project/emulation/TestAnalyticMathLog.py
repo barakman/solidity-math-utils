@@ -11,9 +11,9 @@ def getInput():
 
 
 def getOutput(a, b):
-    fixedPointN, fixedPointD = FixedPoint.log(a, b)
-    floatPoint = FloatPoint.log(a, b) * fixedPointD
-    return fixedPointN, floatPoint, fixedPointN <= floatPoint
+    fixedPoint, factor = FixedPoint.log(a, b)
+    floatPoint = FloatPoint.log(a, b, factor)
+    return fixedPoint, floatPoint, fixedPoint <= floatPoint
 
 
 TestScheme.run(getInput, getOutput)
