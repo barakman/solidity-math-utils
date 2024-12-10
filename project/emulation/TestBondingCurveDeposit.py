@@ -18,7 +18,7 @@ def getInput():
 def getOutput(supply, balance, weights, amount):
     fixedPoint = FixedPoint.deposit(supply, balance, weights, amount)
     floatPoint = FloatPoint.deposit(supply, balance, weights, amount, MAX_WEIGHT)
-    return fixedPoint, floatPoint, TestScheme.Assert.LTE
+    return fixedPoint, floatPoint, TestScheme.Assert.lte
 
 
 TestScheme.run(getInput, getOutput)

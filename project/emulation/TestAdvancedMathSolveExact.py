@@ -15,7 +15,7 @@ def getInput():
 def getOutput(a, b, c, d):
     fixedPoint = FixedPoint.solveExact(a, b, c, d)
     floatPoint = FloatPoint.solve(a, b, c, d, *fixedPoint)
-    return fixedPoint, floatPoint, TestScheme.Assert.NONE
+    return fixedPoint, floatPoint, TestScheme.Assert.non
 
 
 TestScheme.run(getInput, getOutput)

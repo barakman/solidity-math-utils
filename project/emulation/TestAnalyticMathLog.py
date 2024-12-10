@@ -13,7 +13,7 @@ def getInput():
 def getOutput(a, b):
     fixedPoint = FixedPoint.log(a, b)
     floatPoint = FloatPoint.log(a, b)
-    return fixedPoint, floatPoint, TestScheme.Assert.LTE
+    return fixedPoint, floatPoint, TestScheme.Assert.lte
 
 
 TestScheme.run(getInput, getOutput)

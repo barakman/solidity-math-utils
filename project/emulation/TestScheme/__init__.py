@@ -2,9 +2,9 @@ import sys
 
 
 class Assert:
-    LTE = +1
-    GTE = -1
-    NONE = 0
+    lte = lambda ratio: ratio <= 1
+    gte = lambda ratio: ratio >= 1
+    non = lambda ratio: True
 
 
 def run(getInput, getOutput):
@@ -17,13 +17,13 @@ def run(getInput, getOutput):
     for test in range(tests):
         inputArgs = getInput()
         try:
-            fixedPoint, floatPoint, sign = getOutput(**inputArgs)
+            fixedPoint, floatPoint, assertion = getOutput(**inputArgs)
         except AssertionError:
             ratio = 0
             failures += 1
         else:
             ratio = div(fixedPoint, floatPoint)
-            if ratio ** sign <= 1:
+            if assertion(ratio):
                 minRatio = min(minRatio, ratio)
                 maxRatio = max(maxRatio, ratio)
             else:

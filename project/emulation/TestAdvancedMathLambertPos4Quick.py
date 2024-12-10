@@ -17,7 +17,7 @@ def getInput():
 def getOutput(x):
     fixedPoint = FixedPoint.lambertPosQuick(x)
     floatPoint = FloatPoint.lambert(+x, FIXED_1)
-    return fixedPoint, floatPoint, TestScheme.Assert.LTE
+    return fixedPoint, floatPoint, TestScheme.Assert.lte
 
 
 TestScheme.run(getInput, getOutput)

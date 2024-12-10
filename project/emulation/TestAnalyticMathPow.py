@@ -15,7 +15,7 @@ def getInput():
 def getOutput(a, b, c, d):
     fixedPoint = FixedPoint.pow(a, b, c, d)
     floatPoint = FloatPoint.pow(a, b, c, d)
-    return fixedPoint, floatPoint, TestScheme.Assert.LTE
+    return fixedPoint, floatPoint, TestScheme.Assert.lte
 
 
 TestScheme.run(getInput, getOutput)
