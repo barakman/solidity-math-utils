@@ -18,7 +18,7 @@ def getInput():
 def getOutput(supply, balance, weights, amount):
     fixedPoint = FixedPoint.withdraw(supply, balance, weights, amount)
     floatPoint = FloatPoint.withdraw(supply, balance, weights, amount, MAX_WEIGHT)
-    return fixedPoint, floatPoint, fixedPoint <= floatPoint
+    return fixedPoint, floatPoint, TestScheme.Assert.LTE
 
 
 TestScheme.run(getInput, getOutput)

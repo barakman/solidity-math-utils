@@ -11,9 +11,9 @@ def getInput():
 
 
 def getOutput(a, b):
-    fixedPoint, factor = FixedPoint.exp(a, b)
-    floatPoint = FloatPoint.exp(a, b, factor)
-    return fixedPoint, floatPoint, fixedPoint <= floatPoint
+    fixedPoint = FixedPoint.exp(a, b)
+    floatPoint = FloatPoint.exp(a, b)
+    return fixedPoint, floatPoint, TestScheme.Assert.LTE
 
 
 TestScheme.run(getInput, getOutput)

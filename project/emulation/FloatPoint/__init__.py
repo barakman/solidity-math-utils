@@ -11,28 +11,28 @@ parse = lambda args: [Decimal(arg) for arg in args]
 
 
 def pow(*args):
-    a, b, c, d, factor = parse(args)
-    return (a / b) ** (c / d) * factor
+    a, b, c, d = parse(args)
+    return (a / b) ** (c / d)
 
 
 def log(*args):
-    a, b, factor = parse(args)
-    return (a / b).ln() * factor
+    a, b = parse(args)
+    return (a / b).ln()
 
 
 def exp(*args):
-    a, b, factor = parse(args)
-    return (a / b).exp() * factor
+    a, b = parse(args)
+    return (a / b).exp()
+
+
+def solve(*args):
+    a, b, c, d, x, y = parse(args)
+    return (c / d), (a / b) ** (x / y)
 
 
 def lambert(*args):
     x, factor = parse(args)
     return lambertRatio(x / factor) * factor
-
-
-def solve(*args):
-    a, b, c, d, x, y = parse(args)
-    return (x / y) * (a / b) ** (x / y) / (c / d)
 
 
 def buy(*args):
@@ -69,7 +69,7 @@ def equalize(*args):
     staked1, balance1, balance2, rate1, rate2, weight1, weight2 = parse(args)
     amount1 = staked1 - balance1
     amount2 = convert(balance1, weight1, balance2, weight2, amount1)
-    return ((balance1 + amount1) * rate1 * weight2) / ((balance2 - amount2) * rate2 * weight1)
+    return (balance1 + amount1) * rate1, (balance2 - amount2) * rate2
 
 
 def lambertRatio(x):
