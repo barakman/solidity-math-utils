@@ -2,9 +2,9 @@ import sys
 
 
 class Assert:
+    non = lambda ratio: True
     lte = lambda ratio: ratio <= 1
     gte = lambda ratio: ratio >= 1
-    non = lambda ratio: True
 
 
 def run(getInput, getOutput):
