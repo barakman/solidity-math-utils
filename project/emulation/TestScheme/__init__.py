@@ -33,17 +33,18 @@ def run(getInput, getOutput):
 
 
 def div(fixedPoint, floatPoint):
-    fixedPoint, floatPoint = [f if type(f) is tuple else (f, type(f)(1)) for f in [fixedPoint, floatPoint]]
-    return (fixedPoint[0] * floatPoint[1]) / (fixedPoint[1] * floatPoint[0])
+    return {
+        int  : lambda fixedPoint, floatPoint: fixedPoint / floatPoint,
+        tuple: lambda fixedPoint, floatPoint: fixedPoint[0] / (fixedPoint[1] * floatPoint)
+    }[type(fixedPoint)](fixedPoint, floatPoint)
 
 
 def abort(inputArgs, fixedPoint, floatPoint):
     maxKeyLen = max(len(key) for key in inputArgs)
-    fixedPoint, floatPoint = [f if type(f) is tuple else [f] for f in [fixedPoint, floatPoint]]
     error = [f'Implementation Error:']
     error.append(f'- Input:')
     error.extend(f'  - {key.ljust(maxKeyLen)} = {val}' for key, val in inputArgs.items())
     error.append(f'- Output:')
-    error.extend(f'  - fixedPoint[{ind}] = {val:d}' for ind, val in enumerate(fixedPoint))
-    error.extend(f'  - floatPoint[{ind}] = {val:f}' for ind, val in enumerate(floatPoint))
+    error.append(f'  - fixedPoint = {fixedPoint}')
+    error.append(f'  - floatPoint = {floatPoint:f}')
     print('\n'.join(error))

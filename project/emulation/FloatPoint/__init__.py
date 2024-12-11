@@ -13,22 +13,22 @@ parse = lambda args: [Decimal(arg) for arg in args]
 
 def pow(*args):
     a, b, c, d = parse(args)
-    return (a / b) ** (c / d), one
+    return (a / b) ** (c / d)
 
 
 def log(*args):
     a, b = parse(args)
-    return (a / b).ln(), one
+    return (a / b).ln()
 
 
 def exp(*args):
     a, b = parse(args)
-    return (a / b).exp(), one
+    return (a / b).exp()
 
 
 def solve(*args):
     a, b, c, d, x, y = parse(args)
-    return (c / d), (a / b) ** (x / y)
+    return (c / d) / (a / b) ** (x / y)
 
 
 def lambert(*args):
@@ -70,7 +70,7 @@ def equalize(*args):
     staked1, balance1, balance2, rate1, rate2, weight1, weight2 = parse(args)
     amount1 = staked1 - balance1
     amount2 = convert(balance1, weight1, balance2, weight2, amount1)
-    return (balance1 + amount1) * rate1, (balance2 - amount2) * rate2
+    return ((balance1 + amount1) * rate1) / ((balance2 - amount2) * rate2)
 
 
 def lambertRatio(x):
