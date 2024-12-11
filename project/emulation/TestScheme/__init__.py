@@ -34,7 +34,7 @@ def run(getInput, getOutput):
 
 def div(fixedPoint, floatPoint):
     return {
-        int  : lambda fixedPoint, floatPoint: fixedPoint / floatPoint,
+        int:   lambda fixedPoint, floatPoint: fixedPoint / floatPoint,
         tuple: lambda fixedPoint, floatPoint: fixedPoint[0] / (fixedPoint[1] * floatPoint)
     }[type(fixedPoint)](fixedPoint, floatPoint)
 
