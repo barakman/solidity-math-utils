@@ -7,22 +7,23 @@ getcontext().prec = 100
 getcontext().rounding = ROUND_HALF_DOWN
 
 
+one = Decimal(1)
 parse = lambda args: [Decimal(arg) for arg in args]
 
 
 def pow(*args):
     a, b, c, d = parse(args)
-    return (a / b) ** (c / d)
+    return (a / b) ** (c / d), one
 
 
 def log(*args):
     a, b = parse(args)
-    return (a / b).ln()
+    return (a / b).ln(), one
 
 
 def exp(*args):
     a, b = parse(args)
-    return (a / b).exp()
+    return (a / b).exp(), one
 
 
 def solve(*args):
@@ -37,32 +38,32 @@ def lambert(*args):
 
 def buy(*args):
     supply, balance, weight, amount, max_weight = parse(args)
-    return supply * ((1 + amount / balance) ** (weight / max_weight) - 1)
+    return supply * ((one + amount / balance) ** (weight / max_weight) - one)
 
 
 def sell(*args):
     supply, balance, weight, amount, max_weight = parse(args)
-    return balance * (1 - (1 - amount / supply) ** (max_weight / weight))
+    return balance * (one - (one - amount / supply) ** (max_weight / weight))
 
 
 def convert(*args):
     balance1, weight1, balance2, weight2, amount = parse(args)
-    return balance2 * (1 - (balance1 / (balance1 + amount)) ** (weight1 / weight2))
+    return balance2 * (one - (balance1 / (balance1 + amount)) ** (weight1 / weight2))
 
 
 def deposit(*args):
     supply, balance, weights, amount, max_weight = parse(args)
-    return supply * ((amount / balance + 1) ** (weights / max_weight) - 1)
+    return supply * ((amount / balance + one) ** (weights / max_weight) - one)
 
 
 def withdraw(*args):
     supply, balance, weights, amount, max_weight = parse(args)
-    return balance * (1 - ((supply - amount) / supply) ** (max_weight / weights))
+    return balance * (one - ((supply - amount) / supply) ** (max_weight / weights))
 
 
 def invest(*args):
     supply, balance, weights, amount, max_weight = parse(args)
-    return balance * (((supply + amount) / supply) ** (max_weight / weights) - 1)
+    return balance * (((supply + amount) / supply) ** (max_weight / weights) - one)
 
 
 def equalize(*args):

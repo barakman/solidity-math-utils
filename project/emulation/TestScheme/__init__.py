@@ -29,7 +29,7 @@ def run(getInput, getOutput):
             else:
                 abort(inputArgs, fixedPoint, floatPoint)
                 break
-        print(f'Test #{test}: ratio = {ratio:.30f}, min = {minRatio:.30f}, max = {maxRatio:.30f}, failures = {failures}')
+        print(f'Test #{test}: ratio = {ratio:.40f}, min = {minRatio:.40f}, max = {maxRatio:.40f}, failures = {failures}')
 
 
 def div(fixedPoint, floatPoint):
