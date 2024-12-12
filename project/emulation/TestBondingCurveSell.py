@@ -18,7 +18,11 @@ def getInput():
 def getOutput(supply, balance, weight, amount):
     fixedPoint = FixedPoint.sell(supply, balance, weight, amount)
     floatPoint = FloatPoint.sell(supply, balance, weight, amount, MAX_WEIGHT)
-    return fixedPoint, floatPoint, TestScheme.Assert.lte
+    return fixedPoint, floatPoint
 
 
-TestScheme.run(getInput, getOutput)
+def isValid(ratio):
+    return ratio <= 1
+
+
+TestScheme.run(getInput, getOutput, isValid)

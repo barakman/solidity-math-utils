@@ -19,7 +19,11 @@ def getInput():
 def getOutput(balance1, weight1, balance2, weight2, amount):
     fixedPoint = FixedPoint.convert(balance1, weight1, balance2, weight2, amount)
     floatPoint = FloatPoint.convert(balance1, weight1, balance2, weight2, amount)
-    return fixedPoint, floatPoint, TestScheme.Assert.lte
+    return fixedPoint, floatPoint
 
 
-TestScheme.run(getInput, getOutput)
+def isValid(ratio):
+    return ratio <= 1
+
+
+TestScheme.run(getInput, getOutput, isValid)

@@ -15,7 +15,11 @@ def getInput():
 def getOutput(a, b, c, d):
     fixedPoint = FixedPoint.pow(a, b, c, d)
     floatPoint = FloatPoint.pow(a, b, c, d)
-    return fixedPoint, floatPoint, TestScheme.Assert.lte
+    return fixedPoint, floatPoint
 
 
-TestScheme.run(getInput, getOutput)
+def isValid(ratio):
+    return ratio <= 1
+
+
+TestScheme.run(getInput, getOutput, isValid)

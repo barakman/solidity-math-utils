@@ -17,7 +17,11 @@ def getInput():
 def getOutput(x):
     fixedPoint = FixedPoint.lambertPosExact(x)
     floatPoint = FloatPoint.lambert(+x, FIXED_1)
-    return fixedPoint, floatPoint, TestScheme.Assert.lte
+    return fixedPoint, floatPoint
 
 
-TestScheme.run(getInput, getOutput)
+def isValid(ratio):
+    return ratio <= 1
+
+
+TestScheme.run(getInput, getOutput, isValid)

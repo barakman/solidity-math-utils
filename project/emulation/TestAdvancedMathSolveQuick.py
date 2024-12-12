@@ -15,7 +15,11 @@ def getInput():
 def getOutput(a, b, c, d):
     fixedPoint = FixedPoint.solveQuick(a, b, c, d)
     floatPoint = FloatPoint.solve(a, b, c, d, *fixedPoint)
-    return fixedPoint, floatPoint, TestScheme.Assert.non
+    return fixedPoint, floatPoint
 
 
-TestScheme.run(getInput, getOutput)
+def isValid(ratio):
+    return True
+
+
+TestScheme.run(getInput, getOutput, isValid)

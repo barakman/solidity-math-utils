@@ -17,7 +17,11 @@ def getInput():
 def getOutput(staked1, balance1, balance2, rate1, rate2):
     fixedPoint = FixedPoint.equalizeExact(staked1, balance1, balance2, rate1, rate2)
     floatPoint = FloatPoint.equalize(staked1, balance1, balance2, rate1, rate2, *fixedPoint)
-    return fixedPoint, floatPoint, TestScheme.Assert.non
+    return fixedPoint, floatPoint
 
 
-TestScheme.run(getInput, getOutput)
+def isValid(ratio):
+    return True
+
+
+TestScheme.run(getInput, getOutput, isValid)
