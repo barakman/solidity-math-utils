@@ -4,20 +4,21 @@ import FloatPoint
 import TestScheme
 
 
-def getInput():
-    rate     = random.randrange(10 ** 18, 10 ** 21)
-    staked1  = random.randrange(10 ** 24, 10 ** 27)
-    balance1 = staked1 * random.randrange(75, 150) // 100
-    balance2 = staked1 * random.randrange(75, 150) // 100
-    rate1    = rate * random.randrange(75, 150) // 100
-    rate2    = rate * random.randrange(75, 150) // 100
-    return dict(staked1=staked1, balance1=balance1, balance2=balance2, rate1=rate1, rate2=rate2)
+class Test(TestScheme.Run):
+    def getInput(self):
+        rate     = random.randrange(10 ** 18, 10 ** 21)
+        staked1  = random.randrange(10 ** 24, 10 ** 27)
+        balance1 = staked1 * random.randrange(75, 150) // 100
+        balance2 = staked1 * random.randrange(75, 150) // 100
+        rate1    = rate * random.randrange(75, 150) // 100
+        rate2    = rate * random.randrange(75, 150) // 100
+        return dict(staked1=staked1, balance1=balance1, balance2=balance2, rate1=rate1, rate2=rate2)
+    def getOutput(self, staked1, balance1, balance2, rate1, rate2):
+        fixedPoint = FixedPoint.equalizeExact(staked1, balance1, balance2, rate1, rate2)
+        floatPoint = FloatPoint.equalize(staked1, balance1, balance2, rate1, rate2, *fixedPoint)
+        return fixedPoint, floatPoint
+    def isValid(self, ratio):
+        return True
 
 
-def getOutput(staked1, balance1, balance2, rate1, rate2):
-    fixedPoint = FixedPoint.equalizeExact(staked1, balance1, balance2, rate1, rate2)
-    floatPoint = FloatPoint.equalize(staked1, balance1, balance2, rate1, rate2, *fixedPoint)
-    return fixedPoint, floatPoint, TestScheme.Assert.non
-
-
-TestScheme.run(getInput, getOutput)
+Test()
