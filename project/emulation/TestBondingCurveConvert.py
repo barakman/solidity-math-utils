@@ -3,9 +3,7 @@ import FixedPoint
 import FloatPoint
 import TestScheme
 
-
 MAX_WEIGHT = FixedPoint.BondingCurve.MAX_WEIGHT
-
 
 def getInput():
     balance1 = random.randrange(1, 10 ** 23)
@@ -15,15 +13,12 @@ def getInput():
     amount   = random.randrange(1, balance1 * 10)
     return dict(balance1=balance1, weight1=weight1, balance2=balance2, weight2=weight2, amount=amount)
 
-
 def getOutput(balance1, weight1, balance2, weight2, amount):
     fixedPoint = FixedPoint.convert(balance1, weight1, balance2, weight2, amount)
     floatPoint = FloatPoint.convert(balance1, weight1, balance2, weight2, amount)
     return fixedPoint, floatPoint
 
-
 def isValid(ratio):
     return ratio <= 1
-
 
 TestScheme.run(getInput, getOutput, isValid)
