@@ -9,16 +9,15 @@ MIN_VAL = FixedPoint.AdvancedMath.LAMBERT_POS2_MAXVAL + 1
 MAX_VAL = FixedPoint.AdvancedMath.LAMBERT_EXACT_LIMIT + 1
 
 
-class Test(TestScheme.Run):
-    def getInput(self):
-        x = random.randrange(MIN_VAL, MAX_VAL)
-        return dict(x=x)
-    def getOutput(self, x):
-        fixedPoint = FixedPoint.lambertPosQuick(x)
-        floatPoint = FloatPoint.lambert(+x, FIXED_1)
-        return fixedPoint, floatPoint
-    def isValid(self, ratio):
-        return True
+def getInput():
+    x = random.randrange(MIN_VAL, MAX_VAL)
+    return dict(x=x)
 
 
-Test()
+def getOutput(x):
+    fixedPoint = FixedPoint.lambertPosQuick(x)
+    floatPoint = FloatPoint.lambert(+x, FIXED_1)
+    return fixedPoint, floatPoint, TestScheme.Assert.non
+
+
+TestScheme.run(getInput, getOutput)
