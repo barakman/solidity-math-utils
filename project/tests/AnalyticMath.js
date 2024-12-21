@@ -1,230 +1,149 @@
-const AnalyticMath = artifacts.require("AnalyticMathAdapter");
-
-const Constants = require("./helpers/AnalyticMathConstants.js");
-
-const assertRevert = require("./helpers/Utilities.js").assertRevert;
-
+const TestContract = artifacts.require("AnalyticMathUser");
+const Constants = require("./helpers/Constants.js");
+const Utilities = require("./helpers/Utilities.js");
 const Decimal = require("decimal.js");
 
-const toBN = web3.utils.toBN;
+const ZERO = Decimal(0);
+const ONE  = Decimal(1);
+const TWO  = Decimal(2);
 
-function assertAlmostEqual(actual, expected, maxError) {
-    if (!actual.eq(expected)) {
-        assert(actual.lt(expected), "critical error");
-        const error = actual.div(expected).sub(1).abs();
-        assert(error.lte(maxError), `error = ${error.toFixed()}`);
-    }
-}
+const FIXED_1 = Decimal(Constants.FIXED_1);
+const LOG_MID = Decimal(Constants.LOG_MID);
+const EXP_MID = Decimal(Constants.EXP_MID);
+const EXP_MAX = Decimal(Constants.EXP_MAX);
 
-contract("AnalyticMath", () => {
-    let analyticMath;
+const MAX_U32 = TWO.pow(32).sub(1)
+const MAX_VAL = TWO.pow(256).sub(1);
+const MAX_MUL = MAX_VAL.div(FIXED_1).floor();
+
+const pow      = (a, b, c, d) => a.div(b).pow(c.div(d));
+const log      = (a, b)       => a.div(b).ln();
+const exp      = (a, b)       => a.div(b).exp();
+const fixedLog = (x)          => log(x, FIXED_1).mul(FIXED_1);
+const fixedExp = (x)          => exp(x, FIXED_1).mul(FIXED_1);
+
+const equalTo    = (x, y)  => x.eq(y);
+const lessThan   = (x, y)  => x.lt(y);
+const moreThan   = (x, y)  => x.gt(y);
+const toInteger  = (value) => Decimal(value.toString());
+const toFraction = (tuple) => Decimal(tuple[0].toString()).div(tuple[1].toString());
+
+const portion = (min, max, percent) => min.add(max.sub(min).mul(percent).divToInt(100));
+
+const terms = (num, max) => [...Array(2 ** num - 1).keys()].map(i => TWO.pow(max - num).mul(i + 1));
+
+describe(TestContract.contractName, () => {
+    let testContract;
 
     before(async () => {
-        analyticMath = await AnalyticMath.new();
-        await analyticMath.init();
+        testContract = await TestContract.new();
     });
 
-    describe("exponentiation tests:", () => {
-        const MAX_BASE = Decimal(2).pow(256 - Constants.MAX_PRECISION).sub(1);
-        const MAX_EXP  = Decimal(2).pow(32).sub(1);
-
-        for (let percent = 1; percent <= 100; percent++) {
-            powTestSuccess(
-                MAX_BASE,
-                MAX_BASE.sub(1),
-                MAX_EXP.mul(percent).divToInt(100),
-                MAX_EXP,
-                "0.00000000000000000000000000000000000001"
-            );
-        }
-
-        for (let percent = 1; percent <= 100; percent++) {
-            powTestSuccess(
-                MAX_BASE,
-                MAX_BASE.sub(1),
-                MAX_EXP,
-                MAX_EXP.mul(percent).divToInt(100),
-                "0.000000000000000000000000000000000001"
-            );
-        }
-
-        for (let percent = 1; percent <= 17; percent++) {
-            powTestSuccess(
-                MAX_BASE,
-                Decimal(1),
-                MAX_EXP.mul(percent).divToInt(100),
-                MAX_EXP,
-                "0.00000000000000000000000000000000001"
-            );
-        }
-
-        for (let percent = 64; percent <= 100; percent++) {
-            powTestFailure(
-                MAX_BASE,
-                Decimal(1),
-                MAX_EXP.mul(percent).divToInt(100),
-                MAX_EXP,
-                "findPosition: x > max"
-            );
-        }
-
-        for (let percent = 1; percent <= 100; percent++) {
-            powTestFailure(
-                MAX_BASE,
-                Decimal(1),
-                MAX_EXP,
-                MAX_EXP.mul(percent).divToInt(100),
-                "findPosition: x > max"
-            );
-        }
-    });
-
-    describe("overflow tests:", () => {
-        const MULTIPLIER = Decimal(2).pow(256 - Constants.MAX_PRECISION).toFixed();
-        overflowTest("pow", MULTIPLIER, 1, 1, 1);
-        overflowTest("pow", 1, MULTIPLIER, 1, 1);
-        overflowTest("log", MULTIPLIER, 1);
-        overflowTest("exp", MULTIPLIER, 1);
-    });
-
-    describe("precision tests:", () => {
-        const LOG_MIN = Decimal(1);
-        const EXP_MIN = Decimal(0);
-        const LOG_MAX = Decimal.exp(Constants.LOG_MAX_HI_TERM_VAL);
-        const EXP_MAX = Decimal(2).pow(Constants.EXP_MAX_HI_TERM_VAL);
-        const FIXED_1 = Decimal(2).pow(Constants.MAX_PRECISION);
-
-        for (let n = 0; n < 256 - Constants.MAX_PRECISION; n++) {
-            for (const x of [
-                Decimal(2).pow(n),
-                Decimal(2).pow(n).add(1),
-                Decimal(2).pow(n).mul(1.5),
-                Decimal(2).pow(n + 1).sub(1),
-            ]) {
-                it(`generalLog(${x.toFixed()})`, async () => {
-                    const output = await analyticMath.generalLogTest(x.mul(FIXED_1).toFixed(0));
-                    const actual = Decimal(output.toString());
-                    const expected = x.ln().mul(FIXED_1);
-                    assertAlmostEqual(actual, expected, "0.000000000000000000000000000000000001");
-                });
+    for (const a of [ZERO, ONE, MAX_VAL]) {
+        for (const b of [ZERO, ONE, MAX_VAL]) {
+            for (const c of [ZERO, ONE, MAX_VAL]) {
+                for (const d of [ZERO, ONE, MAX_VAL]) {
+                    if (b.eq(0) || d.eq(0)) {
+                        testFailure(pow, "division by zero", a, b, c, d);
+                    }
+                    else if (a.eq(0) || c.eq(0)) {
+                        testSuccess(pow, toFraction, equalTo, "0", a, b, c, d);
+                    }
+                }
             }
         }
+    }
 
-        for (let percent = 0; percent < 100; percent++) {
-            const x = Decimal(percent).div(100).mul(LOG_MAX.sub(LOG_MIN)).add(LOG_MIN);
-
-            it(`optimalLog(${x.toFixed()})`, async () => {
-                const output = await analyticMath.optimalLogTest(x.mul(FIXED_1).toFixed(0));
-                const actual = Decimal(output.toString());
-                const expected = x.ln().mul(FIXED_1);
-                assertAlmostEqual(actual, expected, "0.00000000000000000000000000000000001");
-            });
-        }
-
-        for (let percent = 0; percent < 100; percent++) {
-            const x = Decimal(percent).div(100).mul(EXP_MAX.sub(EXP_MIN)).add(EXP_MIN);
-
-            it(`optimalExp(${x.toFixed()})`, async () => {
-                const output = await analyticMath.optimalExpTest(x.mul(FIXED_1).toFixed(0));
-                const actual = Decimal(output.toString());
-                const expected = x.exp().mul(FIXED_1);
-                assertAlmostEqual(actual, expected, "0.00000000000000000000000000000000001");
-            });
-        }
-
-        it(`optimalLog with max input value`, async () => {
-            const input = LOG_MAX.mul(FIXED_1).sub(1).ceil().toFixed();
-            const output = await analyticMath.optimalLogTest(input);
-            const actual = Decimal(output.toString());
-            const expected = LOG_MAX.ln().mul(FIXED_1);
-            assertAlmostEqual(actual, expected, "0.0000000000000000000000000000000000001");
-        });
-
-        it(`optimalExp with max input value`, async () => {
-            const input = EXP_MAX.mul(FIXED_1).sub(1).ceil().toFixed();
-            const output = await analyticMath.optimalExpTest(input);
-            const actual = Decimal(output.toString());
-            const expected = EXP_MAX.exp().mul(FIXED_1);
-            assertAlmostEqual(actual, expected, "0.00000000000000000000000000000000001");
-        });
-    });
-
-    describe("internal tests:", () => {
-        for (let precision = Constants.MAX_PRECISION + 1; precision <= 256; precision++) {
-            const input = toBN(1).shln(precision).subn(1);
-
-            it(`generalLog(0x${input.toString(16)})`, async () => {
-                const output = await analyticMath.generalLogTest(input);
-                assert(output.shrn(256 - 32).eqn(0));
-            });
-        }
-
-        for (let precision = 1; precision <= Constants.MAX_PRECISION; precision++) {
-            const minExp = toBN(Constants.maxExpArray[precision - 1], 16).addn(1);
-            const minVal = toBN(1).shln(precision);
-
-            it(`generalExp(0x${minExp.toString(16)}, ${precision})`, async () => {
-                const output = await analyticMath.generalExpTest(minExp, precision);
-                assert(output.gte(minVal));
-            });
-        }
-
-        for (let precision = 0; precision <= Constants.MAX_PRECISION; precision++) {
-            const maxExp = toBN(Constants.maxExpArray[precision], 16);
-            const maxVal = toBN(Constants.maxValArray[precision], 16);
-
-            it(`generalExp(0x${maxExp.toString(16)}, ${precision})`, async () => {
-                const output = await analyticMath.generalExpTest(maxExp, precision);
-                assert(output.eq(maxVal));
-            });
-
-            it(`generalExp(0x${maxExp.addn(1).toString(16)}, ${precision})`, async () => {
-                const output = await analyticMath.generalExpTest(maxExp.addn(1), precision);
-                assert(output.lt(maxVal));
-            });
-        }
-
-        for (let precision = 0; precision <= Constants.MAX_PRECISION; precision++) {
-            const maxExp = toBN(Constants.maxExpArray[precision], 16);
-            const mulVal = toBN(1).shln(Constants.MAX_PRECISION - precision);
-
-            for (const testCase of [
-                {input: maxExp.addn(0).mul(mulVal).subn(1), expectedOutput: precision - 0},
-                {input: maxExp.addn(0).mul(mulVal).subn(0), expectedOutput: precision - 0},
-                {input: maxExp.addn(1).mul(mulVal).subn(1), expectedOutput: precision - 0},
-                {input: maxExp.addn(1).mul(mulVal).subn(0), expectedOutput: precision - 1},
-            ]) {
-                it(`findPosition(0x${testCase.input.toString(16)})`, async () => {
-                    if (testCase.expectedOutput >= Constants.MIN_PRECISION) {
-                        const output = await analyticMath.findPositionTest(testCase.input);
-                        assert(output.eqn(testCase.expectedOutput));
-                    }
-                    else {
-                        await assertRevert(analyticMath.findPositionTest(testCase.input), "findPosition: x > max");
-                    }
-                });
+    for (let a = 1; a < 5; a++) {
+        for (let b = 1; b <= a; b++) {
+            for (let c = 1; c < 5; c++) {
+                for (let d = 1; d < 5; d++) {
+                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000171", a, b, c, d);
+                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000620", 1000000 - a, b, c, d);
+                    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000615", 1000000 + a, b, c, d);
+                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000171", b, a, c, d);
+                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000620", b, 1000000 - a, c, d);
+                    testSuccess(pow, toFraction, moreThan, "0.000000000000000000000000000000000000615", b, 1000000 + a, c, d);
+                }
             }
+            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000110", a, b);
+            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000023", 1000000 - a, 100000 + b);
+            testSuccess(log, toFraction, lessThan, "0.000000000000000000000000000000000000023", 1000000 + a, 100000 - b);
+            testSuccess(exp, toFraction, lessThan, "0.000000000000000000000000000000000000014", a, b);
+            testSuccess(exp, toFraction, lessThan, "0.000000000000000000000000000000000000046", 1000000 - a, 100000 + b);
+            testSuccess(exp, toFraction, lessThan, "0.000000000000000000000000000000000000045", 1000000 + a, 100000 - b);
         }
-    });
+    }
 
-    function powTestSuccess(a, b, c, d, maxError) {
-        it(`pow(${[a, b, c, d].map(x => x.toFixed()).join(", ")})`, async () => {
-            const output = await analyticMath.powTest(...[a, b, c, d].map(x => x.toFixed()));
-            const actual = Decimal(output[0].toString()).div(output[1].toString());
-            const expected = a.div(b).pow(c.div(d));
-            assertAlmostEqual(actual, expected, maxError);
+    for (let percent = 1; percent <= 100; percent++) {
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000002", MAX_MUL, MAX_MUL.sub(1), portion(ZERO, MAX_U32, percent), MAX_U32);
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000147", MAX_MUL, MAX_MUL.sub(1), MAX_U32, portion(ZERO, MAX_U32, percent));
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000070", MAX_MUL, portion(MAX_U32, MAX_MUL, percent), MAX_U32.sub(1), MAX_U32);
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000072", MAX_MUL, portion(MAX_U32, MAX_MUL, percent), MAX_U32, MAX_U32.sub(1));
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000584", MAX_MUL, MAX_U32, portion(ZERO, MAX_U32, percent), MAX_U32);
+        testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000795", MAX_MUL, ONE, portion(ZERO, MAX_U32, percent), MAX_U32);
+    }
+
+    for (let percent = 0; percent < 100; percent++) {
+        testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000001054", portion(FIXED_1, LOG_MID, percent));
+        testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000055", portion(LOG_MID, FIXED_1.mul(4), percent));
+        testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000006", portion(FIXED_1.mul(4), MAX_VAL, percent));
+        testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000014", portion(ZERO, EXP_MID, percent));
+        testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000061", portion(EXP_MID, EXP_MID.mul(2), percent));
+        testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000290", portion(EXP_MID.mul(2), EXP_MAX, percent));
+    }
+
+    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000587", MAX_MUL, MAX_U32.sub(1), MAX_U32, MAX_U32);
+    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000593", MAX_MUL, MAX_U32, MAX_U32.sub(1), MAX_U32);
+    testSuccess(pow, toFraction, lessThan, "0.000000000000000000000000000000000000588", MAX_MUL, MAX_U32, MAX_U32, MAX_U32.sub(1));
+
+    testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000040", LOG_MID.sub(1));
+    testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000050", LOG_MID.add(1));
+    testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000000006", MAX_VAL);
+
+    testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000014", EXP_MID.sub(1));
+    testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000031", EXP_MID.add(1));
+    testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000289", EXP_MAX.sub(1));
+
+    for (const term of terms(Constants.LOG_NUM_OF_HI_TERMS, Constants.LOG_MAX_HI_TERM_VAL)) {
+        const n = term.exp().mul(FIXED_1).floor();
+        for (const k of [-1, 0, 1]) {
+            testSuccess(fixedLog, toInteger, lessThan, "0.000000000000000000000000000000000004722", n.add(k));
+        }
+    }
+
+    for (const term of terms(Constants.EXP_NUM_OF_HI_TERMS, Constants.EXP_MAX_HI_TERM_VAL)) {
+        const n = term.mul(FIXED_1);
+        for (const k of [-1, 0, 1]) {
+            testSuccess(fixedExp, toInteger, lessThan, "0.000000000000000000000000000000000000014", n.add(k));
+        }
+    }
+
+    testFailure(pow, "without a reason", MAX_MUL.add(1), ONE, ONE, ONE);
+    testFailure(pow, "without a reason", ONE, MAX_MUL.add(1), ONE, ONE);
+    testFailure(log, "without a reason", MAX_MUL.add(1), ONE);
+    testFailure(exp, "without a reason", MAX_MUL.add(1), ONE);
+
+    testFailure(log, "fixedLog: x < min", 1, 2);
+    testFailure(exp, "fixedExp: x > max", 178, 1);
+    testFailure(fixedLog, "fixedLog: x < min", FIXED_1.sub(1));
+    testFailure(fixedExp, "fixedExp: x > max", EXP_MAX.sub(0));
+
+    function testSuccess(method, toActual, check, maxError, ...args) {
+        it(`${method.name}(${args.map(x => x.toFixed()).join(", ")})`, async () => {
+            const actual = toActual(await testContract[method.name](...args.map(x => x.toFixed())));
+            const expected = method(...args.map(x => Decimal(x)));
+            if (!actual.eq(expected)) {
+                const error = actual.div(expected).sub(1).abs();
+                assert(check(actual, expected), "critical error");
+                assert(error.lte(maxError), `error = ${error.toFixed()}`);
+            }
         });
     }
 
-    function powTestFailure(a, b, c, d, errorMsg) {
-        it(`pow(${[a, b, c, d].map(x => x.toFixed()).join(", ")})`, async () => {
-            await assertRevert(analyticMath.powTest(...[a, b, c, d].map(x => x.toFixed())), errorMsg);
-        });
-    }
-
-    function overflowTest(methodName, ...args) {
-        it(`${methodName}(${args.join(", ")}) should revert`, async () => {
-            await assertRevert(analyticMath[methodName + "Test"](...args));
+    function testFailure(method, errorMsg, ...args) {
+        it(`${method.name}(${args.map(x => x.toFixed()).join(", ")})`, async () => {
+            await Utilities.assertRevert(testContract[method.name](...args.map(x => x.toFixed())), errorMsg);
         });
     }
 });

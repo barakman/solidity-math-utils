@@ -1,62 +1,83 @@
-from mpmath import mp
-from mpmath import lambertw
 from decimal import Decimal
 from decimal import getcontext
+from decimal import ROUND_HALF_DOWN
 
 
-getcontext().prec = mp.dps = 80 # 78 digits for a maximum of 2^256-1, and 2 more digits for after the decimal point
+getcontext().prec = 100
+getcontext().rounding = ROUND_HALF_DOWN
 
 
-def pow(a, b, c, d, factor):
-    a, b, c, d, factor = [Decimal(value) for value in vars().values()]
-    return (a/b)**(c/d)*factor
+one = Decimal(1)
+parse = lambda args: [Decimal(arg) for arg in args]
 
 
-def log(a, b, factor):
-    a, b, factor = [Decimal(value) for value in vars().values()]
-    return (a/b).ln()*factor
+def pow(*args):
+    a, b, c, d = parse(args)
+    return (a / b) ** (c / d)
 
 
-def exp(a, b, factor):
-    a, b, factor = [Decimal(value) for value in vars().values()]
-    return (a/b).exp()*factor
+def log(*args):
+    a, b = parse(args)
+    return (a / b).ln()
 
 
-def lambertNeg(x, factor):
-    x, factor = [Decimal(value) for value in vars().values()]
-    return Decimal(str(lambertw(-x/factor)))/(-x/factor)*factor
+def exp(*args):
+    a, b = parse(args)
+    return (a / b).exp()
 
 
-def lambertPos(x, factor):
-    x, factor = [Decimal(value) for value in vars().values()]
-    return Decimal(str(lambertw(+x/factor)))/(+x/factor)*factor
+def solve(*args):
+    a, b, c, d, x, y = parse(args)
+    return (c / d) / (a / b) ** (x / y)
 
 
-def buy(supply, balance, weight, amount):
-    supply, balance, weight, amount = [Decimal(value) for value in vars().values()]
-    return supply*((1+amount/balance)**(weight/MAX_WEIGHT)-1)
+def lambert(*args):
+    x, factor = parse(args)
+    return lambertRatio(x / factor) * factor
 
 
-def sell(supply, balance, weight, amount):
-    supply, balance, weight, amount = [Decimal(value) for value in vars().values()]
-    return balance*(1-(1-amount/supply)**(MAX_WEIGHT/weight))
+def buy(*args):
+    supply, balance, weight, amount, max_weight = parse(args)
+    return supply * ((one + amount / balance) ** (weight / max_weight) - one)
 
 
-def convert(balance1, weight1, balance2, weight2, amount):
-    balance1, weight1, balance2, weight2, amount = [Decimal(value) for value in vars().values()]
-    return balance2*(1-(balance1/(balance1+amount))**(weight1/weight2))
+def sell(*args):
+    supply, balance, weight, amount, max_weight = parse(args)
+    return balance * (one - (one - amount / supply) ** (max_weight / weight))
 
 
-def deposit(supply, balance, weights, amount):
-    supply, balance, weights, amount = [Decimal(value) for value in vars().values()]
-    return supply*((amount/balance+1)**(weights/MAX_WEIGHT)-1)
+def convert(*args):
+    balance1, weight1, balance2, weight2, amount = parse(args)
+    return balance2 * (one - (balance1 / (balance1 + amount)) ** (weight1 / weight2))
 
 
-def withdraw(supply, balance, weights, amount):
-    supply, balance, weights, amount = [Decimal(value) for value in vars().values()]
-    return balance*(1-((supply-amount)/supply)**(MAX_WEIGHT/weights))
+def deposit(*args):
+    supply, balance, weights, amount, max_weight = parse(args)
+    return supply * ((amount / balance + one) ** (weights / max_weight) - one)
 
 
-def invest(supply, balance, weights, amount):
-    supply, balance, weights, amount = [Decimal(value) for value in vars().values()]
-    return balance*(((supply+amount)/supply)**(MAX_WEIGHT/weights)-1)
+def withdraw(*args):
+    supply, balance, weights, amount, max_weight = parse(args)
+    return balance * (one - ((supply - amount) / supply) ** (max_weight / weights))
+
+
+def invest(*args):
+    supply, balance, weights, amount, max_weight = parse(args)
+    return balance * (((supply + amount) / supply) ** (max_weight / weights) - one)
+
+
+def equalize(*args):
+    staked1, balance1, balance2, rate1, rate2, weight1, weight2 = parse(args)
+    amount1 = staked1 - balance1
+    amount2 = convert(balance1, weight1, balance2, weight2, amount1)
+    return ((balance1 + amount1) * rate1) / ((balance2 - amount2) * rate2)
+
+
+def lambertRatio(x):
+    y = x if x < 1 else x.ln()
+    for _ in range(8):
+        e = y.exp()
+        f = y * e
+        if f == x: break
+        y = (y * f + x) / (f + e)
+    return y / x

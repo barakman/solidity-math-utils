@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
 import "../IntegralMath.sol";
 
@@ -38,6 +38,10 @@ contract IntegralMathUser {
 
     function mulDivC(uint256 x, uint256 y, uint256 z) external pure returns (uint256) {
         return IntegralMath.mulDivC(x, y, z);
+    }
+
+    function mulDivR(uint256 x, uint256 y, uint256 z) external pure returns (uint256) {
+        return IntegralMath.mulDivR(x, y, z);
     }
 
     function mulDivExF(uint256 x, uint256 y, uint256 z, uint256 w) external pure returns (uint256) {

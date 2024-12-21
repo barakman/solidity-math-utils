@@ -39,9 +39,12 @@ Let the following denote:
 
 Where $1$ unit of F is equal to $q/p$ units of G (or $p$ units of F are equal to $q$ units of G).
 
-First, note that the market’s arbitrage incentive is always to convert units of F to units of G or vice-versa, such that the on-chain price of F/G will become equal to the off-chain price of F/G.
+First, note that the market’s arbitrage incentive is always to convert units of F to units of G or vice-versa, such that the on-chain 
+price of F/G will become equal to the off-chain price of F/G.
 
-Consider the case of $t>s$. Our goal is to set the weights of the pool, such that the arbitrage incentive of equalizing the on-chain price and the off-chain price will subsequently increase $s$ to become equal to $t$. In other words, we want the arbitrager to transfer $t−s$ units of F to the pool, in exchange for units of G.
+Consider the case of $t>s$. Our goal is to set the weights of the pool, such that the arbitrage incentive of equalizing the on-chain 
+price and the off-chain price will subsequently increase $s$ to become equal to $t$. In other words, we want the arbitrager to 
+transfer $t−s$ units of F to the pool, in exchange for units of G.
 
 Suppose that we’ve set the weights:
 - $w_1=$ F reserve weight
@@ -55,7 +58,9 @@ Then:
 - F/G on-chain price after the arbitrage conversion will be $\large\frac{t\cdot{w_2}/{w_1}}{r-r\cdot\Big(1−\big(\frac{s}{t}\big)^{w_1/w_2}\Big)}$
 - F/G off-chain price is of course $\frac{p}{q}$ (or $\frac{q}{p}$ if the inverse rates are provided)
 
-When either $t$ or $p/q$ change, we want to recalculate $w_1$ and $w_2$ such that the arbitrage incentive of making the on-chain price equal to the off-chain price will be equivalent to converting $t−s$ units of F to units of G, thus increasing F reserve balance ($s$) to be equal to F staked balance ($t$).
+When either $t$ or $p/q$ change, we want to recalculate $w_1$ and $w_2$ such that the arbitrage incentive of making the on-chain price 
+equal to the off-chain price will be equivalent to converting $t−s$ units of F to units of G, thus increasing F reserve balance ($s$) 
+to be equal to F staked balance ($t$).
 
 In other words, we want to recalculate $w_1$ and $w_2$ such that $\large\frac{t\cdot{w_2}/{w_1}}{r-r\cdot\Big(1−\big(\frac{s}{t}\big)^{w_1/w_2}\Big)}=\frac{p}{q}$.
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.26;
+pragma solidity 0.8.28;
 
-import "./common/Uint.sol";
+import "./common/Uint256.sol";
 
 library IntegralMath {
     /**
@@ -153,7 +153,7 @@ library IntegralMath {
             return xyl / z;
         }
         if (xyh < z) { // `x * y / z < 2 ^ 256`
-            uint256 m = mulMod(x, y, z);                    // `m = x * y % z`
+            uint256 m = mulmod(x, y, z);                    // `m = x * y % z`
             (uint256 nh, uint256 nl) = sub512(xyh, xyl, m); // `n = x * y - m` hence `n / z = floor(x * y / z)`
             if (nh == 0) { // `n < 2 ^ 256`
                 return nl / z;
@@ -171,7 +171,17 @@ library IntegralMath {
     */
     function mulDivC(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
-        if (mulMod(x, y, z) > 0)
+        if (mulmod(x, y, z) > 0)
+            return safeAdd(w, 1);
+        return w;
+    }}
+
+    /**
+      * @dev Compute the nearest integer smaller than or larger than `x * y / z`
+    */
+    function mulDivR(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
+        uint256 w = mulDivF(x, y, z);
+        if (mulmod(x, y, z) > (z - 1) / 2)
             return safeAdd(w, 1);
         return w;
     }}

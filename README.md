@@ -3,10 +3,10 @@
 This package consists of the following modules:
 - [IntegralMath](#integralmath) - a set of functions, each of which returning an integer result
 - [FractionMath](#fractionmath) - a set of functions, each of which returning a rational result
-- [AnalyticMath](#analyticmath) - a set of exponential and logarithmic functions
-- [AdvancedMath](#advancedmath) - a function for solving xA^x = B, given rational values of A and B
+- [AnalyticMath](#analyticmath) - a set of functions for exponential and logarithmic operations
+- [AdvancedMath](#advancedmath) - a set of functions for solving equations of the form xA^x = B
 - [BondingCurve](#bondingcurve) - a set of functions implementing the bonding-curve mechanism
-- [DynamicCurve](#dynamiccurve) - a function for equalizing the weights in a bonding-curve model
+- [DynamicCurve](#dynamiccurve) - a set of functions for equalizing the weights in a bonding-curve model
 
 ### Class Hierarchy
 ```
@@ -22,12 +22,6 @@ AnalyticMath < - - - - AdvancedMath
       |                      |
 BondingCurve           DynamicCurve
 ```
-
-Note that some of these modules are implemented as `library`, while others are implemented as `contract`.
-
-Nevertheless, they can all be regarded as *libraries*, since the reason for this is purely technical.
-
-A library cannot utilize non-constant state variables, nor can it extend (inherit) another library.
 
 <br/><br/>
 
@@ -46,6 +40,7 @@ This module implements the following interface:
 - `function roundDiv(uint256 n, uint256 d)` => `(uint256)`
 - `function mulDivF(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 - `function mulDivC(uint256 x, uint256 y, uint256 z)` => `(uint256)`
+- `function mulDivR(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 - `function mulDivExF(uint256 x, uint256 y, uint256 z, uint256 w)` => `(uint256)`
 - `function mulDivExC(uint256 x, uint256 y, uint256 z, uint256 w)` => `(uint256)`
 
@@ -67,13 +62,13 @@ Function `mulDivF(x, y, z)` computes the largest integer smaller than or equal t
 
 Function `mulDivC(x, y, z)` computes the smallest integer larger than or equal to `x * y / z`.
 
+Function `mulDivR(x, y, z)` computes the nearest integer smaller than or larger than `x * y / z`.
+
 Function `mulDivExF(x, y, z, w)` computes the largest integer smaller than or equal to `(x * y) / (z * w)`.
 
 Function `mulDivExC(x, y, z, w)` computes the smallest integer larger than or equal to `(x * y) / (z * w)`.
 
-Note that function `mulDivF` and function `mulDivC` revert when the **actual** result is larger than 256 bits.
-
-Note that function `mulDivExF` and function `mulDivExC` revert when the **actual** result is larger than 256 bits.
+Note that each one of the 'mulDiv' functions reverts when the **actual** result is larger than 256 bits.
 
 Note that function `floorSqrt` and function `ceilSqrt` are guaranteed to return the correct output for every input.
 
@@ -96,22 +91,23 @@ For example, `floorCbrt(7)` returns 1, but the actual cubic root of 7 is ~1.91, 
 ## FractionMath
 
 This module implements the following interface:
-- `function poweredRatio(uint256 n, uint256 d, uint256 exp, bool fast)` => `(uint256, uint256)`
+- `function poweredRatioExact(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
+- `function poweredRatioQuick(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
 - `function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd)` => `(uint256, uint256)`
 - `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
 - `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
 
 ### Powered Ratio
 
-Function `poweredRatio` computes the power of a given ratio by a given exponent.
+Function `poweredRatioExact` opts for accuracy and function `poweredRatioQuick` opts for performance.
+
+Each one of the two 'poweredRatio' functions computes the power of a given ratio by a given exponent.
 
 In order to avoid multiplication overflow, it may truncate the intermediate result on each iteration.
 
 Subsequently, the larger the input exponent is, the lower the accuracy of the output is likely to be.
 
-The input argument `fast` allows to opt for either performance (using `true`) or accuracy (using `false`).
-
-This library defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
+This module defines a maximum exponent of 4 bits (i.e., 15), which can be customized to fit the system requirements.
 
 ### Product Ratio
 
@@ -121,7 +117,7 @@ If either one of the intermediate components is larger than 256 bits, then both 
 
 ### Reduced Ratio
 
-Function `reducedRatio` computes the nearest ratio whose components (numerator and denominator) are not larger than the input threshold.
+Function `reducedRatio` computes the nearest ratio whose components (numerator and denominator) fit up to a given threshold.
 
 Note that function `reducedRatio` is not meant to replace GCD, nor does it strive to achieve better accuracy.
 
@@ -137,13 +133,13 @@ However, without knowing specific characteristics of that ratio (e.g., each one 
 
 ### Normalized Ratio
 
-Function `normalizedRatio` computes the nearest ratio whose sum of components (numerator + denominator) equals the input scale.
+Function `normalizedRatio` computes the nearest ratio whose components (numerator and denominator) sum up to a given scale.
 
 Note that the output ratio can be larger than the input ratio in some cases, and smaller than the input ratio in other cases.
 
 For example:
-- `normalizedRatio(12, 34, 100)` returns `(26 74)`; the output ratio is smaller than the input ratio (26 / 74 = 0.351 < 0.352 = 12 / 34)
-- `normalizedRatio(1234, 5678, 100)` returns `(18 82)`; the output ratio is larger than the input ratio (18 / 82 = 0.219 > 0.217 = 1234 / 5678)
+- `normalizedRatio(12, 34, 100)` returns `(26, 74)`; the output ratio is smaller than the input ratio (26 / 74 = 0.351 < 0.352 = 12 / 34)
+- `normalizedRatio(1234, 5678, 100)` returns `(18, 82)`; the output ratio is larger than the input ratio (18 / 82 = 0.219 > 0.217 = 1234 / 5678)
 
 Keep in mind that it is an important consideration to take when choosing to use this function.
 
@@ -159,20 +155,10 @@ The same consideration applies for all the other functions in this module.
 
 ## AnalyticMath
 
-This module is implemented as a contract, because a library cannot utilize non-constant state variables.
-
-It implements the following interface:
+This module implements the following interface:
 - `function pow(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
 - `function log(uint256 a, uint256 b)` => `(uint256, uint256)`
 - `function exp(uint256 a, uint256 b)` => `(uint256, uint256)`
-
-### Initialization
-
-Prior to using any of these functions, internal data structure must be initialized by executing function `init`.
-
-Function `init` should be executed either during construction or after construction (if too large for the constructor).
-
-Thus, any contract which inherits this contract can choose whether or not to call function `init` in its constructor.
 
 ### Exponentiation
 
@@ -196,9 +182,9 @@ Function `exp(a, b)` approximates the natural exponentiation of `a / b`.
 
 The output of this function is guaranteed to be smaller than or equal to the actual value of exp(a / b).
 
-### Contract Customization
+### Module Customization
 
-This contract can be customized to support different input ranges (as a tradeoff with accuracy and/or performance).
+This module can be customized to support different input ranges (as a tradeoff with accuracy and/or performance).
 
 The full customization manual can be found [here](#customization).
 
@@ -210,28 +196,21 @@ The full customization manual can be found [here](#customization).
 
 ## AdvancedMath
 
-This module is implemented as a contract, because a library cannot utilize non-constant state variables.
-
-It implements the following interface:
-- `function solve(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
-
-### Initialization
-
-Prior to using any of these functions, internal data structure must be initialized by executing function `init`.
-
-Function `init` should be executed either during construction or after construction (if too large for the constructor).
-
-Thus, any contract which inherits this contract can choose whether or not to call function `init` in its constructor.
+This module implements the following interface:
+- `function solveExact(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
+- `function solveQuick(uint256 a, uint256 b, uint256 c, uint256 d)` => `(uint256, uint256)`
 
 ### Equation Solving
 
-Function `solve(a, b, c, d)` computes a value of x which satisfies the equation x * (a / b) ^ x = c / d.
+Function `solveExact` opts for accuracy and function `solveQuick` opts for performance.
 
-A detailed description of how this function works can be found [here](readme/AdvancedMath.pdf).
+Each one of these functions computes a value of x which satisfies the equation x * (a / b) ^ x = c / d.
 
-### Contract Customization
+A detailed description of how each one of these functions works can be found [here](readme/AdvancedMath.pdf).
 
-This contract can be customized to support different input ranges (as a tradeoff with accuracy and/or performance).
+### Module Customization
+
+This module can be customized to support different input ranges (as a tradeoff with accuracy and/or performance).
 
 The full customization manual can be found [here](#customization).
 
@@ -243,23 +222,13 @@ The full customization manual can be found [here](#customization).
 
 ## BondingCurve
 
-This module is implemented as a contract, because a library cannot extend (inherit) a contract.
-
-It implements the following interface:
+This module implements the following interface:
 - `function buy(uint256 supply, uint256 balance, uint256 weight, uint256 amount)` => `(uint256)`
 - `function sell(uint256 supply, uint256 balance, uint256 weight, uint256 amount)` => `(uint256)`
 - `function convert(uint256 balance1, uint256 weight1, uint256 balance2, uint256 weight2, uint256 amount)` => `(uint256)`
 - `function deposit(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
 - `function withdraw(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
 - `function invest(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
-
-### Initialization
-
-Prior to using any of these functions, internal data structure must be initialized by executing function `init`.
-
-Function `init` should be executed either during construction or after construction (if too large for the constructor).
-
-Thus, any contract which inherits this contract can choose whether or not to call function `init` in its constructor.
 
 ### Functionality
 
@@ -286,18 +255,11 @@ The bonding-curve model was conceived by [Bancor](https://github.com/bancorproto
 
 ## DynamicCurve
 
-This module is implemented as a contract, because a library cannot extend (inherit) a contract.
+This module implements the following interface:
+- `function equalizeExact(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p)` => `(uint256, uint256)`
+- `function equalizeQuick(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p)` => `(uint256, uint256)`
 
-It implements the following interface:
-- `function equalize(uint256 t, uint256 s, uint256 r, uint256 q, uint256 p)` => `(uint256, uint256)`
-
-### Initialization
-
-Prior to using any of these functions, internal data structure must be initialized by executing function `init`.
-
-Function `init` should be executed either during construction or after construction (if too large for the constructor).
-
-Thus, any contract which inherits this contract can choose whether or not to call function `init` in its constructor.
+Function `equalizeExact` opts for accuracy and function `equalizeQuick` opts for performance.
 
 ### Equalization
 
@@ -355,8 +317,8 @@ The dynamic-curve method was conceived by [Bancor](https://github.com/bancorprot
 
 ### Prerequisites
 
-- `node 16.13.0`
-- `yarn 1.22.10` or `npm 8.1.0`
+- `node 20.17.0`
+- `yarn 1.22.22` or `npm 10.8.2`
 
 ### Installation
 
@@ -384,11 +346,11 @@ The dynamic-curve method was conceived by [Bancor](https://github.com/bancorprot
 
 ### Prerequisites
 
-- `python 3.9`
+- `python 3.12.3`
 
 ### Execution
 
-In order to allow rapid testing and verification, all modules (contracts and libraries) have been ported from Solidity to Python:
+In order to allow rapid testing and verification, all modules have been ported from Solidity to Python:
 - The emulation modules themselves are located under [FixedPoint](project/emulation/FixedPoint)
 - The corresponding floating-point functionality is located under [FloatPoint](project/emulation/FloatPoint)
 - A set of unit-tests for various functions (one per function) is located under [emulation](project/emulation)
@@ -401,27 +363,23 @@ In order to allow rapid testing and verification, all modules (contracts and lib
 
 ## Customization
 
-All customization parameters are located in [constants.py](project/emulation/AutoGenerate/common/constants.py).
+All customization parameters are located in [constants.py](project/customization/constants.py).
 
 When modifying **any** of them, one should regenerate **all** the code.
 
 The following scripts generate the code for [AnalyticMath.sol](project/contracts/AnalyticMath.sol):
-- [PrintLn2ScalingFactors.py ](project/emulation/AutoGenerate/PrintLn2ScalingFactors.py )
-- [PrintOptimalThresholds.py ](project/emulation/AutoGenerate/PrintOptimalThresholds.py )
-- [PrintFunctionGeneralExp.py](project/emulation/AutoGenerate/PrintFunctionGeneralExp.py)
-- [PrintFunctionOptimalLog.py](project/emulation/AutoGenerate/PrintFunctionOptimalLog.py)
-- [PrintFunctionOptimalExp.py](project/emulation/AutoGenerate/PrintFunctionOptimalExp.py)
-- [PrintMaxExpArray.py       ](project/emulation/AutoGenerate/PrintMaxExpArray.py       )
+- [PrintAnalyticMathConstants.py ](project/customization/PrintAnalyticMathConstants.py )
+- [PrintAnalyticMathOptimalLog.py](project/customization/PrintAnalyticMathOptimalLog.py)
+- [PrintAnalyticMathOptimalExp.py](project/customization/PrintAnalyticMathOptimalExp.py)
 
 The following scripts generate the code for [AdvancedMath.sol](project/contracts/AdvancedMath.sol):
-- [PrintLambertFactors.py     ](project/emulation/AutoGenerate/PrintLambertFactors.py     )
-- [PrintFunctionLambertNeg1.py](project/emulation/AutoGenerate/PrintFunctionLambertNeg1.py)
-- [PrintFunctionLambertPos1.py](project/emulation/AutoGenerate/PrintFunctionLambertPos1.py)
-- [PrintLambertArray.py       ](project/emulation/AutoGenerate/PrintLambertArray.py       )
+- [PrintAdvancedMathConstants.py  ](project/customization/PrintAdvancedMathConstants.py  )
+- [PrintAdvancedMathLambertNeg1.py](project/customization/PrintAdvancedMathLambertNeg1.py)
+- [PrintAdvancedMathLambertPos1.py](project/customization/PrintAdvancedMathLambertPos1.py)
 
 In order to retain the [testing infrastructure](#testing), one should proceed by:
-- Running the script [PrintTestConstants.py](project/emulation/AutoGenerate/PrintTestConstants.py)
-- Pasting the printout into [AnalyticMathConstants.js](project/tests/helpers/AnalyticMathConstants.js)
+- Running the script [PrintTestConstants.py](project/customization/PrintTestConstants.py)
+- Pasting the printout into [Constants.js](project/tests/helpers/Constants.js)
 
 In order to retain the [emulation infrastructure](#emulation), one should proceed by:
 - Porting all changes from [AnalyticMath.sol](project/contracts/AnalyticMath.sol) to [AnalyticMath.py](project/emulation/FixedPoint/AnalyticMath.py)
