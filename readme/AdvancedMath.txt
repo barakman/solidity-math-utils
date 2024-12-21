@@ -1,3 +1,6 @@
+**Library Interface:**
+---
+
 This library implements two different methods for solving the equation $x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}$:
 
 - Function `solveExact(a, b, c, d)`, which opts for accuracy over performance
@@ -27,6 +30,8 @@ Since $f(-1)=-1/e$, the equation $x\cdot{e}^x=z$ has no solution for $z<-1/e$.
 In order to handle the rest of the input domain, we split it into several sections.
 
 ---
+
+**Opting For Accuracy:**
 ---
 
 When opting for accuracy, we split the input domain $z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}$ into:
@@ -46,6 +51,8 @@ For $0\leq{z}<\infty$, we approximate $W(z)$ via the Newton-Raphson converging s
 $$\large\begin{cases}y_0=\small\begin{cases}z&z<1\\\log(z)&z\geq1\end{cases}\\y_{n+1}=\frac{y_n^2\cdot{e}^{y_n}+z}{(y_n+1)\cdot{e}^{y_n}}\end{cases}$$
 
 ---
+
+**Opting For Performance:**
 ---
 
 When opting for performance, we split the input domain $z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}$ into:
@@ -86,6 +93,8 @@ Since this method requires the calculation of $\log(log(z))$, it is actually app
 However, for $e\leq{z}<24+1/e$, the previous method achieves better accuracy than this method.
 
 ---
+
+**Implementation Notes:**
 ---
 
 Note that due to practical reasons, this library internally implements the calculation of $W(z)/z$ instead of $W(z)$.
