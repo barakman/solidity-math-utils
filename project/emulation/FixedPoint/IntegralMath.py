@@ -44,11 +44,11 @@ def ceilSqrt(n):
 '''
 def floorCbrt(n):
     x = 0;
-    for y in [1 << k for k in range(255, -1, -3)]:
+    for y in range(255, -1, -3):
         x <<= 1;
         z = 3 * x * (x + 1) + 1;
-        if (n // y >= z):
-            n -= y * z;
+        if (n >> y >= z):
+            n -= z << y;
             x += 1;
     return x;
 

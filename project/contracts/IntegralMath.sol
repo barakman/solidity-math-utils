@@ -56,11 +56,11 @@ library IntegralMath {
     */
     function floorCbrt(uint256 n) internal pure returns (uint256) { unchecked {
         uint256 x = 0;
-        for (uint256 y = 1 << 255; y > 0; y >>= 3) {
+        for (uint256 y = 255; y < 256; y -= 3) {
             x <<= 1;
             uint256 z = 3 * x * (x + 1) + 1;
-            if (n / y >= z) {
-                n -= y * z;
+            if (n >> y >= z) {
+                n -= z << y;
                 x += 1;
             }
         }
