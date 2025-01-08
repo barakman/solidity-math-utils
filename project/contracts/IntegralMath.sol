@@ -34,16 +34,13 @@ library IntegralMath {
       * @dev Compute the largest integer smaller than or equal to the square root of `n`
     */
     function floorSqrt(uint256 n) internal pure returns (uint256) { unchecked {
-        if (n > 0) {
-            uint256 x = n / 2 + 1;
-            uint256 y = (x + n / x) / 2;
-            while (x > y) {
-                x = y;
-                y = (x + n / x) / 2;
-            }
-            return x;
+        uint256 x = n;
+        uint256 y = (n >> 1) | 1;
+        while (x > y) {
+            x = y;
+            y = (x + n / x) >> 1;
         }
-        return 0;
+        return x;
     }}
 
     /**
@@ -79,7 +76,7 @@ library IntegralMath {
     }}
 
     /**
-      * @dev Compute the nearest integer to the quotient of `n` and `d` (or `n / d`)
+      * @dev Compute the nearest integer (half being rounded upwards) to `n / d`
     */
     function roundDiv(uint256 n, uint256 d) internal pure returns (uint256) { unchecked {
         return n / d + (n % d) / (d - d / 2);
@@ -177,7 +174,7 @@ library IntegralMath {
     }}
 
     /**
-      * @dev Compute the nearest integer smaller than or larger than `x * y / z`
+      * @dev Compute the nearest integer (half being rounded upwards) to `x * y / z`
     */
     function mulDivR(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
