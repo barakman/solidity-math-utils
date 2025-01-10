@@ -25,12 +25,14 @@ def floorLog2(n):
     @dev Compute the largest integer smaller than or equal to the square root of `n`
 '''
 def floorSqrt(n):
-    x = n;
-    y = (n >> 1) | 1;
-    while (x > y):
-        x = y;
-        y = (x + n // x) >> 1;
-    return x;
+    if (n > 63):
+        x = n;
+        y = 1 << (floorLog2(n) // 2 + 1);
+        while (x > y):
+            x = y;
+            y = (x + n // x) >> 1;
+        return x;
+    return 0x7777777777777776666666666666555555555554444444443333333222221110 >> (n * 4) & 0xf;
 
 '''
     @dev Compute the smallest integer larger than or equal to the square root of `n`
@@ -43,14 +45,14 @@ def ceilSqrt(n):
     @dev Compute the largest integer smaller than or equal to the cubic root of `n`
 '''
 def floorCbrt(n):
-    x = 0;
-    for y in range(255, -1, -3):
-        x <<= 1;
-        z = 3 * x * (x + 1) + 1;
-        if (n >> y >= z):
-            n -= z << y;
-            x += 1;
-    return x;
+    if (n > 84):
+        x = n;
+        y = 1 << (floorLog2(n) // 3 + 1);
+        while (x > y):
+            x = y;
+            y = (x * 2 + n // x ** 2) // 3;
+        return x;
+    return 0x49249249249249246db6db6db6db6db6db6db6db6db692492492492492249248 >> (n * 3) & 0x7;
 
 '''
     @dev Compute the smallest integer larger than or equal to the cubic root of `n`

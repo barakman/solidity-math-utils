@@ -34,13 +34,16 @@ library IntegralMath {
       * @dev Compute the largest integer smaller than or equal to the square root of `n`
     */
     function floorSqrt(uint256 n) internal pure returns (uint256) { unchecked {
-        uint256 x = n;
-        uint256 y = (n >> 1) | 1;
-        while (x > y) {
-            x = y;
-            y = (x + n / x) >> 1;
+        if (n > 63) {
+            uint256 x = n;
+            uint256 y = 1 << (floorLog2(n) / 2 + 1);
+            while (x > y) {
+                x = y;
+                y = (x + n / x) >> 1;
+            }
+            return x;
         }
-        return x;
+        return 0x7777777777777776666666666666555555555554444444443333333222221110 >> (n * 4) & 0xf;
     }}
 
     /**
@@ -55,16 +58,16 @@ library IntegralMath {
       * @dev Compute the largest integer smaller than or equal to the cubic root of `n`
     */
     function floorCbrt(uint256 n) internal pure returns (uint256) { unchecked {
-        uint256 x = 0;
-        for (uint256 y = 255; y < 256; y -= 3) {
-            x <<= 1;
-            uint256 z = 3 * x * (x + 1) + 1;
-            if (n >> y >= z) {
-                n -= z << y;
-                x += 1;
+        if (n > 84) {
+            uint256 x = n;
+            uint256 y = 1 << (floorLog2(n) / 3 + 1);
+            while (x > y) {
+                x = y;
+                y = (x * 2 + n / x ** 2) / 3;
             }
+            return x;
         }
-        return x;
+        return 0x49249249249249246db6db6db6db6db6db6db6db6db692492492492492249248 >> (n * 3) & 0x7;
     }}
 
     /**
