@@ -152,6 +152,20 @@ describe(TestContract.contractName, () => {
     }
 
     for (const method of [mulDivExF, mulDivExC]) {
+        for (const pz of [128, 129, 130]) {
+            for (const pw of [128, 129, 130]) {
+                for (const az of [0, 1, 2]) {
+                    for (const aw of [0, 1, 2]) {
+                        const z = Decimal(2).pow(pz).add(az).toHex();
+                        const w = Decimal(2).pow(pw).add(aw).toHex();
+                        test(method, MAX_UINT256.toHex(), MAX_UINT256.toHex(), z, w);
+                    }
+                }
+            }
+        }
+    }
+
+    for (const method of [mulDivExF, mulDivExC]) {
         for (const d of [1, 7, 11, 17, 23]) {
             for (let pw = 1; pw <= 256 - d; pw++) {
                 for (const aw of [-1, 0, +1]) {
