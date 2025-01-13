@@ -50,7 +50,7 @@ def floorCbrt(n):
         y = 1 << (floorLog2(n) // 3 + 1);
         while (x > y):
             x = y;
-            y = (x * 2 + n // x ** 2) // 3;
+            y = ((x << 1) + n // x ** 2) // 3;
         return x;
     return 0x49249249249249246db6db6db6db6db6db6db6db6db692492492492492249248 >> (n * 3) & 0x7;
 
