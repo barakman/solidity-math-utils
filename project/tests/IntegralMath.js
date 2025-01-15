@@ -77,6 +77,30 @@ describe(TestContract.contractName, () => {
         for (const py of [0, 64, 128, 192, 255, 256]) {
             for (const ax of px < 256 ? [-1, 0, +1] : [-1]) {
                 for (const ay of py < 256 ? [-1, 0, +1] : [-1]) {
+                    const x = pow(2, px).add(ax).toHex();
+                    const y = pow(2, py).add(ay).toHex();
+                    test(minFactor, x, y);
+                }
+            }
+        }
+    }
+
+    for (const px of [64, 128, 192, 256]) {
+        for (const py of [64, 128, 192, 256]) {
+            for (const ax of [pow(2, px >> 1), 1]) {
+                for (const ay of [pow(2, py >> 1), 1]) {
+                    const x = pow(2, px).sub(ax).toHex();
+                    const y = pow(2, py).sub(ay).toHex();
+                    test(minFactor, x, y);
+                }
+            }
+        }
+    }
+
+    for (const px of [0, 64, 128, 192, 255, 256]) {
+        for (const py of [0, 64, 128, 192, 255, 256]) {
+            for (const ax of px < 256 ? [-1, 0, +1] : [-1]) {
+                for (const ay of py < 256 ? [-1, 0, +1] : [-1]) {
                     for (const s of [0, 1, 64, 127, 128, 191, 254, 255]) {
                         const x = pow(2, px).add(ax).toHex();
                         const y = pow(2, py).add(ay).toHex();
@@ -110,30 +134,6 @@ describe(TestContract.contractName, () => {
                         const y = pow(2, py).divToInt(ay).toHex();
                         test(mulShr, x, y, s);
                     }
-                }
-            }
-        }
-    }
-
-    for (const px of [0, 64, 128, 192, 255, 256]) {
-        for (const py of [0, 64, 128, 192, 255, 256]) {
-            for (const ax of px < 256 ? [-1, 0, +1] : [-1]) {
-                for (const ay of py < 256 ? [-1, 0, +1] : [-1]) {
-                    const x = pow(2, px).add(ax).toHex();
-                    const y = pow(2, py).add(ay).toHex();
-                    test(minFactor, x, y);
-                }
-            }
-        }
-    }
-
-    for (const px of [64, 128, 192, 256]) {
-        for (const py of [64, 128, 192, 256]) {
-            for (const ax of [pow(2, px >> 1), 1]) {
-                for (const ay of [pow(2, py >> 1), 1]) {
-                    const x = pow(2, px).sub(ax).toHex();
-                    const y = pow(2, py).sub(ay).toHex();
-                    test(minFactor, x, y);
                 }
             }
         }
