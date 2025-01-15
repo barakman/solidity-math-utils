@@ -145,6 +145,15 @@ library IntegralMath {
     }}
 
     /**
+      * @dev Compute the largest integer smaller than or equal to `x * y / 2 ^ s`
+    */
+    function mulShr(uint256 x, uint256 y, uint8 s) internal pure returns (uint256) { unchecked {
+        (uint256 xyh, uint256 xyl) = mul512(x, y);
+        require(xyh < 1 << s);
+        return (xyh << (256 - s)) | (xyl >> s);
+    }}
+
+    /**
       * @dev Compute the largest integer smaller than or equal to `x * y / z`
     */
     function mulDivF(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
