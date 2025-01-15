@@ -24,8 +24,23 @@ describe(TestContract.contractName, () => {
         testContract = await TestContract.new();
     });
 
-    for (let n = 1; n <= 256; n++) {
-        for (const k of n < 256 ? [-1, 0, +1] : [-1]) {
+    test(floorSqrt, 0);
+    test(ceilSqrt , 0);
+    test(floorCbrt, 0);
+    test(ceilCbrt , 0);
+
+    for (let n = 0; n < 400; n++) {
+        for (const x of [n + 1, MAX_UINT256.sub(n).toHex()]) {
+            test(floorLog2, x);
+            test(floorSqrt, x);
+            test(ceilSqrt , x);
+            test(floorCbrt, x);
+            test(ceilCbrt , x);
+        }
+    }
+
+    for (let n = 9; n <= 255; n++) {
+        for (let k = -3; k <= 3; k++) {
             const x = Decimal(2).pow(n).add(k).toHex();
             test(floorLog2, x);
             test(floorSqrt, x);
@@ -35,7 +50,7 @@ describe(TestContract.contractName, () => {
         }
     }
 
-    for (let n = 1; n <= 85; n++) {
+    for (let n = 6; n <= 85; n++) {
         for (let k = -3; k <= 3; k++) {
             const x = Decimal(3).pow(n).add(k).toHex();
             test(floorSqrt, x);
@@ -130,6 +145,20 @@ describe(TestContract.contractName, () => {
                                 test(method, ...[x, y, z, MAX_UINT256.toHex()].slice(0, method.length));
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    for (const method of [mulDivExF, mulDivExC]) {
+        for (const pz of [128, 129, 130]) {
+            for (const pw of [128, 129, 130]) {
+                for (const az of [0, 1, 2]) {
+                    for (const aw of [0, 1, 2]) {
+                        const z = Decimal(2).pow(pz).add(az).toHex();
+                        const w = Decimal(2).pow(pw).add(aw).toHex();
+                        test(method, MAX_UINT256.toHex(), MAX_UINT256.toHex(), z, w);
                     }
                 }
             }

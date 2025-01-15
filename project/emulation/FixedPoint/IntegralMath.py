@@ -25,14 +25,14 @@ def floorLog2(n):
     @dev Compute the largest integer smaller than or equal to the square root of `n`
 '''
 def floorSqrt(n):
-    if (n > 0):
-        x = n // 2 + 1;
-        y = (x + n // x) // 2;
+    if (n > 63):
+        x = n;
+        y = 1 << (floorLog2(n) // 2 + 1);
         while (x > y):
             x = y;
-            y = (x + n // x) // 2;
+            y = (x + n // x) >> 1;
         return x;
-    return 0;
+    return 0x7777777777777776666666666666555555555554444444443333333222221110 >> (n * 4) & 0xf;
 
 '''
     @dev Compute the smallest integer larger than or equal to the square root of `n`
@@ -45,14 +45,14 @@ def ceilSqrt(n):
     @dev Compute the largest integer smaller than or equal to the cubic root of `n`
 '''
 def floorCbrt(n):
-    x = 0;
-    for y in [1 << k for k in range(255, -1, -3)]:
-        x <<= 1;
-        z = 3 * x * (x + 1) + 1;
-        if (n // y >= z):
-            n -= y * z;
-            x += 1;
-    return x;
+    if (n > 84):
+        x = n;
+        y = 1 << (floorLog2(n) // 3 + 1);
+        while (x > y):
+            x = y;
+            y = ((x << 1) + n // x ** 2) // 3;
+        return x;
+    return 0x49249249249249246db6db6db6db6db6db6db6db6db692492492492492249248 >> (n * 3) & 0x7;
 
 '''
     @dev Compute the smallest integer larger than or equal to the cubic root of `n`
@@ -62,7 +62,7 @@ def ceilCbrt(n):
     return x if x ** 3 == n else x + 1;
 
 '''
-    @dev Compute the nearest integer to the quotient of `n` and `d` (or `n / d`)
+    @dev Compute the nearest integer (half being rounded upwards) to `n / d`
 '''
 def roundDiv(n, d):
     return n // d + (n % d) // (d - d // 2);
@@ -153,7 +153,7 @@ def mulDivC(x, y, z):
     return w;
 
 '''
-    @dev Compute the nearest integer smaller than or larger than `x * y / z`
+    @dev Compute the nearest integer (half being rounded upwards) to `x * y / z`
 '''
 def mulDivR(x, y, z):
     w = mulDivF(x, y, z);

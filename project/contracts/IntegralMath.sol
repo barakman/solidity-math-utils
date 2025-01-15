@@ -34,16 +34,16 @@ library IntegralMath {
       * @dev Compute the largest integer smaller than or equal to the square root of `n`
     */
     function floorSqrt(uint256 n) internal pure returns (uint256) { unchecked {
-        if (n > 0) {
-            uint256 x = n / 2 + 1;
-            uint256 y = (x + n / x) / 2;
+        if (n > 63) {
+            uint256 x = n;
+            uint256 y = 1 << (floorLog2(n) / 2 + 1);
             while (x > y) {
                 x = y;
-                y = (x + n / x) / 2;
+                y = (x + n / x) >> 1;
             }
             return x;
         }
-        return 0;
+        return 0x7777777777777776666666666666555555555554444444443333333222221110 >> (n * 4) & 0xf;
     }}
 
     /**
@@ -58,16 +58,16 @@ library IntegralMath {
       * @dev Compute the largest integer smaller than or equal to the cubic root of `n`
     */
     function floorCbrt(uint256 n) internal pure returns (uint256) { unchecked {
-        uint256 x = 0;
-        for (uint256 y = 1 << 255; y > 0; y >>= 3) {
-            x <<= 1;
-            uint256 z = 3 * x * (x + 1) + 1;
-            if (n / y >= z) {
-                n -= y * z;
-                x += 1;
+        if (n > 84) {
+            uint256 x = n;
+            uint256 y = 1 << (floorLog2(n) / 3 + 1);
+            while (x > y) {
+                x = y;
+                y = ((x << 1) + n / x ** 2) / 3;
             }
+            return x;
         }
-        return x;
+        return 0x49249249249249246db6db6db6db6db6db6db6db6db692492492492492249248 >> (n * 3) & 0x7;
     }}
 
     /**
@@ -79,7 +79,7 @@ library IntegralMath {
     }}
 
     /**
-      * @dev Compute the nearest integer to the quotient of `n` and `d` (or `n / d`)
+      * @dev Compute the nearest integer (half being rounded upwards) to `n / d`
     */
     function roundDiv(uint256 n, uint256 d) internal pure returns (uint256) { unchecked {
         return n / d + (n % d) / (d - d / 2);
@@ -177,7 +177,7 @@ library IntegralMath {
     }}
 
     /**
-      * @dev Compute the nearest integer smaller than or larger than `x * y / z`
+      * @dev Compute the nearest integer (half being rounded upwards) to `x * y / z`
     */
     function mulDivR(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
