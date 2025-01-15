@@ -20,7 +20,7 @@ const mulDivExF = (x, y, z, w) => x.mul(y).div(z.mul(w)).floor();
 const mulDivExC = (x, y, z, w) => x.mul(y).div(z.mul(w)).ceil();
 const minFactor = (x, y)       => Decimal.max(mulDivC(x, y, MAX_UINT256), 1);
 
-describe.only(TestContract.contractName, () => {
+describe(TestContract.contractName, () => {
     let testContract;
 
     before(async () => {
@@ -80,7 +80,7 @@ describe.only(TestContract.contractName, () => {
                     for (const s of [0, 1, 64, 127, 128, 191, 254, 255]) {
                         const x = two_pow(px).add(ax).toHex();
                         const y = two_pow(py).add(ay).toHex();
-                        test(method, x, y, s);
+                        test(mulShr, x, y, s);
                     }
                 }
             }
@@ -94,7 +94,7 @@ describe.only(TestContract.contractName, () => {
                     for (const s of [0, 1, 64, 127, 128, 191, 254, 255]) {
                         const x = two_pow(px).sub(ax).toHex();
                         const y = two_pow(py).sub(ay).toHex();
-                        test(method, x, y, s);
+                        test(mulShr, x, y, s);
                     }
                 }
             }
@@ -108,7 +108,7 @@ describe.only(TestContract.contractName, () => {
                     for (const s of [0, 1, 64, 127, 128, 191, 254, 255]) {
                         const x = two_pow(px).divToInt(ax).toHex();
                         const y = two_pow(py).divToInt(ay).toHex();
-                        test(method, x, y, s);
+                        test(mulShr, x, y, s);
                     }
                 }
             }
