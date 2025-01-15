@@ -97,6 +97,18 @@ describe(TestContract.contractName, () => {
         }
     }
 
+    for (const px of [128, 192, 256]) {
+        for (const py of [128, 192, 256]) {
+            for (const ax of [3, 5, 7]) {
+                for (const ay of [3, 5, 7]) {
+                    const x = pow(2, px).divToInt(ax).toHex();
+                    const y = pow(2, py).divToInt(ay).toHex();
+                    test(minFactor, x, y);
+                }
+            }
+        }
+    }
+
     for (const px of [0, 64, 128, 192, 255, 256]) {
         for (const py of [0, 64, 128, 192, 255, 256]) {
             for (const ax of px < 256 ? [-1, 0, +1] : [-1]) {
