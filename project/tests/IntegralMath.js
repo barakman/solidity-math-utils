@@ -64,9 +64,9 @@ describe(TestContract.contractName, () => {
     }
 
     for (let i = 0; i < 10; i++) {
-        const x = pow(2, 256).sub(i + 1).toHex();
+        const x = MAX_UINT256.sub(i).toHex();
         for (let j = 1; j <= 10; j++) {
-            const y = pow(2, 256).sub(j).toHex();
+            const y = MAX_UINT256.sub(j - 1).toHex();
             for (const [n, d] of [[i, j], [x, j], [i, y], [x, y]]) {
                 test(roundDiv, n, d);
             }
