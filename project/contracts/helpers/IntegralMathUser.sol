@@ -32,6 +32,14 @@ contract IntegralMathUser {
         return IntegralMath.minFactor(x, y);
     }
 
+    function mulShrF(uint256 x, uint256 y, uint8 s) external pure returns (uint256) {
+        return IntegralMath.mulShrF(x, y, s);
+    }
+
+    function mulShrC(uint256 x, uint256 y, uint8 s) external pure returns (uint256) {
+        return IntegralMath.mulShrC(x, y, s);
+    }
+
     function mulDivF(uint256 x, uint256 y, uint256 z) external pure returns (uint256) {
         return IntegralMath.mulDivF(x, y, z);
     }

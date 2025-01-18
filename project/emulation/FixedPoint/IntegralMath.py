@@ -126,6 +126,23 @@ def minFactor(x, y):
     #   `z = H + 1`
 
 '''
+    @dev Compute the largest integer smaller than or equal to `x * y / 2 ^ s`
+'''
+def mulShrF(x, y, s):
+    (xyh, xyl) = mul512(x, y);
+    require(xyh < 1 << s);
+    return (xyh << (256 - s)) | (xyl >> s);
+
+'''
+    @dev Compute the smallest integer larger than or equal to `x * y / 2 ^ s`
+'''
+def mulShrC(x, y, s):
+    w = mulShrF(x, y, s);
+    if (mulmod(x, y, 1 << s) > 0):
+        return safeAdd(w, 1);
+    return w;
+
+'''
     @dev Compute the largest integer smaller than or equal to `x * y / z`
 '''
 def mulDivF(x, y, z):

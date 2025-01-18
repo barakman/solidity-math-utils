@@ -58,6 +58,10 @@ Function `roundDiv(n, d)` computes the nearest integer (half being rounded upwar
 
 Function `minFactor(x, y)` computes the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`.
 
+Function `mulShrF(x, y, s)` computes the largest integer smaller than or equal to `x * y / 2 ^ s`.
+
+Function `mulShrC(x, y, s)` computes the smallest integer larger than or equal to `x * y / 2 ^ s`.
+
 Function `mulDivF(x, y, z)` computes the largest integer smaller than or equal to `x * y / z`.
 
 Function `mulDivC(x, y, z)` computes the smallest integer larger than or equal to `x * y / z`.
