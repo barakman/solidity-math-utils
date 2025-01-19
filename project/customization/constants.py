@@ -1,4 +1,4 @@
-FIXED_1 = 2 ** 127 # The scaling factor
+SCALE_1 = 127 # The scaling factor
 
 
 LOG_MAX_HI_TERM_VAL = 0 # The input to function 'optimalLog' must be smaller than e ^ 2 ^ LOG_MAX_HI_TERM_VAL

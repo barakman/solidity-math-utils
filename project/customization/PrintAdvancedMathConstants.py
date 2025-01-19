@@ -1,6 +1,6 @@
 from util import hex_len
 from core import AdvancedMath
-from constants import FIXED_1
+from constants import SCALE_1
 from constants import LAMBERT_NEG2_SIZE_N
 from constants import LAMBERT_NEG2_SIZE_D
 from constants import LAMBERT_NEG2_SAMPLES
@@ -9,11 +9,11 @@ from constants import LAMBERT_POS2_SIZE_D
 from constants import LAMBERT_POS2_SAMPLES
 
 
-lambertNegParams = AdvancedMath.lambertNegParams(FIXED_1,LAMBERT_NEG2_SIZE_N,LAMBERT_NEG2_SIZE_D,LAMBERT_NEG2_SAMPLES)
-lambertPosParams = AdvancedMath.lambertPosParams(FIXED_1,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D,LAMBERT_POS2_SAMPLES)
+lambertNegParams = AdvancedMath.lambertNegParams(1<<SCALE_1,LAMBERT_NEG2_SIZE_N,LAMBERT_NEG2_SIZE_D,LAMBERT_NEG2_SAMPLES)
+lambertPosParams = AdvancedMath.lambertPosParams(1<<SCALE_1,LAMBERT_POS2_SIZE_N,LAMBERT_POS2_SIZE_D,LAMBERT_POS2_SAMPLES)
 
 
-LAMBERT_EXACT_LIMIT = AdvancedMath.lambertExactLimit(FIXED_1)
+LAMBERT_EXACT_LIMIT = AdvancedMath.lambertExactLimit(1<<SCALE_1)
 
 
 LAMBERT_NEG1_MAXVAL = lambertNegParams[0]
