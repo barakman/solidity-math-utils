@@ -28,39 +28,31 @@ describe(TestContract.contractName, () => {
         testContract = await TestContract.new();
     });
 
-    test(floorSqrt, 0);
-    test(ceilSqrt , 0);
-    test(floorCbrt, 0);
-    test(ceilCbrt , 0);
+    for (const method of [floorSqrt, ceilSqrt, floorCbrt, ceilCbrt]) {
+        test(method, 0);
+    }
 
-    for (let n = 0; n < 400; n++) {
-        for (const x of [n + 1, MAX_UINT256.sub(n).toHex()]) {
-            test(floorLog2, x);
-            test(floorSqrt, x);
-            test(ceilSqrt , x);
-            test(floorCbrt, x);
-            test(ceilCbrt , x);
+    for (const method of [floorSqrt, ceilSqrt, floorCbrt, ceilCbrt, floorLog2]) {
+        for (let i = 0; i < 400; i++) {
+            for (const j of [i + 1, MAX_UINT256.sub(i).toHex()]) {
+                test(method, j);
+            }
         }
     }
 
-    for (let n = 9; n <= 255; n++) {
-        for (let k = -3; k <= 3; k++) {
-            const x = pow(2, n).add(k).toHex();
-            test(floorLog2, x);
-            test(floorSqrt, x);
-            test(ceilSqrt , x);
-            test(floorCbrt, x);
-            test(ceilCbrt , x);
+    for (const method of [floorSqrt, ceilSqrt, floorCbrt, ceilCbrt, floorLog2]) {
+        for (let i = 9; i <= 255; i++) {
+            for (let j = -3; j <= 3; j++) {
+                test(method, pow(2, i).add(j).toHex());
+            }
         }
     }
 
-    for (let n = 6; n <= 85; n++) {
-        for (let k = -3; k <= 3; k++) {
-            const x = pow(3, n).add(k).toHex();
-            test(floorSqrt, x);
-            test(ceilSqrt , x);
-            test(floorCbrt, x);
-            test(ceilCbrt , x);
+    for (const method of [floorSqrt, ceilSqrt, floorCbrt, ceilCbrt, floorLog2]) {
+        for (let i = 6; i <= 85; i++) {
+            for (let j = -3; j <= 3; j++) {
+                test(method, pow(3, i).add(j).toHex());
+            }
         }
     }
 
