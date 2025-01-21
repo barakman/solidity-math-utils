@@ -103,7 +103,7 @@ def optimalLog(x):
     if (x > 0x808040155aabbbe9451521693554f733): res |= 0x00800000000000000000000000000000; x = x * 0x1fc03fd56aa224f97fcbf13329886bd10 // 0x1fe00ffaabffbbc71ad1e1184afc01529; # add 2^(-8)
 
     z = y = x - FIXED_1;
-    w = y * y // FIXED_1;
+    w = y * y >> SCALE_1;
     res += z * (0x100000000000000000000000000000000 - y) // 0x100000000000000000000000000000000; z = z * w >> SCALE_1; # add y^01 / 01 - y^02 / 02
     res += z * (0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa - y) // 0x200000000000000000000000000000000; z = z * w >> SCALE_1; # add y^03 / 03 - y^04 / 04
     res += z * (0x099999999999999999999999999999999 - y) // 0x300000000000000000000000000000000; z = z * w >> SCALE_1; # add y^05 / 05 - y^06 / 06
