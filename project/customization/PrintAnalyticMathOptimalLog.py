@@ -30,7 +30,7 @@ for n in range(len(hiTerms)):
     print('        if (x > {}) {{res |= {}; x = x * {} / {};}} // add 2^({})'.format(str0,str1,str2,str3,str4))
 print('')
 print('        z = y = x - FIXED_1;')
-print('        w = y * y >> SCALE_1;')
+print('        w = y * y / FIXED_1;')
 for n in range(len(loTerms)):
     str5 = hex_str(loTerms[n].num,loTerms[+0].num)
     str6 = hex_str(loTerms[n].den,loTerms[-1].den)
