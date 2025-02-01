@@ -2,6 +2,7 @@ from .common.BuiltIn import *
 from . import IntegralMath
 
 # Auto-generated via 'PrintAnalyticMathConstants.py'
+SCALE_1 = 0x000000000000000000000000000000007f;
 FIXED_1 = 0x0080000000000000000000000000000000;
 LN2_MIN = 0x0058b90bfbe8e7bcd5e4f1d9cc01f97b57;
 LN2_MAX = 0x0058b90bfbe8e7bcd5e4f1d9cc01f97b58;
@@ -102,14 +103,14 @@ def optimalLog(x):
     if (x > 0x808040155aabbbe9451521693554f733): res |= 0x00800000000000000000000000000000; x = x * 0x1fc03fd56aa224f97fcbf13329886bd10 // 0x1fe00ffaabffbbc71ad1e1184afc01529; # add 2^(-8)
 
     z = y = x - FIXED_1;
-    w = y * y // FIXED_1;
-    res += z * (0x100000000000000000000000000000000 - y) // 0x100000000000000000000000000000000; z = z * w // FIXED_1; # add y^01 / 01 - y^02 / 02
-    res += z * (0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa - y) // 0x200000000000000000000000000000000; z = z * w // FIXED_1; # add y^03 / 03 - y^04 / 04
-    res += z * (0x099999999999999999999999999999999 - y) // 0x300000000000000000000000000000000; z = z * w // FIXED_1; # add y^05 / 05 - y^06 / 06
-    res += z * (0x092492492492492492492492492492492 - y) // 0x400000000000000000000000000000000; z = z * w // FIXED_1; # add y^07 / 07 - y^08 / 08
-    res += z * (0x08e38e38e38e38e38e38e38e38e38e38e - y) // 0x500000000000000000000000000000000; z = z * w // FIXED_1; # add y^09 / 09 - y^10 / 10
-    res += z * (0x08ba2e8ba2e8ba2e8ba2e8ba2e8ba2e8b - y) // 0x600000000000000000000000000000000; z = z * w // FIXED_1; # add y^11 / 11 - y^12 / 12
-    res += z * (0x089d89d89d89d89d89d89d89d89d89d89 - y) // 0x700000000000000000000000000000000; z = z * w // FIXED_1; # add y^13 / 13 - y^14 / 14
+    w = y * y >> SCALE_1;
+    res += z * (0x100000000000000000000000000000000 - y) // 0x100000000000000000000000000000000; z = z * w >> SCALE_1; # add y^01 / 01 - y^02 / 02
+    res += z * (0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa - y) // 0x200000000000000000000000000000000; z = z * w >> SCALE_1; # add y^03 / 03 - y^04 / 04
+    res += z * (0x099999999999999999999999999999999 - y) // 0x300000000000000000000000000000000; z = z * w >> SCALE_1; # add y^05 / 05 - y^06 / 06
+    res += z * (0x092492492492492492492492492492492 - y) // 0x400000000000000000000000000000000; z = z * w >> SCALE_1; # add y^07 / 07 - y^08 / 08
+    res += z * (0x08e38e38e38e38e38e38e38e38e38e38e - y) // 0x500000000000000000000000000000000; z = z * w >> SCALE_1; # add y^09 / 09 - y^10 / 10
+    res += z * (0x08ba2e8ba2e8ba2e8ba2e8ba2e8ba2e8b - y) // 0x600000000000000000000000000000000; z = z * w >> SCALE_1; # add y^11 / 11 - y^12 / 12
+    res += z * (0x089d89d89d89d89d89d89d89d89d89d89 - y) // 0x700000000000000000000000000000000; z = z * w >> SCALE_1; # add y^13 / 13 - y^14 / 14
     res += z * (0x088888888888888888888888888888888 - y) // 0x800000000000000000000000000000000;                       # add y^15 / 15 - y^16 / 16
 
     return res;
@@ -129,25 +130,25 @@ def optimalExp(x):
     res = 0;
 
     z = y = x % 0x10000000000000000000000000000000; # get the input modulo 2^(-3)
-    z = z * y // FIXED_1; res += z * 0x10e1b3be415a0000; # add y^02 * (20! / 02!)
-    z = z * y // FIXED_1; res += z * 0x05a0913f6b1e0000; # add y^03 * (20! / 03!)
-    z = z * y // FIXED_1; res += z * 0x0168244fdac78000; # add y^04 * (20! / 04!)
-    z = z * y // FIXED_1; res += z * 0x004807432bc18000; # add y^05 * (20! / 05!)
-    z = z * y // FIXED_1; res += z * 0x000c0135dca04000; # add y^06 * (20! / 06!)
-    z = z * y // FIXED_1; res += z * 0x0001b707b1cdc000; # add y^07 * (20! / 07!)
-    z = z * y // FIXED_1; res += z * 0x000036e0f639b800; # add y^08 * (20! / 08!)
-    z = z * y // FIXED_1; res += z * 0x00000618fee9f800; # add y^09 * (20! / 09!)
-    z = z * y // FIXED_1; res += z * 0x0000009c197dcc00; # add y^10 * (20! / 10!)
-    z = z * y // FIXED_1; res += z * 0x0000000e30dce400; # add y^11 * (20! / 11!)
-    z = z * y // FIXED_1; res += z * 0x000000012ebd1300; # add y^12 * (20! / 12!)
-    z = z * y // FIXED_1; res += z * 0x0000000017499f00; # add y^13 * (20! / 13!)
-    z = z * y // FIXED_1; res += z * 0x0000000001a9d480; # add y^14 * (20! / 14!)
-    z = z * y // FIXED_1; res += z * 0x00000000001c6380; # add y^15 * (20! / 15!)
-    z = z * y // FIXED_1; res += z * 0x000000000001c638; # add y^16 * (20! / 16!)
-    z = z * y // FIXED_1; res += z * 0x0000000000001ab8; # add y^17 * (20! / 17!)
-    z = z * y // FIXED_1; res += z * 0x000000000000017c; # add y^18 * (20! / 18!)
-    z = z * y // FIXED_1; res += z * 0x0000000000000014; # add y^19 * (20! / 19!)
-    z = z * y // FIXED_1; res += z * 0x0000000000000001; # add y^20 * (20! / 20!)
+    z = z * y >> SCALE_1; res += z * 0x10e1b3be415a0000; # add y^02 * (20! / 02!)
+    z = z * y >> SCALE_1; res += z * 0x05a0913f6b1e0000; # add y^03 * (20! / 03!)
+    z = z * y >> SCALE_1; res += z * 0x0168244fdac78000; # add y^04 * (20! / 04!)
+    z = z * y >> SCALE_1; res += z * 0x004807432bc18000; # add y^05 * (20! / 05!)
+    z = z * y >> SCALE_1; res += z * 0x000c0135dca04000; # add y^06 * (20! / 06!)
+    z = z * y >> SCALE_1; res += z * 0x0001b707b1cdc000; # add y^07 * (20! / 07!)
+    z = z * y >> SCALE_1; res += z * 0x000036e0f639b800; # add y^08 * (20! / 08!)
+    z = z * y >> SCALE_1; res += z * 0x00000618fee9f800; # add y^09 * (20! / 09!)
+    z = z * y >> SCALE_1; res += z * 0x0000009c197dcc00; # add y^10 * (20! / 10!)
+    z = z * y >> SCALE_1; res += z * 0x0000000e30dce400; # add y^11 * (20! / 11!)
+    z = z * y >> SCALE_1; res += z * 0x000000012ebd1300; # add y^12 * (20! / 12!)
+    z = z * y >> SCALE_1; res += z * 0x0000000017499f00; # add y^13 * (20! / 13!)
+    z = z * y >> SCALE_1; res += z * 0x0000000001a9d480; # add y^14 * (20! / 14!)
+    z = z * y >> SCALE_1; res += z * 0x00000000001c6380; # add y^15 * (20! / 15!)
+    z = z * y >> SCALE_1; res += z * 0x000000000001c638; # add y^16 * (20! / 16!)
+    z = z * y >> SCALE_1; res += z * 0x0000000000001ab8; # add y^17 * (20! / 17!)
+    z = z * y >> SCALE_1; res += z * 0x000000000000017c; # add y^18 * (20! / 18!)
+    z = z * y >> SCALE_1; res += z * 0x0000000000000014; # add y^19 * (20! / 19!)
+    z = z * y >> SCALE_1; res += z * 0x0000000000000001; # add y^20 * (20! / 20!)
     res = res // 0x21c3677c82b40000 + y + FIXED_1; # divide by 20! and then add y^1 / 1! + y^0 / 0!
 
     if ((x & 0x010000000000000000000000000000000) != 0): res = res * 0x1c3d6a24ed82218787d624d3e5eba2a0f // 0x18ebef9eac820ae8682b9793ac6d1883a; # multiply by e^2^(-3)

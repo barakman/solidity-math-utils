@@ -6,6 +6,7 @@ import "./FractionMath.sol";
 import "./IntegralMath.sol";
 
 library AdvancedMath {
+    uint8   internal constant SCALE_1 = AnalyticMath.SCALE_1;
     uint256 internal constant FIXED_1 = AnalyticMath.FIXED_1;
 
     // Auto-generated via 'PrintAdvancedMathConstants.py'
@@ -208,18 +209,18 @@ library AdvancedMath {
             uint256 y;
             if (x < FIXED_1) {
                 uint256 p = AnalyticMath.fixedExp(x);
-                uint256 q = IntegralMath.mulDivF(x, p, FIXED_1);
+                uint256 q = IntegralMath.mulShrF(x, p, SCALE_1);
                 y = IntegralMath.mulDivF(x, q + FIXED_1, q + p);
             }
             else {
                 uint256 p = AnalyticMath.fixedLog(x);
-                uint256 q = IntegralMath.mulDivF(p, p, FIXED_1);
+                uint256 q = IntegralMath.mulShrF(p, p, SCALE_1);
                 y = IntegralMath.mulDivF(FIXED_1, q + FIXED_1, p + FIXED_1);
             }
             for (uint256 i = 0; i < 7; ++i) {
                 uint256 e = AnalyticMath.fixedExp(y);
-                uint256 f = IntegralMath.mulDivF(y, e, FIXED_1);
-                uint256 g = IntegralMath.mulDivF(y, f, FIXED_1);
+                uint256 f = IntegralMath.mulShrF(y, e, SCALE_1);
+                uint256 g = IntegralMath.mulShrF(y, f, SCALE_1);
                 y = IntegralMath.mulDivF(FIXED_1, g + x, f + e);
             }
             return IntegralMath.mulDivF(FIXED_1, y, x);
@@ -262,38 +263,38 @@ library AdvancedMath {
         uint256 res = 0;
         uint256 xi = x;
 
-        xi = xi * x / FIXED_1; res += xi * 0x00000000014d29a73a6e7b02c3668c7b0880000000; // add x^(03-1) * (34! * 03^(03-1) / 03!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000000002504a0cd9a7f7215b60f9be4800000000; // add x^(04-1) * (34! * 04^(04-1) / 04!)
-        xi = xi * x / FIXED_1; res += xi * 0x000000000484d0a1191c0ead267967c7a4a0000000; // add x^(05-1) * (34! * 05^(05-1) / 05!)
-        xi = xi * x / FIXED_1; res += xi * 0x00000000095ec580d7e8427a4baf26a90a00000000; // add x^(06-1) * (34! * 06^(06-1) / 06!)
-        xi = xi * x / FIXED_1; res += xi * 0x000000001440b0be1615a47dba6e5b3b1f10000000; // add x^(07-1) * (34! * 07^(07-1) / 07!)
-        xi = xi * x / FIXED_1; res += xi * 0x000000002d207601f46a99b4112418400000000000; // add x^(08-1) * (34! * 08^(08-1) / 08!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000000066ebaac4c37c622dd8288a7eb1b2000000; // add x^(09-1) * (34! * 09^(09-1) / 09!)
-        xi = xi * x / FIXED_1; res += xi * 0x00000000ef17240135f7dbd43a1ba10cf200000000; // add x^(10-1) * (34! * 10^(10-1) / 10!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000000233c33c676a5eb2416094a87b3657000000; // add x^(11-1) * (34! * 11^(11-1) / 11!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000000541cde48bc0254bed49a9f8700000000000; // add x^(12-1) * (34! * 12^(12-1) / 12!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000000cae1fad2cdd4d4cb8d73abca0d19a400000; // add x^(13-1) * (34! * 13^(13-1) / 13!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000001edb2aa2f760d15c41ceedba956400000000; // add x^(14-1) * (34! * 14^(14-1) / 14!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000004ba8d20d2dabd386c9529659841a2e200000; // add x^(15-1) * (34! * 15^(15-1) / 15!)
-        xi = xi * x / FIXED_1; res += xi * 0x000000bac08546b867cdaa20000000000000000000; // add x^(16-1) * (34! * 16^(16-1) / 16!)
-        xi = xi * x / FIXED_1; res += xi * 0x000001cfa8e70c03625b9db76c8ebf5bbf24820000; // add x^(17-1) * (34! * 17^(17-1) / 17!)
-        xi = xi * x / FIXED_1; res += xi * 0x000004851d99f82060df265f3309b26f8200000000; // add x^(18-1) * (34! * 18^(18-1) / 18!)
-        xi = xi * x / FIXED_1; res += xi * 0x00000b550d19b129d270c44f6f55f027723cbb0000; // add x^(19-1) * (34! * 19^(19-1) / 19!)
-        xi = xi * x / FIXED_1; res += xi * 0x00001c877dadc761dc272deb65d4b0000000000000; // add x^(20-1) * (34! * 20^(20-1) / 20!)
-        xi = xi * x / FIXED_1; res += xi * 0x000048178ece97479f33a77f2ad22a81b64406c000; // add x^(21-1) * (34! * 21^(21-1) / 21!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000b6ca8268b9d810fedf6695ef2f8a6c00000000; // add x^(22-1) * (34! * 22^(22-1) / 22!)
-        xi = xi * x / FIXED_1; res += xi * 0x0001d0e76631a5b05d007b8cb72a7c7f11ec36e000; // add x^(23-1) * (34! * 23^(23-1) / 23!)
-        xi = xi * x / FIXED_1; res += xi * 0x0004a1c37bd9f85fd9c6c780000000000000000000; // add x^(24-1) * (34! * 24^(24-1) / 24!)
-        xi = xi * x / FIXED_1; res += xi * 0x000bd8369f1b702bf491e2ebfcee08250313b65400; // add x^(25-1) * (34! * 25^(25-1) / 25!)
-        xi = xi * x / FIXED_1; res += xi * 0x001e5c7c32a9f6c70ab2cb59d9225764d400000000; // add x^(26-1) * (34! * 26^(26-1) / 26!)
-        xi = xi * x / FIXED_1; res += xi * 0x004dff5820e165e910f95120a708e742496221e600; // add x^(27-1) * (34! * 27^(27-1) / 27!)
-        xi = xi * x / FIXED_1; res += xi * 0x00c8c8f66db1fced378ee50e536000000000000000; // add x^(28-1) * (34! * 28^(28-1) / 28!)
-        xi = xi * x / FIXED_1; res += xi * 0x0205db8dffff45bfa2938f128f599dbf16eb11d880; // add x^(29-1) * (34! * 29^(29-1) / 29!)
-        xi = xi * x / FIXED_1; res += xi * 0x053a044ebd984351493e1786af38d39a0800000000; // add x^(30-1) * (34! * 30^(30-1) / 30!)
-        xi = xi * x / FIXED_1; res += xi * 0x0d86dae2a4cc0f47633a544479735869b487b59c40; // add x^(31-1) * (34! * 31^(31-1) / 31!)
-        xi = xi * x / FIXED_1; res += xi * 0x231000000000000000000000000000000000000000; // add x^(32-1) * (34! * 32^(32-1) / 32!)
-        xi = xi * x / FIXED_1; res += xi * 0x5b0485a76f6646c2039db1507cdd51b08649680822; // add x^(33-1) * (34! * 33^(33-1) / 33!)
-        xi = xi * x / FIXED_1; res += xi * 0xec983c46c49545bc17efa6b5b0055e242200000000; // add x^(34-1) * (34! * 34^(34-1) / 34!)
+        xi = xi * x >> SCALE_1; res += xi * 0x00000000014d29a73a6e7b02c3668c7b0880000000; // add x^(03-1) * (34! * 03^(03-1) / 03!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000000002504a0cd9a7f7215b60f9be4800000000; // add x^(04-1) * (34! * 04^(04-1) / 04!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000000000484d0a1191c0ead267967c7a4a0000000; // add x^(05-1) * (34! * 05^(05-1) / 05!)
+        xi = xi * x >> SCALE_1; res += xi * 0x00000000095ec580d7e8427a4baf26a90a00000000; // add x^(06-1) * (34! * 06^(06-1) / 06!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000000001440b0be1615a47dba6e5b3b1f10000000; // add x^(07-1) * (34! * 07^(07-1) / 07!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000000002d207601f46a99b4112418400000000000; // add x^(08-1) * (34! * 08^(08-1) / 08!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000000066ebaac4c37c622dd8288a7eb1b2000000; // add x^(09-1) * (34! * 09^(09-1) / 09!)
+        xi = xi * x >> SCALE_1; res += xi * 0x00000000ef17240135f7dbd43a1ba10cf200000000; // add x^(10-1) * (34! * 10^(10-1) / 10!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000000233c33c676a5eb2416094a87b3657000000; // add x^(11-1) * (34! * 11^(11-1) / 11!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000000541cde48bc0254bed49a9f8700000000000; // add x^(12-1) * (34! * 12^(12-1) / 12!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000000cae1fad2cdd4d4cb8d73abca0d19a400000; // add x^(13-1) * (34! * 13^(13-1) / 13!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000001edb2aa2f760d15c41ceedba956400000000; // add x^(14-1) * (34! * 14^(14-1) / 14!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000004ba8d20d2dabd386c9529659841a2e200000; // add x^(15-1) * (34! * 15^(15-1) / 15!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000000bac08546b867cdaa20000000000000000000; // add x^(16-1) * (34! * 16^(16-1) / 16!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000001cfa8e70c03625b9db76c8ebf5bbf24820000; // add x^(17-1) * (34! * 17^(17-1) / 17!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000004851d99f82060df265f3309b26f8200000000; // add x^(18-1) * (34! * 18^(18-1) / 18!)
+        xi = xi * x >> SCALE_1; res += xi * 0x00000b550d19b129d270c44f6f55f027723cbb0000; // add x^(19-1) * (34! * 19^(19-1) / 19!)
+        xi = xi * x >> SCALE_1; res += xi * 0x00001c877dadc761dc272deb65d4b0000000000000; // add x^(20-1) * (34! * 20^(20-1) / 20!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000048178ece97479f33a77f2ad22a81b64406c000; // add x^(21-1) * (34! * 21^(21-1) / 21!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000b6ca8268b9d810fedf6695ef2f8a6c00000000; // add x^(22-1) * (34! * 22^(22-1) / 22!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0001d0e76631a5b05d007b8cb72a7c7f11ec36e000; // add x^(23-1) * (34! * 23^(23-1) / 23!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0004a1c37bd9f85fd9c6c780000000000000000000; // add x^(24-1) * (34! * 24^(24-1) / 24!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000bd8369f1b702bf491e2ebfcee08250313b65400; // add x^(25-1) * (34! * 25^(25-1) / 25!)
+        xi = xi * x >> SCALE_1; res += xi * 0x001e5c7c32a9f6c70ab2cb59d9225764d400000000; // add x^(26-1) * (34! * 26^(26-1) / 26!)
+        xi = xi * x >> SCALE_1; res += xi * 0x004dff5820e165e910f95120a708e742496221e600; // add x^(27-1) * (34! * 27^(27-1) / 27!)
+        xi = xi * x >> SCALE_1; res += xi * 0x00c8c8f66db1fced378ee50e536000000000000000; // add x^(28-1) * (34! * 28^(28-1) / 28!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0205db8dffff45bfa2938f128f599dbf16eb11d880; // add x^(29-1) * (34! * 29^(29-1) / 29!)
+        xi = xi * x >> SCALE_1; res += xi * 0x053a044ebd984351493e1786af38d39a0800000000; // add x^(30-1) * (34! * 30^(30-1) / 30!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0d86dae2a4cc0f47633a544479735869b487b59c40; // add x^(31-1) * (34! * 31^(31-1) / 31!)
+        xi = xi * x >> SCALE_1; res += xi * 0x231000000000000000000000000000000000000000; // add x^(32-1) * (34! * 32^(32-1) / 32!)
+        xi = xi * x >> SCALE_1; res += xi * 0x5b0485a76f6646c2039db1507cdd51b08649680822; // add x^(33-1) * (34! * 33^(33-1) / 33!)
+        xi = xi * x >> SCALE_1; res += xi * 0xec983c46c49545bc17efa6b5b0055e242200000000; // add x^(34-1) * (34! * 34^(34-1) / 34!)
 
         return res / 0xde1bc4d19efcac82445da75b00000000 + FIXED_1 + x; // divide by 34! and then add x^(1-1) * (1^(1-1) / 1!) + x^(2-1) * (2^(2-1) / 2!)
     }}
@@ -307,38 +308,38 @@ library AdvancedMath {
         uint256 res = 0;
         uint256 xi = x;
 
-        xi = xi * x / FIXED_1; res += xi * 0x00000000014d29a73a6e7b02c3668c7b0880000000; // add x^(03-1) * (34! * 03^(03-1) / 03!)
-        xi = xi * x / FIXED_1; res -= xi * 0x0000000002504a0cd9a7f7215b60f9be4800000000; // sub x^(04-1) * (34! * 04^(04-1) / 04!)
-        xi = xi * x / FIXED_1; res += xi * 0x000000000484d0a1191c0ead267967c7a4a0000000; // add x^(05-1) * (34! * 05^(05-1) / 05!)
-        xi = xi * x / FIXED_1; res -= xi * 0x00000000095ec580d7e8427a4baf26a90a00000000; // sub x^(06-1) * (34! * 06^(06-1) / 06!)
-        xi = xi * x / FIXED_1; res += xi * 0x000000001440b0be1615a47dba6e5b3b1f10000000; // add x^(07-1) * (34! * 07^(07-1) / 07!)
-        xi = xi * x / FIXED_1; res -= xi * 0x000000002d207601f46a99b4112418400000000000; // sub x^(08-1) * (34! * 08^(08-1) / 08!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000000066ebaac4c37c622dd8288a7eb1b2000000; // add x^(09-1) * (34! * 09^(09-1) / 09!)
-        xi = xi * x / FIXED_1; res -= xi * 0x00000000ef17240135f7dbd43a1ba10cf200000000; // sub x^(10-1) * (34! * 10^(10-1) / 10!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000000233c33c676a5eb2416094a87b3657000000; // add x^(11-1) * (34! * 11^(11-1) / 11!)
-        xi = xi * x / FIXED_1; res -= xi * 0x0000000541cde48bc0254bed49a9f8700000000000; // sub x^(12-1) * (34! * 12^(12-1) / 12!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000000cae1fad2cdd4d4cb8d73abca0d19a400000; // add x^(13-1) * (34! * 13^(13-1) / 13!)
-        xi = xi * x / FIXED_1; res -= xi * 0x0000001edb2aa2f760d15c41ceedba956400000000; // sub x^(14-1) * (34! * 14^(14-1) / 14!)
-        xi = xi * x / FIXED_1; res += xi * 0x0000004ba8d20d2dabd386c9529659841a2e200000; // add x^(15-1) * (34! * 15^(15-1) / 15!)
-        xi = xi * x / FIXED_1; res -= xi * 0x000000bac08546b867cdaa20000000000000000000; // sub x^(16-1) * (34! * 16^(16-1) / 16!)
-        xi = xi * x / FIXED_1; res += xi * 0x000001cfa8e70c03625b9db76c8ebf5bbf24820000; // add x^(17-1) * (34! * 17^(17-1) / 17!)
-        xi = xi * x / FIXED_1; res -= xi * 0x000004851d99f82060df265f3309b26f8200000000; // sub x^(18-1) * (34! * 18^(18-1) / 18!)
-        xi = xi * x / FIXED_1; res += xi * 0x00000b550d19b129d270c44f6f55f027723cbb0000; // add x^(19-1) * (34! * 19^(19-1) / 19!)
-        xi = xi * x / FIXED_1; res -= xi * 0x00001c877dadc761dc272deb65d4b0000000000000; // sub x^(20-1) * (34! * 20^(20-1) / 20!)
-        xi = xi * x / FIXED_1; res += xi * 0x000048178ece97479f33a77f2ad22a81b64406c000; // add x^(21-1) * (34! * 21^(21-1) / 21!)
-        xi = xi * x / FIXED_1; res -= xi * 0x0000b6ca8268b9d810fedf6695ef2f8a6c00000000; // sub x^(22-1) * (34! * 22^(22-1) / 22!)
-        xi = xi * x / FIXED_1; res += xi * 0x0001d0e76631a5b05d007b8cb72a7c7f11ec36e000; // add x^(23-1) * (34! * 23^(23-1) / 23!)
-        xi = xi * x / FIXED_1; res -= xi * 0x0004a1c37bd9f85fd9c6c780000000000000000000; // sub x^(24-1) * (34! * 24^(24-1) / 24!)
-        xi = xi * x / FIXED_1; res += xi * 0x000bd8369f1b702bf491e2ebfcee08250313b65400; // add x^(25-1) * (34! * 25^(25-1) / 25!)
-        xi = xi * x / FIXED_1; res -= xi * 0x001e5c7c32a9f6c70ab2cb59d9225764d400000000; // sub x^(26-1) * (34! * 26^(26-1) / 26!)
-        xi = xi * x / FIXED_1; res += xi * 0x004dff5820e165e910f95120a708e742496221e600; // add x^(27-1) * (34! * 27^(27-1) / 27!)
-        xi = xi * x / FIXED_1; res -= xi * 0x00c8c8f66db1fced378ee50e536000000000000000; // sub x^(28-1) * (34! * 28^(28-1) / 28!)
-        xi = xi * x / FIXED_1; res += xi * 0x0205db8dffff45bfa2938f128f599dbf16eb11d880; // add x^(29-1) * (34! * 29^(29-1) / 29!)
-        xi = xi * x / FIXED_1; res -= xi * 0x053a044ebd984351493e1786af38d39a0800000000; // sub x^(30-1) * (34! * 30^(30-1) / 30!)
-        xi = xi * x / FIXED_1; res += xi * 0x0d86dae2a4cc0f47633a544479735869b487b59c40; // add x^(31-1) * (34! * 31^(31-1) / 31!)
-        xi = xi * x / FIXED_1; res -= xi * 0x231000000000000000000000000000000000000000; // sub x^(32-1) * (34! * 32^(32-1) / 32!)
-        xi = xi * x / FIXED_1; res += xi * 0x5b0485a76f6646c2039db1507cdd51b08649680822; // add x^(33-1) * (34! * 33^(33-1) / 33!)
-        xi = xi * x / FIXED_1; res -= xi * 0xec983c46c49545bc17efa6b5b0055e242200000000; // sub x^(34-1) * (34! * 34^(34-1) / 34!)
+        xi = xi * x >> SCALE_1; res += xi * 0x00000000014d29a73a6e7b02c3668c7b0880000000; // add x^(03-1) * (34! * 03^(03-1) / 03!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x0000000002504a0cd9a7f7215b60f9be4800000000; // sub x^(04-1) * (34! * 04^(04-1) / 04!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000000000484d0a1191c0ead267967c7a4a0000000; // add x^(05-1) * (34! * 05^(05-1) / 05!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x00000000095ec580d7e8427a4baf26a90a00000000; // sub x^(06-1) * (34! * 06^(06-1) / 06!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000000001440b0be1615a47dba6e5b3b1f10000000; // add x^(07-1) * (34! * 07^(07-1) / 07!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x000000002d207601f46a99b4112418400000000000; // sub x^(08-1) * (34! * 08^(08-1) / 08!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000000066ebaac4c37c622dd8288a7eb1b2000000; // add x^(09-1) * (34! * 09^(09-1) / 09!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x00000000ef17240135f7dbd43a1ba10cf200000000; // sub x^(10-1) * (34! * 10^(10-1) / 10!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000000233c33c676a5eb2416094a87b3657000000; // add x^(11-1) * (34! * 11^(11-1) / 11!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x0000000541cde48bc0254bed49a9f8700000000000; // sub x^(12-1) * (34! * 12^(12-1) / 12!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000000cae1fad2cdd4d4cb8d73abca0d19a400000; // add x^(13-1) * (34! * 13^(13-1) / 13!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x0000001edb2aa2f760d15c41ceedba956400000000; // sub x^(14-1) * (34! * 14^(14-1) / 14!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0000004ba8d20d2dabd386c9529659841a2e200000; // add x^(15-1) * (34! * 15^(15-1) / 15!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x000000bac08546b867cdaa20000000000000000000; // sub x^(16-1) * (34! * 16^(16-1) / 16!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000001cfa8e70c03625b9db76c8ebf5bbf24820000; // add x^(17-1) * (34! * 17^(17-1) / 17!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x000004851d99f82060df265f3309b26f8200000000; // sub x^(18-1) * (34! * 18^(18-1) / 18!)
+        xi = xi * x >> SCALE_1; res += xi * 0x00000b550d19b129d270c44f6f55f027723cbb0000; // add x^(19-1) * (34! * 19^(19-1) / 19!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x00001c877dadc761dc272deb65d4b0000000000000; // sub x^(20-1) * (34! * 20^(20-1) / 20!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000048178ece97479f33a77f2ad22a81b64406c000; // add x^(21-1) * (34! * 21^(21-1) / 21!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x0000b6ca8268b9d810fedf6695ef2f8a6c00000000; // sub x^(22-1) * (34! * 22^(22-1) / 22!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0001d0e76631a5b05d007b8cb72a7c7f11ec36e000; // add x^(23-1) * (34! * 23^(23-1) / 23!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x0004a1c37bd9f85fd9c6c780000000000000000000; // sub x^(24-1) * (34! * 24^(24-1) / 24!)
+        xi = xi * x >> SCALE_1; res += xi * 0x000bd8369f1b702bf491e2ebfcee08250313b65400; // add x^(25-1) * (34! * 25^(25-1) / 25!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x001e5c7c32a9f6c70ab2cb59d9225764d400000000; // sub x^(26-1) * (34! * 26^(26-1) / 26!)
+        xi = xi * x >> SCALE_1; res += xi * 0x004dff5820e165e910f95120a708e742496221e600; // add x^(27-1) * (34! * 27^(27-1) / 27!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x00c8c8f66db1fced378ee50e536000000000000000; // sub x^(28-1) * (34! * 28^(28-1) / 28!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0205db8dffff45bfa2938f128f599dbf16eb11d880; // add x^(29-1) * (34! * 29^(29-1) / 29!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x053a044ebd984351493e1786af38d39a0800000000; // sub x^(30-1) * (34! * 30^(30-1) / 30!)
+        xi = xi * x >> SCALE_1; res += xi * 0x0d86dae2a4cc0f47633a544479735869b487b59c40; // add x^(31-1) * (34! * 31^(31-1) / 31!)
+        xi = xi * x >> SCALE_1; res -= xi * 0x231000000000000000000000000000000000000000; // sub x^(32-1) * (34! * 32^(32-1) / 32!)
+        xi = xi * x >> SCALE_1; res += xi * 0x5b0485a76f6646c2039db1507cdd51b08649680822; // add x^(33-1) * (34! * 33^(33-1) / 33!)
+        xi = xi * x >> SCALE_1; res -= xi * 0xec983c46c49545bc17efa6b5b0055e242200000000; // sub x^(34-1) * (34! * 34^(34-1) / 34!)
 
         return res / 0xde1bc4d19efcac82445da75b00000000 + FIXED_1 - x; // divide by 34! and then add x^(1-1) * (1^(1-1) / 1!) - x^(2-1) * (2^(2-1) / 2!)
     }}
@@ -388,7 +389,7 @@ library AdvancedMath {
     function lambertPos3(uint256 x) internal pure returns (uint256) { unchecked {
         uint256 a = AnalyticMath.fixedLog(x);
         uint256 b = AnalyticMath.fixedLog(a);
-        uint256 c = IntegralMath.mulDivF(a, a, FIXED_1 / 2);
+        uint256 c = IntegralMath.mulShrF(a, a * 2, SCALE_1);
         uint256 d = IntegralMath.mulDivF(b, b + (a - FIXED_1) * 2, c);
         uint256 e = IntegralMath.mulDivF(FIXED_1, a - b + d, x);
         return e;

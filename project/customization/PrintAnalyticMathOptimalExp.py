@@ -1,12 +1,12 @@
 from util import dec_str
 from util import hex_str
 from core import AnalyticMath
-from constants import FIXED_1
+from constants import SCALE_1
 from constants import EXP_MAX_HI_TERM_VAL
 from constants import EXP_NUM_OF_HI_TERMS
 
 
-hiTerms,loTerms = AnalyticMath.optimalExpTerms(FIXED_1,EXP_MAX_HI_TERM_VAL,EXP_NUM_OF_HI_TERMS)
+hiTerms,loTerms = AnalyticMath.optimalExpTerms(1<<SCALE_1,EXP_MAX_HI_TERM_VAL,EXP_NUM_OF_HI_TERMS)
 
 
 hiTermIndexMax = EXP_MAX_HI_TERM_VAL-1
@@ -28,7 +28,7 @@ print('        z = y = x % {}; // get the input modulo 2^({:+d})'.format(str0,hi
 for n in range(1,len(loTerms)):
     str2 = hex_str(loTerms[n].val,loTerms[+1].val)
     str3 = dec_str(loTerms[n].ind,loTerms[-1].ind)
-    print('        z = z * y / FIXED_1; res += z * {}; // add y^{} * ({}! / {}!)'.format(str2,str3,len(loTerms),str3))
+    print('        z = z * y >> SCALE_1; res += z * {}; // add y^{} * ({}! / {}!)'.format(str2,str3,len(loTerms),str3))
 print('        res = res / {} + y + FIXED_1; // divide by {}! and then add y^1 / 1! + y^0 / 0!'.format(str1,len(loTerms)))
 print('')
 for n in range(len(hiTerms)-1):
