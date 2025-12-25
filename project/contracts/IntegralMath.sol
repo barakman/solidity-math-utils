@@ -10,7 +10,7 @@ library IntegralMath {
     function floorLog2(uint256 n) internal pure returns (uint8) { unchecked {
         uint8 x = 0;
         if (n > 0) {
-            assembly {x := sub(255, clz(n))}
+            assembly {x := not(clz(n))}
         }
         return x;
     }}
