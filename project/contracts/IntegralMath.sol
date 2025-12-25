@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.30;
+pragma solidity ^0.8.33;
 
 import "./common/Uint256.sol";
 
@@ -8,26 +8,11 @@ library IntegralMath {
       * @dev Compute the largest integer smaller than or equal to the binary logarithm of `n`
     */
     function floorLog2(uint256 n) internal pure returns (uint8) { unchecked {
-        uint8 res = 0;
-
-        if (n < 256) {
-            // at most 8 iterations
-            while (n > 1) {
-                n >>= 1;
-                res += 1;
-            }
+        uint8 x = 0;
+        if (n > 0) {
+            assembly {x := sub(255, clz(n))}
         }
-        else {
-            // exactly 8 iterations
-            for (uint8 s = 128; s > 0; s >>= 1) {
-                if (n >= 1 << s) {
-                    n >>= s;
-                    res |= s;
-                }
-            }
-        }
-
-        return res;
+        return x;
     }}
 
     /**
@@ -218,8 +203,11 @@ library IntegralMath {
                 uint8 zwhn = floorLog2(zwh);
                 while (xyhn > zwhn) {
                     uint8 n = xyhn - zwhn - 1;
+                    uint256 zwhshl = zwh << n;
+                    uint256 zwlshl = zwl << n;
+                    uint256 zwlshr = zwl >> (256 - n);
                     res += 1 << n; // set `res = res + 2 ^ n`
-                    (xyh, xyl) = sub512Ex(xyh, xyl, (zwh << n) | (zwl >> (256 - n)), zwl << n); // set `xy = xy - zw * 2 ^ n`
+                    (xyh, xyl) = sub512Ex(xyh, xyl, zwhshl | zwlshr, zwlshl); // set `xy = xy - zw * 2 ^ n`
                     xyhn = floorLog2(xyh);
                 }
             }
