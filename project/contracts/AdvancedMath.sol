@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity 0.8.30;
+pragma solidity ^0.8.33;
 
 import "./AnalyticMath.sol";
 import "./FractionMath.sol";

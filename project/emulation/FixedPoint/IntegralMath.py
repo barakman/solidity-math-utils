@@ -5,21 +5,10 @@ from .common.Uint256 import *
     @dev Compute the largest integer smaller than or equal to the binary logarithm of `n`
 '''
 def floorLog2(n):
-    res = 0;
-
-    if (n < 256):
-        # at most 8 iterations
-        while (n > 1):
-            n >>= 1;
-            res += 1;
-    else:
-        # exactly 8 iterations
-        for s in [1 << (8 - 1 - k) for k in range(8)]:
-            if (n >= 1 << s):
-                n >>= s;
-                res |= s;
-
-    return res;
+    x = 0;
+    if (n > 0):
+        x = n.bit_length() - 1;
+    return x;
 
 '''
     @dev Compute the largest integer smaller than or equal to the square root of `n`
@@ -191,8 +180,11 @@ def mulDivExF(x, y, z, w):
             zwhn = floorLog2(zwh);
             while (xyhn > zwhn):
                 n = xyhn - zwhn - 1;
+                zwhshl = (zwh << n) & MAX_VAL;
+                zwlshl = (zwl << n) & MAX_VAL;
+                zwlshr = zwl >> (256 - n);
                 res += 1 << n; # set `res = res + 2 ^ n`
-                (xyh, xyl) = sub512Ex(xyh, xyl, (zwh << n) | (zwl >> (256 - n)), zwl << n); # set `xy = xy - zw * 2 ^ n`
+                (xyh, xyl) = sub512Ex(xyh, xyl, zwhshl | zwlshr, zwlshl); # set `xy = xy - zw * 2 ^ n`
                 xyhn = floorLog2(xyh);
         if (xyh > zwh or (xyh == zwh and xyl >= zwl)): # `xy >= zw`
             return res + 1;
