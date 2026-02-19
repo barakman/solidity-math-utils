@@ -84,10 +84,10 @@ def equalizeQuick(t, s, r, q, p):
 '''
 def equalize(t, s, r, q, p, AdvancedMath_solveFunction):
     if (t == s):
-        require(t > 0 or r > 0, "invalid balance");
+        require(t > 0 or r > 0, "InvalidBalance()");
     else:
-        require(t > 0 and s > 0 and r > 0, "invalid balance");
-    require(q > 0 and p > 0, "invalid rate");
+        require(t > 0 and s > 0 and r > 0, "InvalidBalance()");
+    require(q > 0 and p > 0, "InvalidRate()");
 
     (tq, rp) = FractionMath.productRatio(t, q, r, p);
     (xn, xd) = AdvancedMath_solveFunction(s, t, tq, rp);

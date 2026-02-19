@@ -15,7 +15,7 @@ EXP_MAX = 0x2cb53f09f05cc627c85ddebfccfeb72758;
 '''
 def pow(a, b, c, d):
     if (b == 0 or d == 0):
-        revert("division by zero");
+        revert("DivisionByZero()");
     if (a == 0 or c == 0):
         return (a ** c, 1);
     if (a > b):
@@ -52,7 +52,7 @@ def exp(a, b):
 '''
 def fixedLog(x):
     if (x < FIXED_1):
-        revert("fixedLog: x < min");
+        revert("FixedLogInputBelowMin()");
     if (x < LOG_MID):
         return optimalLog(x);
     count = IntegralMath.floorLog2(x // FIXED_1);
@@ -77,7 +77,7 @@ def fixedExp(x):
         return optimalExp(x);
     if (x < EXP_MAX):
         return optimalExp(x % LN2_MAX) << (x // LN2_MAX);
-    revert("fixedExp: x > max");
+    revert("FixedExpInputAboveMax()");
 
 '''
     @dev Compute log(x / FIXED_1) * FIXED_1
