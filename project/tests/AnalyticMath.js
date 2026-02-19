@@ -124,10 +124,10 @@ describe(TestContract.contractName, () => {
     testFailure(log, "Overflow()", MAX_MUL.add(1), ONE);
     testFailure(exp, "Overflow()", MAX_MUL.add(1), ONE);
 
-    testFailure(log, "FixedLogInputBelowMin()", 1, 2);
-    testFailure(exp, "FixedExpInputAboveMax()", 178, 1);
-    testFailure(fixedLog, "FixedLogInputBelowMin()", FIXED_1.sub(1));
-    testFailure(fixedExp, "FixedExpInputAboveMax()", EXP_MAX.sub(0));
+    testFailure(log, "FixedLogBelowMin()", 1, 2);
+    testFailure(exp, "FixedExpAboveMax()", 178, 1);
+    testFailure(fixedLog, "FixedLogBelowMin()", FIXED_1.sub(1));
+    testFailure(fixedExp, "FixedExpAboveMax()", EXP_MAX.sub(0));
 
     function testSuccess(method, toActual, check, maxError, ...args) {
         it(`${method.name}(${args.map(x => x.toFixed()).join(", ")})`, async () => {

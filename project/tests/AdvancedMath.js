@@ -85,14 +85,14 @@ describe(TestContract.contractName, () => {
         testSuccess("lambertPosQuick", percent, LAMBERT_POS3, LAMBERT_POS4, "0.04076265753190620535671784581901863592");
     }
 
-    testFailure("lambertPosExact", LAMBERT_POS0.add(0), "LambertPosExactInputBelowMin()");
-    testFailure("lambertPosQuick", LAMBERT_POS0.add(0), "LambertPosQuickInputBelowMin()");
+    testFailure("lambertPosExact", LAMBERT_POS0.add(0), "LambertPosExactBelowMin()");
+    testFailure("lambertPosQuick", LAMBERT_POS0.add(0), "LambertPosQuickBelowMin()");
 
-    testFailure("lambertNegExact", LAMBERT_NEG0.add(0), "LambertNegExactInputBelowMin()");
-    testFailure("lambertNegQuick", LAMBERT_NEG0.add(0), "LambertNegQuickInputBelowMin()");
+    testFailure("lambertNegExact", LAMBERT_NEG0.add(0), "LambertNegExactBelowMin()");
+    testFailure("lambertNegQuick", LAMBERT_NEG0.add(0), "LambertNegQuickBelowMin()");
 
-    testFailure("lambertNegExact", LAMBERT_NEG2.add(1), "LambertNegExactInputAboveMax()");
-    testFailure("lambertNegQuick", LAMBERT_NEG2.add(1), "LambertNegQuickInputAboveMax()");
+    testFailure("lambertNegExact", LAMBERT_NEG2.add(1), "LambertNegExactAboveMax()");
+    testFailure("lambertNegQuick", LAMBERT_NEG2.add(1), "LambertNegQuickAboveMax()");
 
     function testSolve(methodName, a, b, c, d, maxError) {
         it(`${methodName}(${a}, ${b}, ${c}, ${d})`, async () => {

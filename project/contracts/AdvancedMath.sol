@@ -6,12 +6,12 @@ import "./FractionMath.sol";
 import "./IntegralMath.sol";
 
 library AdvancedMath {
-    error LambertNegExactInputBelowMin();
-    error LambertNegExactInputAboveMax();
-    error LambertPosExactInputBelowMin();
-    error LambertNegQuickInputBelowMin();
-    error LambertNegQuickInputAboveMax();
-    error LambertPosQuickInputBelowMin();
+    error LambertNegExactBelowMin();
+    error LambertNegExactAboveMax();
+    error LambertPosExactBelowMin();
+    error LambertNegQuickBelowMin();
+    error LambertNegQuickAboveMax();
+    error LambertPosQuickBelowMin();
 
     uint8   internal constant SCALE_1 = AnalyticMath.SCALE_1;
     uint256 internal constant FIXED_1 = AnalyticMath.FIXED_1;
@@ -194,7 +194,7 @@ library AdvancedMath {
       * Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
     */
     function lambertNegExact(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x > 0, LambertNegExactInputBelowMin());
+        require(x > 0, LambertNegExactBelowMin());
         if (x <= LAMBERT_NEG2_MAXVAL) {
             uint256 y = x;
             for (uint256 i = 0; i < 8; ++i) {
@@ -203,7 +203,7 @@ library AdvancedMath {
             }
             return IntegralMath.mulDivF(FIXED_1, y, x);
         }
-        revert LambertNegExactInputAboveMax();
+        revert LambertNegExactAboveMax();
     }}
 
     /**
@@ -211,7 +211,7 @@ library AdvancedMath {
       * Input range: 1 <= x <= 2 ^ 256 - 1
     */
     function lambertPosExact(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x > 0, LambertPosExactInputBelowMin());
+        require(x > 0, LambertPosExactBelowMin());
         if (x <= LAMBERT_EXACT_LIMIT) {
             uint256 y;
             if (x < FIXED_1) {
@@ -240,12 +240,12 @@ library AdvancedMath {
       * Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
     */
     function lambertNegQuick(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x > 0, LambertNegQuickInputBelowMin());
+        require(x > 0, LambertNegQuickBelowMin());
         if (x <= LAMBERT_NEG1_MAXVAL)
             return lambertNeg1(x);
         if (x <= LAMBERT_NEG2_MAXVAL)
             return lambertNeg2(x);
-        revert LambertNegQuickInputAboveMax();
+        revert LambertNegQuickAboveMax();
     }}
 
     /**
@@ -253,7 +253,7 @@ library AdvancedMath {
       * Input range: 1 <= x <= 2 ^ 256 - 1
     */
     function lambertPosQuick(uint256 x) internal pure returns (uint256) { unchecked {
-        require(x > 0, LambertPosQuickInputBelowMin());
+        require(x > 0, LambertPosQuickBelowMin());
         if (x <= LAMBERT_POS1_MAXVAL)
             return lambertPos1(x);
         if (x <= LAMBERT_POS2_MAXVAL)

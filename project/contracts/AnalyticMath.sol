@@ -5,8 +5,8 @@ import "./IntegralMath.sol";
 
 library AnalyticMath {
     error DivisionByZero();
-    error FixedLogInputBelowMin();
-    error FixedExpInputAboveMax();
+    error FixedLogBelowMin();
+    error FixedExpAboveMax();
 
     // Auto-generated via 'PrintAnalyticMathConstants.py'
     uint8   internal constant SCALE_1 = 0x000000000000000000000000000000007f;
@@ -62,7 +62,7 @@ library AnalyticMath {
     */
     function fixedLog(uint256 x) internal pure returns (uint256) { unchecked {
         if (x < FIXED_1)
-            revert FixedLogInputBelowMin();
+            revert FixedLogBelowMin();
         if (x < LOG_MID)
             return optimalLog(x);
         uint8 count = IntegralMath.floorLog2(x / FIXED_1);
@@ -88,7 +88,7 @@ library AnalyticMath {
             return optimalExp(x);
         if (x < EXP_MAX)
             return optimalExp(x % LN2_MAX) << (x / LN2_MAX);
-        revert FixedExpInputAboveMax();
+        revert FixedExpAboveMax();
     }}
 
     /**

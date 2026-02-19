@@ -52,7 +52,7 @@ def exp(a, b):
 '''
 def fixedLog(x):
     if (x < FIXED_1):
-        revert("FixedLogInputBelowMin()");
+        revert("FixedLogBelowMin()");
     if (x < LOG_MID):
         return optimalLog(x);
     count = IntegralMath.floorLog2(x // FIXED_1);
@@ -77,7 +77,7 @@ def fixedExp(x):
         return optimalExp(x);
     if (x < EXP_MAX):
         return optimalExp(x % LN2_MAX) << (x // LN2_MAX);
-    revert("FixedExpInputAboveMax()");
+    revert("FixedExpAboveMax()");
 
 '''
     @dev Compute log(x / FIXED_1) * FIXED_1

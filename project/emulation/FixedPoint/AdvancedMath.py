@@ -182,21 +182,21 @@ def solveQuick(a, b, c, d):
     Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
 '''
 def lambertNegExact(x):
-    require(x > 0, "LambertNegExactInputBelowMin()");
+    require(x > 0, "LambertNegExactBelowMin()");
     if (x <= LAMBERT_NEG2_MAXVAL):
         y = x;
         for i in range(8):
             e = AnalyticMath.fixedExp(y);
             y = (x * e - y * y) // (FIXED_1 - y);
         return IntegralMath.mulDivF(FIXED_1, y, x);
-    revert("LambertNegExactInputAboveMax()");
+    revert("LambertNegExactAboveMax()");
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
     Input range: 1 <= x <= 2 ^ 256 - 1
 '''
 def lambertPosExact(x):
-    require(x > 0, "LambertPosExactInputBelowMin()");
+    require(x > 0, "LambertPosExactBelowMin()");
     if (x <= LAMBERT_EXACT_LIMIT):
         if (x < FIXED_1):
             p = AnalyticMath.fixedExp(x);
@@ -219,19 +219,19 @@ def lambertPosExact(x):
     Input range: 1 <= x <= LAMBERT_NEG2_MAXVAL
 '''
 def lambertNegQuick(x):
-    require(x > 0, "LambertNegQuickInputBelowMin()");
+    require(x > 0, "LambertNegQuickBelowMin()");
     if (x <= LAMBERT_NEG1_MAXVAL):
         return lambertNeg1(x);
     if (x <= LAMBERT_NEG2_MAXVAL):
         return lambertNeg2(x);
-    revert("LambertNegQuickInputAboveMax()");
+    revert("LambertNegQuickAboveMax()");
 
 '''
     @dev Compute W(x / FIXED_1) / (x / FIXED_1) * FIXED_1
     Input range: 1 <= x <= 2 ^ 256 - 1
 '''
 def lambertPosQuick(x):
-    require(x > 0, "LambertPosQuickInputBelowMin()");
+    require(x > 0, "LambertPosQuickBelowMin()");
     if (x <= LAMBERT_POS1_MAXVAL):
         return lambertPos1(x);
     if (x <= LAMBERT_POS2_MAXVAL):
