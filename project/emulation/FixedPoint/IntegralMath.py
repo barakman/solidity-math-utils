@@ -119,7 +119,7 @@ def minFactor(x, y):
 '''
 def mulShrF(x, y, s):
     (xyh, xyl) = mul512(x, y);
-    require(xyh < 1 << s);
+    require(xyh < 1 << s, "Overflow()");
     return (xyh << (256 - s)) | (xyl >> s);
 
 '''

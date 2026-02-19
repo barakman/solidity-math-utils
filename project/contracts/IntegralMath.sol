@@ -136,7 +136,7 @@ library IntegralMath {
     */
     function mulShrF(uint256 x, uint256 y, uint8 s) internal pure returns (uint256) { unchecked {
         (uint256 xyh, uint256 xyl) = mul512(x, y);
-        require(xyh < 1 << s);
+        require(xyh < 1 << s, Overflow());
         return (xyh << (256 - s)) | (xyl >> s);
     }}
 
