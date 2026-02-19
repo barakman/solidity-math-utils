@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity ^0.8.33;
+pragma solidity ^0.8.34;
 
 import "./AdvancedMath.sol";
 import "./FractionMath.sol";
 
 library DynamicCurve {
+    error InvalidRate();
+    error InvalidBalance();
+
     uint256 internal constant MAX_WEIGHT = 1000000;
 
     // Abstract:
@@ -92,10 +95,10 @@ library DynamicCurve {
         function (uint256, uint256, uint256, uint256) pure returns (uint256, uint256) AdvancedMath_solveFunction
     ) private pure returns (uint256, uint256) { unchecked {
         if (t == s)
-            require(t > 0 || r > 0, "invalid balance");
+            require(t > 0 || r > 0, InvalidBalance());
         else
-            require(t > 0 && s > 0 && r > 0, "invalid balance");
-        require(q > 0 && p > 0, "invalid rate");
+            require(t > 0 && s > 0 && r > 0, InvalidBalance());
+        require(q > 0 && p > 0, InvalidRate());
 
         (uint256 tq, uint256 rp) = FractionMath.productRatio(t, q, r, p);
         (uint256 xn, uint256 xd) = AdvancedMath_solveFunction(s, t, tq, rp);

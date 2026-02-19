@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity ^0.8.33;
+pragma solidity ^0.8.34;
 
 import "./common/Uint256.sol";
 
 library IntegralMath {
+    error Overflow();
+
     /**
       * @dev Compute the largest integer smaller than or equal to the binary logarithm of `n`
     */
@@ -167,7 +169,7 @@ library IntegralMath {
             uint256 r = inv256(z / p);       // `z / p = 1 mod 2` hence `inverse(z / p) = 1 mod 2 ^ 256`
             return unsafeMul(q, r);          // `q * r = (n / p) * inverse(z / p) = n / z`
         }
-        revert(); // `x * y / z >= 2 ^ 256`
+        revert Overflow(); // `x * y / z >= 2 ^ 256`
     }}
 
     /**

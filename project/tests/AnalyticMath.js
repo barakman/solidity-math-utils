@@ -44,7 +44,7 @@ describe(TestContract.contractName, () => {
             for (const c of [ZERO, ONE, MAX_VAL]) {
                 for (const d of [ZERO, ONE, MAX_VAL]) {
                     if (b.eq(0) || d.eq(0)) {
-                        testFailure(pow, "division by zero", a, b, c, d);
+                        testFailure(pow, "DivisionByZero()", a, b, c, d);
                     }
                     else if (a.eq(0) || c.eq(0)) {
                         testSuccess(pow, toFraction, equalTo, "0", a, b, c, d);
@@ -119,15 +119,15 @@ describe(TestContract.contractName, () => {
         }
     }
 
-    testFailure(pow, "without a reason", MAX_MUL.add(1), ONE, ONE, ONE);
-    testFailure(pow, "without a reason", ONE, MAX_MUL.add(1), ONE, ONE);
-    testFailure(log, "without a reason", MAX_MUL.add(1), ONE);
-    testFailure(exp, "without a reason", MAX_MUL.add(1), ONE);
+    testFailure(pow, "Overflow()", MAX_MUL.add(1), ONE, ONE, ONE);
+    testFailure(pow, "Overflow()", ONE, MAX_MUL.add(1), ONE, ONE);
+    testFailure(log, "Overflow()", MAX_MUL.add(1), ONE);
+    testFailure(exp, "Overflow()", MAX_MUL.add(1), ONE);
 
-    testFailure(log, "fixedLog: x < min", 1, 2);
-    testFailure(exp, "fixedExp: x > max", 178, 1);
-    testFailure(fixedLog, "fixedLog: x < min", FIXED_1.sub(1));
-    testFailure(fixedExp, "fixedExp: x > max", EXP_MAX.sub(0));
+    testFailure(log, "FixedLogInputBelowMin()", 1, 2);
+    testFailure(exp, "FixedExpInputAboveMax()", 178, 1);
+    testFailure(fixedLog, "FixedLogInputBelowMin()", FIXED_1.sub(1));
+    testFailure(fixedExp, "FixedExpInputAboveMax()", EXP_MAX.sub(0));
 
     function testSuccess(method, toActual, check, maxError, ...args) {
         it(`${method.name}(${args.map(x => x.toFixed()).join(", ")})`, async () => {

@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity ^0.8.33;
+pragma solidity ^0.8.34;
 
 import "./IntegralMath.sol";
 
 library AnalyticMath {
+    error DivisionByZero();
+    error FixedLogInputBelowMin();
+    error FixedExpInputAboveMax();
+
     // Auto-generated via 'PrintAnalyticMathConstants.py'
     uint8   internal constant SCALE_1 = 0x000000000000000000000000000000007f;
     uint256 internal constant FIXED_1 = 0x0080000000000000000000000000000000;
@@ -18,7 +22,7 @@ library AnalyticMath {
     */
     function pow(uint256 a, uint256 b, uint256 c, uint256 d) internal pure returns (uint256, uint256) { unchecked {
         if (b == 0 || d == 0)
-            revert("division by zero");
+            revert DivisionByZero();
         if (a == 0 || c == 0)
             return (a ** c, 1);
         if (a > b)
@@ -58,7 +62,7 @@ library AnalyticMath {
     */
     function fixedLog(uint256 x) internal pure returns (uint256) { unchecked {
         if (x < FIXED_1)
-            revert("fixedLog: x < min");
+            revert FixedLogInputBelowMin();
         if (x < LOG_MID)
             return optimalLog(x);
         uint8 count = IntegralMath.floorLog2(x / FIXED_1);
@@ -84,7 +88,7 @@ library AnalyticMath {
             return optimalExp(x);
         if (x < EXP_MAX)
             return optimalExp(x % LN2_MAX) << (x / LN2_MAX);
-        revert("fixedExp: x > max");
+        revert FixedExpInputAboveMax();
     }}
 
     /**
