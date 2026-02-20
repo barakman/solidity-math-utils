@@ -322,23 +322,23 @@ The dynamic-curve method was conceived by [Bancor](https://github.com/bancorprot
 ### Prerequisites
 
 - `node 22.21.0`
-- `yarn 1.22.22` or `npm 10.9.4`
+- `pnpm 8.9.2`
 
 ### Installation
 
-- `yarn install` or `npm install`
+- `pnpm install`
 
 ### Compilation
 
-- `yarn build` or `npm run build`
+- `pnpm build`
 
 ### Execution
 
-- `yarn test` or `npm run test`
+- `pnpm test`
 
 ### Verification
 
-- `yarn verify` or `npm run verify`
+- `pnpm verify`
 
 <br/><br/>
 
