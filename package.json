@@ -1,6 +1,6 @@
 {
     "name": "solidity-math-utils",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "description": "Solidity Mathematical Utilities",
     "repository": {
         "type": "git",
