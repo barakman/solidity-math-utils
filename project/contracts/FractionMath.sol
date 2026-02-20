@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity ^0.8.33;
+pragma solidity ^0.8.34;
 
 import "./IntegralMath.sol";
 
 library FractionMath {
+    error ExpTooLarge();
+
     uint256 internal constant MAX_EXP_BIT_LEN = 4;
     uint256 internal constant MAX_EXP = 2 ** MAX_EXP_BIT_LEN - 1;
     uint256 internal constant MAX_UINT128 = type(uint128).max;
@@ -105,7 +107,7 @@ library FractionMath {
         uint256 n, uint256 d, uint256 exp,
         function (uint256, uint256, uint256, uint256) pure returns (uint256, uint256) safeRatio
     ) private pure returns (uint256, uint256) { unchecked {
-        require(exp <= MAX_EXP, "exp too large");
+        require(exp <= MAX_EXP, ExpTooLarge());
 
         uint256[MAX_EXP_BIT_LEN] memory ns;
         uint256[MAX_EXP_BIT_LEN] memory ds;

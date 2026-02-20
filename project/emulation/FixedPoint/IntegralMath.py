@@ -119,7 +119,7 @@ def minFactor(x, y):
 '''
 def mulShrF(x, y, s):
     (xyh, xyl) = mul512(x, y);
-    require(xyh < 1 << s);
+    require(xyh < 1 << s, "Overflow()");
     return (xyh << (256 - s)) | (xyl >> s);
 
 '''
@@ -147,7 +147,7 @@ def mulDivF(x, y, z):
         q = div512(nh, nl, p);   # `n` is divisible by `p` because `n` is divisible by `z` and `z` is divisible by `p`
         r = inv256(z // p);      # `z / p = 1 mod 2` hence `inverse(z / p) = 1 mod 2 ^ 256`
         return unsafeMul(q, r);  # `q * r = (n / p) * inverse(z / p) = n / z`
-    revert(); # `x * y / z >= 2 ^ 256`
+    revert("Overflow()"); # `x * y / z >= 2 ^ 256`
 
 '''
     @dev Compute the smallest integer larger than or equal to `x * y / z`
