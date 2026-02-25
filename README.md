@@ -234,22 +234,40 @@ This module implements the following interface:
 - `function swapGain(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount)` => `(uint256)`
 - `function swapCost(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount)` => `(uint256)`
 
-### Functionality
+Function `mintGain` calculates the amount of pool tokens returned in exchange for x reserve tokens.
+
+Function `mintCost` calculates the amount of reserve tokens required in exchange for x pool tokens.
+
+Function `burnGain` calculates the amount of reserve tokens returned in exchange for x pool tokens.
+
+Function `burnCost` calculates the amount of pool tokens required in exchange for x reserve tokens.
+
+Function `swapGain` calculates the amount of reserve2 tokens returned in exchange for x reserve1 tokens.
+
+Function `swapCost` calculates the amount of reserve1 tokens required in exchange for x reserve2 tokens.
+
+### Mathematical Model
 
 ```
-+-----------------------------+------------------------------------------------------------+----------------------------------------+
-| Function                    | Calculate the amount of                                    | Formula                                |
-+-----------------------------+------------------------------------------------------------+----------------------------------------+
-| mintGain(s, b, wn, wd, x)   | pool tokens returned in exchange for x reserve tokens      | s * ((1 + x / b) ^ (wn / wd) - 1)      |
-| mintCost(s, b, wn, wd, x)   | reserve tokens required in exchange for x pool tokens      | b * ((1 + x / s) ^ (wd / wn) - 1)      |
-| burnGain(s, b, wn, wd, x)   | reserve tokens returned in exchange for x pool tokens      | b * (1 - (1 - x / s) ^ (wd / wn))      |
-| burnCost(s, b, wn, wd, x)   | pool tokens required in exchange for x reserve tokens      | s * (1 - (1 - x / b) ^ (wn / wd))      |
-| swapGain(b1, b2, w1, w2, x) | reserve2 tokens returned in exchange for x reserve1 tokens | b2 * (1 - (b1 / (b1 + x)) ^ (w1 / w2)) |
-| swapCost(b1, b2, w1, w2, x) | reserve1 tokens required in exchange for x reserve2 tokens | b1 * ((b2 / (b2 - x)) ^ (w2 / w1) - 1) |
-+-----------------------------+------------------------------------------------------------+----------------------------------------+
++-----------------------------+----------------------------------------+
+| Function                    | Formula                                |
++-----------------------------+----------------------------------------+
+| mintGain(s, b, wn, wd, x)   | s * ((1 + x / b) ^ (wn / wd) - 1)      |
+| mintCost(s, b, wn, wd, x)   | b * ((1 + x / s) ^ (wd / wn) - 1)      |
+| burnGain(s, b, wn, wd, x)   | b * (1 - (1 - x / s) ^ (wd / wn))      |
+| burnCost(s, b, wn, wd, x)   | s * (1 - (1 - x / b) ^ (wn / wd))      |
+| swapGain(b1, b2, w1, w2, x) | b2 * (1 - (b1 / (b1 + x)) ^ (w1 / w2)) |
+| swapCost(b1, b2, w1, w2, x) | b1 * ((b2 / (b2 - x)) ^ (w2 / w1) - 1) |
++-----------------------------+----------------------------------------+
 ```
 
 The bonding-curve model was conceived by [Bancor](https://github.com/bancorprotocol).
+
+All functions in this module are based on the constant-product formula for weighted pools.
+
+Functions `mintGain`, `mintGain`, `mintGain` are guaranteed to never overestimate the true result.
+
+Functions `mintCost`, `mintCost`, `mintCost` are **not** guaranteed to never underestimate the true result.
 
 <br/><br/>
 
