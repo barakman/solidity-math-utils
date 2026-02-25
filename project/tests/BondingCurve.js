@@ -13,7 +13,7 @@ const swapGain = (balance1, balance2, weight1, weight2, amount) => balance2.mul(
 const swapCost = (balance1, balance2, weight1, weight2, amount) => balance1.mul(balance2.div(balance2.sub(amount)).pow(weight2.div(weight1)).sub(ONE));
 
 
-describe.only(TestContract.contractName, () => {
+describe(TestContract.contractName, () => {
     let testContract;
 
     before(async () => {
