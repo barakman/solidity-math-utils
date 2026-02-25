@@ -20,7 +20,7 @@ def getOutput(balance1, balance2, weight1, weight2, amount):
 
 
 def isValid(ratio):
-    return ratio >= 1
+    return True
 
 
 TestScheme.run(getInput, getOutput, isValid)

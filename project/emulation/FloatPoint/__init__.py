@@ -69,7 +69,7 @@ def swapCost(*args):
 def equalize(*args):
     staked1, balance1, balance2, rate1, rate2, weight1, weight2 = parse(args)
     amount1 = staked1 - balance1
-    amount2 = swapGain(balance1, weight1, balance2, weight2, amount1)
+    amount2 = swapGain(balance1, balance2, weight1, weight2, amount1)
     return ((balance1 + amount1) * rate1) / ((balance2 - amount2) * rate2)
 
 
