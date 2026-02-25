@@ -3,133 +3,147 @@ from .common.Uint256 import *
 from . import AnalyticMath
 from . import IntegralMath
 
-MAX_WEIGHT = 1000000;
-
 '''
-    @dev Buy pool tokens with reserve tokens
+    @dev Calculate the amount of pool tokens returned in exchange for a specified amount of reserve tokens
     
     @param supply   The total amount of pool tokens
     @param balance  The amount of reserve tokens owned by the pool
-    @param weight   The weight of the reserve (represented in ppm)
+    @param weightT  The weight of this reserve in the pool
+    @param weightB  The weight of both reserves in the pool
     @param amount   The amount of reserve tokens provided
     
-    @return supply * ((1 + amount / balance) ^ (weight / MAX_WEIGHT) - 1)
+    @return supply * ((1 + amount / balance) ^ (weightT / weightB) - 1)
+    
+    @notice This function never overestimates the true result
 '''
-def buy(supply, balance, weight, amount):
-    require(supply > 0 and balance > 0 and weight > 0, "InvalidInput()");
-    require(weight <= MAX_WEIGHT, "WeightOutOfBound()");
+def mintGain(supply, balance, weightT, weightB, amount):
+    require(supply > 0 and balance > 0 and weightT > 0 and weightB > 0, "InvalidInput()");
+    require(weightT <= weightB, "WeightOutOfBound()");
 
-    if (weight == MAX_WEIGHT):
-        return IntegralMath.mulDivF(amount, supply, balance);
+    if (weightT == weightB):
+        return IntegralMath.mulDivF(supply, amount, balance);
 
-    (n, d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weight, MAX_WEIGHT);
-    return IntegralMath.mulDivF(supply, n, d) - supply;
+    (n, d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weightT, weightB);
+    return IntegralMath.mulDivF(supply, n - d, d);
 
 '''
-    @dev Sell pool tokens for reserve tokens
+    @dev Calculate the amount of reserve tokens required in exchange for a specified amount of pool tokens
     
     @param supply   The total amount of pool tokens
     @param balance  The amount of reserve tokens owned by the pool
-    @param weight   The weight of the reserve (represented in ppm)
+    @param weightT  The weight of this reserve in the pool
+    @param weightB  The weight of both reserves in the pool
+    @param amount   The amount of pool tokens desired
+    
+    @return balance * ((1 + amount / supply) ^ (weightB / weightT) - 1)
+    
+    @notice This function might underestimate the true result
+'''
+def mintCost(supply, balance, weightT, weightB, amount):
+    require(supply > 0 and balance > 0 and weightT > 0 and weightB > 0, "InvalidInput()");
+    require(weightT <= weightB, "WeightOutOfBound()");
+
+    if (weightT == weightB):
+        return IntegralMath.mulDivC(balance, amount, supply);
+
+    (n, d) = AnalyticMath.pow(safeAdd(supply, amount), supply, weightB, weightT);
+    return IntegralMath.mulDivC(balance, n - d, d);
+
+'''
+    @dev Calculate the amount of reserve tokens returned in exchange for a specified amount of pool tokens
+    
+    @param supply   The total amount of pool tokens
+    @param balance  The amount of reserve tokens owned by the pool
+    @param weightT  The weight of this reserve in the pool
+    @param weightB  The weight of both reserves in the pool
     @param amount   The amount of pool tokens provided
     
-    @return balance * (1 - (1 - amount / supply) ^ (MAX_WEIGHT / weight))
+    @return balance * (1 - (1 - amount / supply) ^ (weightB / weightT))
+    
+    @notice This function never overestimates the true result
 '''
-def sell(supply, balance, weight, amount):
-    require(supply > 0 and balance > 0 and weight > 0, "InvalidInput()");
-    require(weight <= MAX_WEIGHT, "WeightOutOfBound()");
-    require(amount <= supply, "AmountLargerThanSupply()");
+def burnGain(supply, balance, weightT, weightB, amount):
+    require(supply > 0 and balance > 0 and weightT > 0 and weightB > 0, "InvalidInput()");
+    require(weightT <= weightB, "WeightOutOfBound()");
+    require(amount <= supply, "AmountOutOfBound()");
 
     if (amount == supply):
         return balance;
 
-    if (weight == MAX_WEIGHT):
-        return IntegralMath.mulDivF(amount, balance, supply);
+    if (weightT == weightB):
+        return IntegralMath.mulDivF(balance, amount, supply);
 
-    (n, d) = AnalyticMath.pow(supply, supply - amount, MAX_WEIGHT, weight);
-    return IntegralMath.mulDivF(balance, n - d, n);
+    (n, d) = AnalyticMath.pow(supply - amount, supply, weightB, weightT);
+    return IntegralMath.mulDivF(balance, d - n, d);
 
 '''
-    @dev Convert reserve tokens of one type to another
+    @dev Calculate the amount of pool tokens required in exchange for a specified amount of reserve tokens
     
-    @param balance1 The amount of source reserve tokens owned by the pool
-    @param weight1  The weight of the source reserve (represented in ppm)
-    @param balance2 The amount of target reserve tokens owned by the pool
-    @param weight2  The weight of the target reserve (represented in ppm)
-    @param amount   The amount of source reserve tokens provided
+    @param supply   The total amount of pool tokens
+    @param balance  The amount of reserve tokens owned by the pool
+    @param weightT  The weight of this reserve in the pool
+    @param weightB  The weight of both reserves in the pool
+    @param amount   The amount of reserve tokens desired
+    
+    @return supply * (1 - (1 - amount / balance) ^ (weightT / weightB))
+    
+    @notice This function might underestimate the true result
+'''
+def burnCost(supply, balance, weightT, weightB, amount):
+    require(supply > 0 and balance > 0 and weightT > 0 and weightB > 0, "InvalidInput()");
+    require(weightT <= weightB, "WeightOutOfBound()");
+    require(amount <= balance, "AmountOutOfBound()");
+
+    if (amount == balance):
+        return supply;
+
+    if (weightT == weightB):
+        return IntegralMath.mulDivC(supply, amount, balance);
+
+    (n, d) = AnalyticMath.pow(balance - amount, balance, weightT, weightB);
+    return IntegralMath.mulDivC(supply, d - n, d);
+
+'''
+    @dev Calculate the amount of reserve2 tokens returned in exchange for a specified amount of reserve1 tokens
+    
+    @param balance1 The amount of reserve1 tokens owned by the pool
+    @param balance2 The amount of reserve2 tokens owned by the pool
+    @param weight1  The weight of reserve1 in the pool
+    @param weight2  The weight of reserve2 in the pool
+    @param amount   The amount of reserve1 tokens provided
     
     @return balance2 * (1 - (balance1 / (balance1 + amount)) ^ (weight1 / weight2))
+    
+    @notice This function never overestimates the true result
 '''
-def convert(balance1, weight1, balance2, weight2, amount):
+def swapGain(balance1, balance2, weight1, weight2, amount):
     require(balance1 > 0 and balance2 > 0 and weight1 > 0 and weight2 > 0, "InvalidInput()");
-    require(weight1 <= MAX_WEIGHT and weight2 <= MAX_WEIGHT, "WeightsOutOfBound()");
 
     if (weight1 == weight2):
         return IntegralMath.mulDivF(balance2, amount, safeAdd(balance1, amount));
 
-    (n, d) = AnalyticMath.pow(safeAdd(balance1, amount), balance1, weight1, weight2);
-    return IntegralMath.mulDivF(balance2, n - d, n);
+    (n, d) = AnalyticMath.pow(balance1, safeAdd(balance1, amount), weight1, weight2);
+    return IntegralMath.mulDivF(balance2, d - n, d);
 
 '''
-    @dev Deposit reserve tokens for pool tokens
+    @dev Calculate the amount of reserve1 tokens required in exchange for a specified amount of reserve2 tokens
     
-    @param supply   The total amount of pool tokens
-    @param balance  The amount of reserve tokens of the desired type owned by the pool
-    @param weights  The combined weights of the reserves (represented in ppm)
-    @param amount   The amount of reserve tokens of the desired type provided
+    @param balance1 The amount of reserve1 tokens owned by the pool
+    @param balance2 The amount of reserve2 tokens owned by the pool
+    @param weight1  The weight of reserve1 in the pool
+    @param weight2  The weight of reserve2 in the pool
+    @param amount   The amount of reserve2 tokens desired
     
-    @return supply * ((amount / balance + 1) ^ (weights / MAX_WEIGHT) - 1)
+    @return balance1 * ((balance2 / (balance2 - amount)) ^ (weight2 / weight1) - 1)
+    
+    @notice This function might underestimate the true result
 '''
-def deposit(supply, balance, weights, amount):
-    require(supply > 0 and balance > 0 and weights > 0, "InvalidInput()");
-    require(weights <= MAX_WEIGHT * 2, "WeightsOutOfBound()");
+def swapCost(balance1, balance2, weight1, weight2, amount):
+    require(balance1 > 0 and balance2 > 0 and weight1 > 0 and weight2 > 0, "InvalidInput()");
+    require(amount < balance2, "AmountOutOfBound()");
 
-    if (weights == MAX_WEIGHT):
-        return IntegralMath.mulDivF(amount, supply, balance);
+    if (weight1 == weight2):
+        return IntegralMath.mulDivC(balance1, amount, balance2 - amount);
 
-    (n, d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weights, MAX_WEIGHT);
-    return IntegralMath.mulDivF(supply, n, d) - supply;
-
-'''
-    @dev Withdraw reserve tokens with pool tokens
-    
-    @param supply   The total amount of pool tokens
-    @param balance  The amount of reserve tokens of the desired type owned by the pool
-    @param weights  The combined weights of the reserves (represented in ppm)
-    @param amount   The amount of pool tokens provided
-    
-    @return balance * (1 - ((supply - amount) / supply) ^ (MAX_WEIGHT / weights))
-'''
-def withdraw(supply, balance, weights, amount):
-    require(supply > 0 and balance > 0 and weights > 0, "InvalidInput()");
-    require(weights <= MAX_WEIGHT * 2, "WeightsOutOfBound()");
-    require(amount <= supply, "AmountLargerThanSupply()");
-
-    if (amount == supply):
-        return balance;
-
-    if (weights == MAX_WEIGHT):
-        return IntegralMath.mulDivF(amount, balance, supply);
-
-    (n, d) = AnalyticMath.pow(supply, supply - amount, MAX_WEIGHT, weights);
-    return IntegralMath.mulDivF(balance, n - d, n);
-
-'''
-    @dev Invest reserve tokens for pool tokens
-    
-    @param supply   The total amount of pool tokens
-    @param balance  The amount of reserve tokens of the desired type owned by the pool
-    @param weights  The combined weights of the reserves (represented in ppm)
-    @param amount   The amount of pool tokens desired
-    
-    @return balance * (((supply + amount) / supply) ^ (MAX_WEIGHT / weights) - 1)
-'''
-def invest(supply, balance, weights, amount):
-    require(supply > 0 and balance > 0 and weights > 0, "InvalidInput()");
-    require(weights <= MAX_WEIGHT * 2, "WeightsOutOfBound()");
-
-    if (weights == MAX_WEIGHT):
-        return IntegralMath.mulDivC(amount, balance, supply);
-
-    (n, d) = AnalyticMath.pow(safeAdd(supply, amount), supply, MAX_WEIGHT, weights);
-    return IntegralMath.mulDivC(balance, n, d) - balance;
+    (n, d) = AnalyticMath.pow(balance2, balance2 - amount, weight2, weight1);
+    return IntegralMath.mulDivC(balance1, n - d, d);
