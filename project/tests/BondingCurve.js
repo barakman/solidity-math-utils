@@ -12,7 +12,6 @@ const burnCost = (supply, balance, weightT, weightB, amount)    => supply.mul(ON
 const swapGain = (balance1, balance2, weight1, weight2, amount) => balance2.mul(ONE.sub(balance1.div(balance1.add(amount)).pow(weight1.div(weight2))));
 const swapCost = (balance1, balance2, weight1, weight2, amount) => balance1.mul(balance2.div(balance2.sub(amount)).pow(weight2.div(weight1)).sub(ONE));
 
-
 describe(TestContract.contractName, () => {
     let testContract;
 
