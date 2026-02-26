@@ -234,17 +234,17 @@ This module implements the following interface:
 - `function swapGain(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount)` => `(uint256)`
 - `function swapCost(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount)` => `(uint256)`
 
-Function `mintGain` calculates the amount of pool tokens returned in exchange for x reserve tokens.
+Function `mintGain` calculates the amount of pool tokens returned in exchange for a specified amount of reserve tokens.
 
-Function `mintCost` calculates the amount of reserve tokens required in exchange for x pool tokens.
+Function `mintCost` calculates the amount of reserve tokens required in exchange for a specified amount of pool tokens.
 
-Function `burnGain` calculates the amount of reserve tokens returned in exchange for x pool tokens.
+Function `burnGain` calculates the amount of reserve tokens returned in exchange for a specified amount of pool tokens.
 
-Function `burnCost` calculates the amount of pool tokens required in exchange for x reserve tokens.
+Function `burnCost` calculates the amount of pool tokens required in exchange for a specified amount of reserve tokens.
 
-Function `swapGain` calculates the amount of reserve2 tokens returned in exchange for x reserve1 tokens.
+Function `swapGain` calculates the amount of reserve2 tokens returned in exchange for a specified amount of reserve1 tokens.
 
-Function `swapCost` calculates the amount of reserve1 tokens required in exchange for x reserve2 tokens.
+Function `swapCost` calculates the amount of reserve1 tokens required in exchange for a specified amount of reserve2 tokens.
 
 ### Mathematical Model
 
