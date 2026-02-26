@@ -227,10 +227,10 @@ The full customization manual can be found [here](#customization).
 ## BondingCurve
 
 This module implements the following interface:
-- `function mintGain(uint256 supply, uint256 balance, uint256 weightT, uint256 weightB, uint256 amount)` => `(uint256)`
-- `function mintCost(uint256 supply, uint256 balance, uint256 weightT, uint256 weightB, uint256 amount)` => `(uint256)`
-- `function burnGain(uint256 supply, uint256 balance, uint256 weightT, uint256 weightB, uint256 amount)` => `(uint256)`
-- `function burnCost(uint256 supply, uint256 balance, uint256 weightT, uint256 weightB, uint256 amount)` => `(uint256)`
+- `function mintGain(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount)` => `(uint256)`
+- `function mintCost(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount)` => `(uint256)`
+- `function burnGain(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount)` => `(uint256)`
+- `function burnCost(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount)` => `(uint256)`
 - `function swapGain(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount)` => `(uint256)`
 - `function swapCost(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount)` => `(uint256)`
 
@@ -248,26 +248,21 @@ Function `swapCost` calculates the amount of reserve1 tokens required in exchang
 
 ### Mathematical Model
 
+All functions in this module are based on the constant-product formula for weighted pools:
 ```
-+-----------------------------+----------------------------------------+
-| Function                    | Formula                                |
-+-----------------------------+----------------------------------------+
-| mintGain(s, b, wn, wd, x)   | s * ((1 + x / b) ^ (wn / wd) - 1)      |
-| mintCost(s, b, wn, wd, x)   | b * ((1 + x / s) ^ (wd / wn) - 1)      |
-| burnGain(s, b, wn, wd, x)   | b * (1 - (1 - x / s) ^ (wd / wn))      |
-| burnCost(s, b, wn, wd, x)   | s * (1 - (1 - x / b) ^ (wn / wd))      |
-| swapGain(b1, b2, w1, w2, x) | b2 * (1 - (b1 / (b1 + x)) ^ (w1 / w2)) |
-| swapCost(b1, b2, w1, w2, x) | b1 * ((b2 / (b2 - x)) ^ (w2 / w1) - 1) |
-+-----------------------------+----------------------------------------+
++-----------------------------+----------------------------------------+-------------------------------------+
+| Function                    | Formula                                | Note                                |
++-----------------------------+----------------------------------------+-------------------------------------+
+| mintGain(s, b, wn, wd, x)   | s * ((1 + x / b) ^ (wn / wd) - 1)      | never overestimates the true result |
+| mintCost(s, b, wn, wd, x)   | b * ((1 + x / s) ^ (wd / wn) - 1)      | might underestimate the true result |
+| burnGain(s, b, wn, wd, x)   | b * (1 - (1 - x / s) ^ (wd / wn))      | never overestimates the true result |
+| burnCost(s, b, wn, wd, x)   | s * (1 - (1 - x / b) ^ (wn / wd))      | might underestimate the true result |
+| swapGain(b1, b2, w1, w2, x) | b2 * (1 - (b1 / (b1 + x)) ^ (w1 / w2)) | never overestimates the true result |
+| swapCost(b1, b2, w1, w2, x) | b1 * ((b2 / (b2 - x)) ^ (w2 / w1) - 1) | might underestimate the true result |
++-----------------------------+----------------------------------------+-------------------------------------+
 ```
 
 The bonding-curve model was conceived by [Bancor](https://github.com/bancorprotocol).
-
-All functions in this module are based on the constant-product formula for weighted pools.
-
-Functions `mintGain`, `mintGain`, `mintGain` are guaranteed to never overestimate the true result.
-
-Functions `mintCost`, `mintCost`, `mintCost` are **not** guaranteed to never underestimate the true result.
 
 <br/><br/>
 

@@ -8,22 +8,22 @@ from . import IntegralMath
     
     @param supply   The total amount of pool tokens
     @param balance  The amount of reserve tokens owned by the pool
-    @param weightT  The weight of this reserve in the pool
-    @param weightB  The weight of both reserves in the pool
+    @param weight   The weight of this reserve in the pool
+    @param weights  The weight of all reserves in the pool
     @param amount   The amount of reserve tokens provided
     
-    @return supply * ((1 + amount / balance) ^ (weightT / weightB) - 1)
+    @return supply * ((1 + amount / balance) ^ (weight / weights) - 1)
     
     @notice This function never overestimates the true result
 '''
-def mintGain(supply, balance, weightT, weightB, amount):
-    require(supply > 0 and balance > 0 and weightT > 0 and weightB > 0, "InvalidInput()");
-    require(weightT <= weightB, "WeightOutOfBound()");
+def mintGain(supply, balance, weight, weights, amount):
+    require(supply > 0 and balance > 0 and weight > 0 and weights > 0, "InvalidInput()");
+    require(weight <= weights, "WeightOutOfBound()");
 
-    if (weightT == weightB):
+    if (weight == weights):
         return IntegralMath.mulDivF(supply, amount, balance);
 
-    (n, d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weightT, weightB);
+    (n, d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weight, weights);
     return IntegralMath.mulDivF(supply, n - d, d);
 
 '''
@@ -31,22 +31,22 @@ def mintGain(supply, balance, weightT, weightB, amount):
     
     @param supply   The total amount of pool tokens
     @param balance  The amount of reserve tokens owned by the pool
-    @param weightT  The weight of this reserve in the pool
-    @param weightB  The weight of both reserves in the pool
+    @param weight   The weight of this reserve in the pool
+    @param weights  The weight of all reserves in the pool
     @param amount   The amount of pool tokens desired
     
-    @return balance * ((1 + amount / supply) ^ (weightB / weightT) - 1)
+    @return balance * ((1 + amount / supply) ^ (weights / weight) - 1)
     
     @notice This function might underestimate the true result
 '''
-def mintCost(supply, balance, weightT, weightB, amount):
-    require(supply > 0 and balance > 0 and weightT > 0 and weightB > 0, "InvalidInput()");
-    require(weightT <= weightB, "WeightOutOfBound()");
+def mintCost(supply, balance, weight, weights, amount):
+    require(supply > 0 and balance > 0 and weight > 0 and weights > 0, "InvalidInput()");
+    require(weight <= weights, "WeightOutOfBound()");
 
-    if (weightT == weightB):
+    if (weight == weights):
         return IntegralMath.mulDivC(balance, amount, supply);
 
-    (n, d) = AnalyticMath.pow(safeAdd(supply, amount), supply, weightB, weightT);
+    (n, d) = AnalyticMath.pow(safeAdd(supply, amount), supply, weights, weight);
     return IntegralMath.mulDivC(balance, n - d, d);
 
 '''
@@ -54,26 +54,26 @@ def mintCost(supply, balance, weightT, weightB, amount):
     
     @param supply   The total amount of pool tokens
     @param balance  The amount of reserve tokens owned by the pool
-    @param weightT  The weight of this reserve in the pool
-    @param weightB  The weight of both reserves in the pool
+    @param weight   The weight of this reserve in the pool
+    @param weights  The weight of all reserves in the pool
     @param amount   The amount of pool tokens provided
     
-    @return balance * (1 - (1 - amount / supply) ^ (weightB / weightT))
+    @return balance * (1 - (1 - amount / supply) ^ (weights / weight))
     
     @notice This function never overestimates the true result
 '''
-def burnGain(supply, balance, weightT, weightB, amount):
-    require(supply > 0 and balance > 0 and weightT > 0 and weightB > 0, "InvalidInput()");
-    require(weightT <= weightB, "WeightOutOfBound()");
+def burnGain(supply, balance, weight, weights, amount):
+    require(supply > 0 and balance > 0 and weight > 0 and weights > 0, "InvalidInput()");
+    require(weight <= weights, "WeightOutOfBound()");
     require(amount <= supply, "AmountOutOfBound()");
 
     if (amount == supply):
         return balance;
 
-    if (weightT == weightB):
+    if (weight == weights):
         return IntegralMath.mulDivF(balance, amount, supply);
 
-    (n, d) = AnalyticMath.pow(supply - amount, supply, weightB, weightT);
+    (n, d) = AnalyticMath.pow(supply - amount, supply, weights, weight);
     return IntegralMath.mulDivF(balance, d - n, d);
 
 '''
@@ -81,26 +81,26 @@ def burnGain(supply, balance, weightT, weightB, amount):
     
     @param supply   The total amount of pool tokens
     @param balance  The amount of reserve tokens owned by the pool
-    @param weightT  The weight of this reserve in the pool
-    @param weightB  The weight of both reserves in the pool
+    @param weight   The weight of this reserve in the pool
+    @param weights  The weight of all reserves in the pool
     @param amount   The amount of reserve tokens desired
     
-    @return supply * (1 - (1 - amount / balance) ^ (weightT / weightB))
+    @return supply * (1 - (1 - amount / balance) ^ (weight / weights))
     
     @notice This function might underestimate the true result
 '''
-def burnCost(supply, balance, weightT, weightB, amount):
-    require(supply > 0 and balance > 0 and weightT > 0 and weightB > 0, "InvalidInput()");
-    require(weightT <= weightB, "WeightOutOfBound()");
+def burnCost(supply, balance, weight, weights, amount):
+    require(supply > 0 and balance > 0 and weight > 0 and weights > 0, "InvalidInput()");
+    require(weight <= weights, "WeightOutOfBound()");
     require(amount <= balance, "AmountOutOfBound()");
 
     if (amount == balance):
         return supply;
 
-    if (weightT == weightB):
+    if (weight == weights):
         return IntegralMath.mulDivC(supply, amount, balance);
 
-    (n, d) = AnalyticMath.pow(balance - amount, balance, weightT, weightB);
+    (n, d) = AnalyticMath.pow(balance - amount, balance, weight, weights);
     return IntegralMath.mulDivC(supply, d - n, d);
 
 '''

@@ -7,15 +7,15 @@ import TestScheme
 def getInput():
     supply  = random.randrange(2, 10 ** 26)
     balance = random.randrange(1, 10 ** 23)
-    weightT = random.randrange(1, 1000001)
-    weightB = random.randrange(weightT, 1000001)
+    weight  = random.randrange(1, 1000001)
+    weights = random.randrange(weight, 1000001)
     amount  = random.randrange(1, balance)
-    return dict(supply=supply, balance=balance, weightT=weightT, weightB=weightB, amount=amount)
+    return dict(supply=supply, balance=balance, weight=weight, weights=weights, amount=amount)
 
 
-def getOutput(supply, balance, weightT, weightB, amount):
-    fixedPoint = FixedPoint.burnCost(supply, balance, weightT, weightB, amount)
-    floatPoint = FloatPoint.burnCost(supply, balance, weightT, weightB, amount)
+def getOutput(supply, balance, weight, weights, amount):
+    fixedPoint = FixedPoint.burnCost(supply, balance, weight, weights, amount)
+    floatPoint = FloatPoint.burnCost(supply, balance, weight, weights, amount)
     return fixedPoint, floatPoint
 
 

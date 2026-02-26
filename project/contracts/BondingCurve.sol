@@ -14,22 +14,22 @@ library BondingCurve {
       *
       * @param supply   The total amount of pool tokens
       * @param balance  The amount of reserve tokens owned by the pool
-      * @param weightT  The weight of this reserve in the pool
-      * @param weightB  The weight of both reserves in the pool
+      * @param weight   The weight of this reserve in the pool
+      * @param weights  The weight of all reserves in the pool
       * @param amount   The amount of reserve tokens provided
       *
-      * @return supply * ((1 + amount / balance) ^ (weightT / weightB) - 1)
+      * @return supply * ((1 + amount / balance) ^ (weight / weights) - 1)
       *
       * @notice This function never overestimates the true result
     */
-    function mintGain(uint256 supply, uint256 balance, uint256 weightT, uint256 weightB, uint256 amount) internal pure returns (uint256) { unchecked {
-        require(supply > 0 && balance > 0 && weightT > 0 && weightB > 0, InvalidInput());
-        require(weightT <= weightB, WeightOutOfBound());
+    function mintGain(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
+        require(supply > 0 && balance > 0 && weight > 0 && weights > 0, InvalidInput());
+        require(weight <= weights, WeightOutOfBound());
 
-        if (weightT == weightB)
+        if (weight == weights)
             return IntegralMath.mulDivF(supply, amount, balance);
 
-        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weightT, weightB);
+        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weight, weights);
         return IntegralMath.mulDivF(supply, n - d, d);
     }}
 
@@ -38,22 +38,22 @@ library BondingCurve {
       *
       * @param supply   The total amount of pool tokens
       * @param balance  The amount of reserve tokens owned by the pool
-      * @param weightT  The weight of this reserve in the pool
-      * @param weightB  The weight of both reserves in the pool
+      * @param weight   The weight of this reserve in the pool
+      * @param weights  The weight of all reserves in the pool
       * @param amount   The amount of pool tokens desired
       *
-      * @return balance * ((1 + amount / supply) ^ (weightB / weightT) - 1)
+      * @return balance * ((1 + amount / supply) ^ (weights / weight) - 1)
       *
       * @notice This function might underestimate the true result
     */
-    function mintCost(uint256 supply, uint256 balance, uint256 weightT, uint256 weightB, uint256 amount) internal pure returns (uint256) { unchecked {
-        require(supply > 0 && balance > 0 && weightT > 0 && weightB > 0, InvalidInput());
-        require(weightT <= weightB, WeightOutOfBound());
+    function mintCost(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
+        require(supply > 0 && balance > 0 && weight > 0 && weights > 0, InvalidInput());
+        require(weight <= weights, WeightOutOfBound());
 
-        if (weightT == weightB)
+        if (weight == weights)
             return IntegralMath.mulDivC(balance, amount, supply);
 
-        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(supply, amount), supply, weightB, weightT);
+        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(supply, amount), supply, weights, weight);
         return IntegralMath.mulDivC(balance, n - d, d);
     }}
 
@@ -62,26 +62,26 @@ library BondingCurve {
       *
       * @param supply   The total amount of pool tokens
       * @param balance  The amount of reserve tokens owned by the pool
-      * @param weightT  The weight of this reserve in the pool
-      * @param weightB  The weight of both reserves in the pool
+      * @param weight   The weight of this reserve in the pool
+      * @param weights  The weight of all reserves in the pool
       * @param amount   The amount of pool tokens provided
       *
-      * @return balance * (1 - (1 - amount / supply) ^ (weightB / weightT))
+      * @return balance * (1 - (1 - amount / supply) ^ (weights / weight))
       *
       * @notice This function never overestimates the true result
     */
-    function burnGain(uint256 supply, uint256 balance, uint256 weightT, uint256 weightB, uint256 amount) internal pure returns (uint256) { unchecked {
-        require(supply > 0 && balance > 0 && weightT > 0 && weightB > 0, InvalidInput());
-        require(weightT <= weightB, WeightOutOfBound());
+    function burnGain(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
+        require(supply > 0 && balance > 0 && weight > 0 && weights > 0, InvalidInput());
+        require(weight <= weights, WeightOutOfBound());
         require(amount <= supply, AmountOutOfBound());
 
         if (amount == supply)
             return balance;
 
-        if (weightT == weightB)
+        if (weight == weights)
             return IntegralMath.mulDivF(balance, amount, supply);
 
-        (uint256 n, uint256 d) = AnalyticMath.pow(supply - amount, supply, weightB, weightT);
+        (uint256 n, uint256 d) = AnalyticMath.pow(supply - amount, supply, weights, weight);
         return IntegralMath.mulDivF(balance, d - n, d);
     }}
 
@@ -90,26 +90,26 @@ library BondingCurve {
       *
       * @param supply   The total amount of pool tokens
       * @param balance  The amount of reserve tokens owned by the pool
-      * @param weightT  The weight of this reserve in the pool
-      * @param weightB  The weight of both reserves in the pool
+      * @param weight   The weight of this reserve in the pool
+      * @param weights  The weight of all reserves in the pool
       * @param amount   The amount of reserve tokens desired
       *
-      * @return supply * (1 - (1 - amount / balance) ^ (weightT / weightB))
+      * @return supply * (1 - (1 - amount / balance) ^ (weight / weights))
       *
       * @notice This function might underestimate the true result
     */
-    function burnCost(uint256 supply, uint256 balance, uint256 weightT, uint256 weightB, uint256 amount) internal pure returns (uint256) { unchecked {
-        require(supply > 0 && balance > 0 && weightT > 0 && weightB > 0, InvalidInput());
-        require(weightT <= weightB, WeightOutOfBound());
+    function burnCost(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
+        require(supply > 0 && balance > 0 && weight > 0 && weights > 0, InvalidInput());
+        require(weight <= weights, WeightOutOfBound());
         require(amount <= balance, AmountOutOfBound());
 
         if (amount == balance)
             return supply;
 
-        if (weightT == weightB)
+        if (weight == weights)
             return IntegralMath.mulDivC(supply, amount, balance);
 
-        (uint256 n, uint256 d) = AnalyticMath.pow(balance - amount, balance, weightT, weightB);
+        (uint256 n, uint256 d) = AnalyticMath.pow(balance - amount, balance, weight, weights);
         return IntegralMath.mulDivC(supply, d - n, d);
     }}
 

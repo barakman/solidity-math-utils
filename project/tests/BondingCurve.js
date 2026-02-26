@@ -5,10 +5,10 @@ const ONE = Decimal(1);
 
 const lt = max => arg => Decimal(arg).lt(max);
 
-const mintGain = (supply, balance, weightT, weightB, amount)    => supply.mul((ONE.add(amount.div(balance))).pow(weightT.div(weightB)).sub(ONE));
-const mintCost = (supply, balance, weightT, weightB, amount)    => balance.mul((ONE.add(amount.div(supply))).pow(weightB.div(weightT)).sub(ONE));
-const burnGain = (supply, balance, weightT, weightB, amount)    => balance.mul(ONE.sub(ONE.sub(amount.div(supply)).pow((weightB.div(weightT)))));
-const burnCost = (supply, balance, weightT, weightB, amount)    => supply.mul(ONE.sub(ONE.sub(amount.div(balance)).pow((weightT.div(weightB)))));
+const mintGain = (supply, balance, weight, weights, amount)     => supply.mul((ONE.add(amount.div(balance))).pow(weight.div(weights)).sub(ONE));
+const mintCost = (supply, balance, weight, weights, amount)     => balance.mul((ONE.add(amount.div(supply))).pow(weights.div(weight)).sub(ONE));
+const burnGain = (supply, balance, weight, weights, amount)     => balance.mul(ONE.sub(ONE.sub(amount.div(supply)).pow((weights.div(weight)))));
+const burnCost = (supply, balance, weight, weights, amount)     => supply.mul(ONE.sub(ONE.sub(amount.div(balance)).pow((weight.div(weights)))));
 const swapGain = (balance1, balance2, weight1, weight2, amount) => balance2.mul(ONE.sub(balance1.div(balance1.add(amount)).pow(weight1.div(weight2))));
 const swapCost = (balance1, balance2, weight1, weight2, amount) => balance1.mul(balance2.div(balance2.sub(amount)).pow(weight2.div(weight1)).sub(ONE));
 
@@ -21,10 +21,10 @@ describe(TestContract.contractName, () => {
 
     for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
         for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
-            for (const weightT of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
-                for (const weightB of [100, 133, 166, 200].map(p => `${p * 10000}`)) {
+            for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
+                for (const weights of [100, 133, 166, 200].map(p => `${p * 10000}`)) {
                     for (const amount of [0, 1, 2, 3, 4].map(n => `${n}`.repeat(18 + n))) {
-                        test(mintGain, "0.0000000000000433", supply, balance, weightT, weightB, amount);
+                        test(mintGain, "0.0000000000000433", supply, balance, weight, weights, amount);
                     }
                 }
             }
@@ -33,10 +33,10 @@ describe(TestContract.contractName, () => {
 
     for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
         for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
-            for (const weightT of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
-                for (const weightB of [100, 133, 166, 200].map(p => `${p * 10000}`)) {
+            for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
+                for (const weights of [100, 133, 166, 200].map(p => `${p * 10000}`)) {
                     for (const amount of [0, 1, 2, 3, 4].map(n => `${n}`.repeat(18 + n))) {
-                        test(mintCost, "0.0000000000000017", supply, balance, weightT, weightB, amount);
+                        test(mintCost, "0.0000000000000017", supply, balance, weight, weights, amount);
                     }
                 }
             }
@@ -45,10 +45,10 @@ describe(TestContract.contractName, () => {
 
     for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
         for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
-            for (const weightT of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
-                for (const weightB of [100, 133, 166, 200].map(p => `${p * 10000}`)) {
+            for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
+                for (const weights of [100, 133, 166, 200].map(p => `${p * 10000}`)) {
                     for (const amount of [0, 1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)).filter(lt(supply)).concat(supply)) {
-                        test(burnGain, "0.0000000000000028", supply, balance, weightT, weightB, amount);
+                        test(burnGain, "0.0000000000000028", supply, balance, weight, weights, amount);
                     }
                 }
             }
@@ -57,10 +57,10 @@ describe(TestContract.contractName, () => {
 
     for (const supply of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
         for (const balance of [1, 2, 3, 4].map(n => `${n}`.repeat(21 + n))) {
-            for (const weightT of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
-                for (const weightB of [100, 133, 166, 200].map(p => `${p * 10000}`)) {
+            for (const weight of [10, 20, 90, 100].map(p => `${p * 10000}`)) {
+                for (const weights of [100, 133, 166, 200].map(p => `${p * 10000}`)) {
                     for (const amount of [0, 1, 2, 3, 4].map(n => `${n}`.repeat(18 + n)).filter(lt(balance)).concat(balance)) {
-                        test(burnCost, "0.0000000000000262", supply, balance, weightT, weightB, amount);
+                        test(burnCost, "0.0000000000000262", supply, balance, weight, weights, amount);
                     }
                 }
             }

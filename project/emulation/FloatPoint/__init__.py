@@ -37,23 +37,23 @@ def lambert(*args):
 
 
 def mintGain(*args):
-    supply, balance, weightT, weightB, amount = parse(args)
-    return supply * ((one + amount / balance) ** (weightT / weightB) - one)
+    supply, balance, weight, weights, amount = parse(args)
+    return supply * ((one + amount / balance) ** (weight / weights) - one)
 
 
 def mintCost(*args):
-    supply, balance, weightT, weightB, amount = parse(args)
-    return balance * ((one + amount / supply) ** (weightB / weightT) - one)
+    supply, balance, weight, weights, amount = parse(args)
+    return balance * ((one + amount / supply) ** (weights / weight) - one)
 
 
 def burnGain(*args):
-    supply, balance, weightT, weightB, amount = parse(args)
-    return balance * (one - (one - amount / supply) ** (weightB / weightT))
+    supply, balance, weight, weights, amount = parse(args)
+    return balance * (one - (one - amount / supply) ** (weights / weight))
 
 
 def burnCost(*args):
-    supply, balance, weightT, weightB, amount = parse(args)
-    return supply * (one - (one - amount / balance) ** (weightT / weightB))
+    supply, balance, weight, weights, amount = parse(args)
+    return supply * (one - (one - amount / balance) ** (weight / weights))
 
 
 def swapGain(*args):
