@@ -25,11 +25,12 @@ library BondingCurve {
     function mintGain(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0 && balance > 0 && weight > 0 && weights > 0, InvalidInput());
         require(weight <= weights, WeightOutOfBound());
+        require(amount <= ~balance, AmountOutOfBound());
 
         if (weight == weights)
             return IntegralMath.mulDivF(supply, amount, balance);
 
-        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(balance, amount), balance, weight, weights);
+        (uint256 n, uint256 d) = AnalyticMath.pow(balance + amount, balance, weight, weights);
         return IntegralMath.mulDivF(supply, n - d, d);
     }}
 
@@ -49,11 +50,12 @@ library BondingCurve {
     function mintCost(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount) internal pure returns (uint256) { unchecked {
         require(supply > 0 && balance > 0 && weight > 0 && weights > 0, InvalidInput());
         require(weight <= weights, WeightOutOfBound());
+        require(amount <= ~supply, AmountOutOfBound());
 
         if (weight == weights)
             return IntegralMath.mulDivC(balance, amount, supply);
 
-        (uint256 n, uint256 d) = AnalyticMath.pow(safeAdd(supply, amount), supply, weights, weight);
+        (uint256 n, uint256 d) = AnalyticMath.pow(supply + amount, supply, weights, weight);
         return IntegralMath.mulDivC(balance, n - d, d);
     }}
 
@@ -128,11 +130,12 @@ library BondingCurve {
     */
     function swapGain(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount) internal pure returns (uint256) { unchecked {
         require(balance1 > 0 && balance2 > 0 && weight1 > 0 && weight2 > 0, InvalidInput());
+        require(amount <= ~balance1, AmountOutOfBound());
 
         if (weight1 == weight2)
-            return IntegralMath.mulDivF(balance2, amount, safeAdd(balance1, amount));
+            return IntegralMath.mulDivF(balance2, amount, balance1 + amount);
 
-        (uint256 n, uint256 d) = AnalyticMath.pow(balance1, safeAdd(balance1, amount), weight1, weight2);
+        (uint256 n, uint256 d) = AnalyticMath.pow(balance1, balance1 + amount, weight1, weight2);
         return IntegralMath.mulDivF(balance2, d - n, d);
     }}
 

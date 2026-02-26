@@ -128,7 +128,7 @@ def mulShrF(x, y, s):
 def mulShrC(x, y, s):
     w = mulShrF(x, y, s);
     if (mulmod(x, y, 1 << s) > 0):
-        return safeAdd(w, 1);
+        return inc256(w);
     return w;
 
 '''
@@ -155,7 +155,7 @@ def mulDivF(x, y, z):
 def mulDivC(x, y, z):
     w = mulDivF(x, y, z);
     if (mulmod(x, y, z) > 0):
-        return safeAdd(w, 1);
+        return inc256(w);
     return w;
 
 '''
@@ -164,7 +164,7 @@ def mulDivC(x, y, z):
 def mulDivR(x, y, z):
     w = mulDivF(x, y, z);
     if (mulmod(x, y, z) > (z - 1) // 2):
-        return safeAdd(w, 1);
+        return inc256(w);
     return w;
 
 '''
@@ -201,7 +201,14 @@ def mulDivExC(x, y, z, w):
     (vzwlh, vzwll) = mul512(v, zwl);
     if (xyh == v * zwh + vzwlh and xyl == vzwll):
         return v;
-    return safeAdd(v, 1);
+    return inc256(v);
+
+'''
+    @dev Compute the value of `x + 1`
+'''
+def inc256(x):
+    require(x < MAX_VAL, "Overflow()");
+    return x + 1;
 
 '''
     @dev Compute the value of `x * y`
