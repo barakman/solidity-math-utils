@@ -12,6 +12,3 @@ def unsafeSub(x, y):
 
 def unsafeMul(x, y):
     return (x * y) & uint256.max
-
-def mulmod(x, y, z):
-    return (x * y) % z
