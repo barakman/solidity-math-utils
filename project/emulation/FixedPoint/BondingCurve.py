@@ -19,7 +19,7 @@ from . import IntegralMath
 def mintGain(supply, balance, weight, weights, amount):
     require(supply > 0 and balance > 0 and weight > 0 and weights > 0, "InvalidInput()");
     require(weight <= weights, "WeightOutOfBound()");
-    require(amount <= MAX_VAL - balance, "AmountOutOfBound()");
+    require(amount <= bitwiseNot(balance), "AmountOutOfBound()");
 
     if (weight == weights):
         return IntegralMath.mulDivF(supply, amount, balance);
@@ -43,7 +43,7 @@ def mintGain(supply, balance, weight, weights, amount):
 def mintCost(supply, balance, weight, weights, amount):
     require(supply > 0 and balance > 0 and weight > 0 and weights > 0, "InvalidInput()");
     require(weight <= weights, "WeightOutOfBound()");
-    require(amount <= MAX_VAL - supply, "AmountOutOfBound()");
+    require(amount <= bitwiseNot(supply), "AmountOutOfBound()");
 
     if (weight == weights):
         return IntegralMath.mulDivC(balance, amount, supply);
@@ -120,7 +120,7 @@ def burnCost(supply, balance, weight, weights, amount):
 '''
 def swapGain(balance1, balance2, weight1, weight2, amount):
     require(balance1 > 0 and balance2 > 0 and weight1 > 0 and weight2 > 0, "InvalidInput()");
-    require(amount <= MAX_VAL - balance1, "AmountOutOfBound()");
+    require(amount <= bitwiseNot(balance1), "AmountOutOfBound()");
 
     if (weight1 == weight2):
         return IntegralMath.mulDivF(balance2, amount, balance1 + amount);

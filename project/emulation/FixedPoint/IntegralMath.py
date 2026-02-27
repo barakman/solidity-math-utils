@@ -61,7 +61,7 @@ def roundDiv(n, d):
 '''
 def minFactor(x, y):
     (hi, lo) = mul512(x, y);
-    return hi + 2 if hi > MAX_VAL - lo else hi + 1;
+    return hi + 2 if hi > bitwiseNot(lo) else hi + 1;
     # General:
     # - find the smallest integer `z` such that `x * y / z <= 2 ^ 256 - 1`
     # - the value of `x * y` is represented via `2 ^ 256 * hi + lo`
@@ -180,8 +180,8 @@ def mulDivExF(x, y, z, w):
             zwhn = floorLog2(zwh);
             while (xyhn > zwhn):
                 n = xyhn - zwhn - 1;
-                zwhshl = (zwh << n) & MAX_VAL;
-                zwlshl = (zwl << n) & MAX_VAL;
+                zwhshl = (zwh << n) & uint256.max;
+                zwlshl = (zwl << n) & uint256.max;
                 zwlshr = zwl >> (256 - n);
                 res += 1 << n; # set `res = res + 2 ^ n`
                 (xyh, xyl) = sub512Ex(xyh, xyl, zwhshl | zwlshr, zwlshl); # set `xy = xy - zw * 2 ^ n`
@@ -207,14 +207,14 @@ def mulDivExC(x, y, z, w):
     @dev Compute the value of `x + 1`
 '''
 def inc256(x):
-    require(x < MAX_VAL, "Overflow()");
+    require(x < uint256.max, "Overflow()");
     return x + 1;
 
 '''
     @dev Compute the value of `x * y`
 '''
 def mul512(x, y):
-    p = mulModMax(x, y);
+    p = mulmod(x, y, uint256.max);
     q = unsafeMul(x, y);
     if (p >= q):
         return (p - q, q);

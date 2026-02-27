@@ -1,13 +1,17 @@
-MAX_VAL = (1 << 256) - 1
+class uint256:
+    max = 2 ** 256 - 1
+
+def bitwiseNot(x):
+    return uint256.max - x
 
 def unsafeAdd(x, y):
-    return (x + y) & MAX_VAL
+    return (x + y) & uint256.max
 
 def unsafeSub(x, y):
-    return (x - y) & MAX_VAL
+    return (x - y) & uint256.max
 
 def unsafeMul(x, y):
-    return (x * y) & MAX_VAL
+    return (x * y) & uint256.max
 
-def mulModMax(x, y):
-    return (x * y) % MAX_VAL
+def mulmod(x, y, z):
+    return (x * y) % z

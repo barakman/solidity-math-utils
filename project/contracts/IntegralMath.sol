@@ -237,7 +237,7 @@ library IntegralMath {
       * @dev Compute the value of `x + 1`
     */
     function inc256(uint256 x) private pure returns (uint256) { unchecked {
-        require(x < MAX_VAL, Overflow());
+        require(x < type(uint256).max, Overflow());
         return x + 1;
     }}
 
@@ -245,7 +245,7 @@ library IntegralMath {
       * @dev Compute the value of `x * y`
     */
     function mul512(uint256 x, uint256 y) private pure returns (uint256, uint256) { unchecked {
-        uint256 p = mulModMax(x, y);
+        uint256 p = mulmod(x, y, type(uint256).max);
         uint256 q = unsafeMul(x, y);
         if (p >= q)
             return (p - q, q);
