@@ -12,3 +12,6 @@ def unsafeSub(x, y):
 
 def unsafeMul(x, y):
     return (x * y) & uint256.max
+
+def shiftLeft(x, n):
+    return (x << n) & uint256.max

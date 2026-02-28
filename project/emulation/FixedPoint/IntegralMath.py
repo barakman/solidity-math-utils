@@ -180,8 +180,8 @@ def mulDivExF(x, y, z, w):
             zwhn = floorLog2(zwh);
             while (xyhn > zwhn):
                 n = xyhn - zwhn - 1;
-                zwhshl = (zwh << n) & uint256.max;
-                zwlshl = (zwl << n) & uint256.max;
+                zwhshl = shiftLeft(zwh, n);
+                zwlshl = shiftLeft(zwl, n);
                 zwlshr = zwl >> (256 - n);
                 res += 1 << n; # set `res = res + 2 ^ n`
                 (xyh, xyl) = sub512Ex(xyh, xyl, zwhshl | zwlshr, zwlshl); # set `xy = xy - zw * 2 ^ n`
