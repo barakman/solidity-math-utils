@@ -5,8 +5,8 @@ import TestScheme
 
 
 def getInput():
-    supply  = random.randrange(2, 10 ** 26)
-    balance = random.randrange(1, 10 ** 23)
+    supply  = random.randrange(1, 10 ** 26)
+    balance = random.randrange(2, 10 ** 23)
     weight  = random.randrange(1, 1000001)
     weights = random.randrange(weight, 1000001)
     amount  = random.randrange(1, balance)

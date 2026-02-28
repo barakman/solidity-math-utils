@@ -6,7 +6,7 @@ import TestScheme
 
 def getInput():
     balance1 = random.randrange(1, 10 ** 23)
-    balance2 = random.randrange(1, 10 ** 23)
+    balance2 = random.randrange(2, 10 ** 23)
     weight1  = random.randrange(1, 1000001)
     weight2  = random.randrange(1, 1000001)
     amount   = random.randrange(1, balance2)
