@@ -1,22 +1,17 @@
-MAX_VAL = (1 << 256) - 1
+class uint256:
+    max = 2 ** 256 - 1
 
-# reverts on overflow
-def safeAdd(x, y):
-    assert x + y <= MAX_VAL
-    return x + y
+def bitwiseNot(x):
+    return uint256.max - x
 
-# does not revert on overflow
 def unsafeAdd(x, y):
-    return (x + y) & MAX_VAL
+    return (x + y) & uint256.max
 
-# does not revert on overflow
 def unsafeSub(x, y):
-    return (x - y) & MAX_VAL
+    return (x - y) & uint256.max
 
-# does not revert on overflow
 def unsafeMul(x, y):
-    return (x * y) & MAX_VAL
+    return (x * y) & uint256.max
 
-# does not overflow
-def mulModMax(x, y):
-    return (x * y) % MAX_VAL
+def shiftLeft(x, n):
+    return (x << n) & uint256.max

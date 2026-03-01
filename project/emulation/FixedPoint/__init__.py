@@ -7,11 +7,11 @@ from .AdvancedMath import lambertNegExact
 from .AdvancedMath import lambertPosExact
 from .AdvancedMath import lambertNegQuick
 from .AdvancedMath import lambertPosQuick
-from .BondingCurve import buy
-from .BondingCurve import sell
-from .BondingCurve import convert
-from .BondingCurve import deposit
-from .BondingCurve import withdraw
-from .BondingCurve import invest
+from .BondingCurve import mintGain
+from .BondingCurve import mintCost
+from .BondingCurve import burnGain
+from .BondingCurve import burnCost
+from .BondingCurve import swapGain
+from .BondingCurve import swapCost
 from .DynamicCurve import equalizeExact
 from .DynamicCurve import equalizeQuick

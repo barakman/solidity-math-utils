@@ -36,40 +36,40 @@ def lambert(*args):
     return lambertRatio(x / factor) * factor
 
 
-def buy(*args):
-    supply, balance, weight, amount, max_weight = parse(args)
-    return supply * ((one + amount / balance) ** (weight / max_weight) - one)
+def mintGain(*args):
+    supply, balance, weight, weights, amount = parse(args)
+    return supply * ((one + amount / balance) ** (weight / weights) - one)
 
 
-def sell(*args):
-    supply, balance, weight, amount, max_weight = parse(args)
-    return balance * (one - (one - amount / supply) ** (max_weight / weight))
+def mintCost(*args):
+    supply, balance, weight, weights, amount = parse(args)
+    return balance * ((one + amount / supply) ** (weights / weight) - one)
 
 
-def convert(*args):
-    balance1, weight1, balance2, weight2, amount = parse(args)
+def burnGain(*args):
+    supply, balance, weight, weights, amount = parse(args)
+    return balance * (one - (one - amount / supply) ** (weights / weight))
+
+
+def burnCost(*args):
+    supply, balance, weight, weights, amount = parse(args)
+    return supply * (one - (one - amount / balance) ** (weight / weights))
+
+
+def swapGain(*args):
+    balance1, balance2, weight1, weight2, amount = parse(args)
     return balance2 * (one - (balance1 / (balance1 + amount)) ** (weight1 / weight2))
 
 
-def deposit(*args):
-    supply, balance, weights, amount, max_weight = parse(args)
-    return supply * ((amount / balance + one) ** (weights / max_weight) - one)
-
-
-def withdraw(*args):
-    supply, balance, weights, amount, max_weight = parse(args)
-    return balance * (one - ((supply - amount) / supply) ** (max_weight / weights))
-
-
-def invest(*args):
-    supply, balance, weights, amount, max_weight = parse(args)
-    return balance * (((supply + amount) / supply) ** (max_weight / weights) - one)
+def swapCost(*args):
+    balance1, balance2, weight1, weight2, amount = parse(args)
+    return balance1 * ((balance2 / (balance2 - amount)) ** (weight2 / weight1) - one)
 
 
 def equalize(*args):
     staked1, balance1, balance2, rate1, rate2, weight1, weight2 = parse(args)
     amount1 = staked1 - balance1
-    amount2 = convert(balance1, weight1, balance2, weight2, amount1)
+    amount2 = swapGain(balance1, balance2, weight1, weight2, amount1)
     return ((balance1 + amount1) * rate1) / ((balance2 - amount2) * rate2)
 
 

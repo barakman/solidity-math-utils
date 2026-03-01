@@ -227,26 +227,39 @@ The full customization manual can be found [here](#customization).
 ## BondingCurve
 
 This module implements the following interface:
-- `function buy(uint256 supply, uint256 balance, uint256 weight, uint256 amount)` => `(uint256)`
-- `function sell(uint256 supply, uint256 balance, uint256 weight, uint256 amount)` => `(uint256)`
-- `function convert(uint256 balance1, uint256 weight1, uint256 balance2, uint256 weight2, uint256 amount)` => `(uint256)`
-- `function deposit(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
-- `function withdraw(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
-- `function invest(uint256 supply, uint256 balance, uint256 weights, uint256 amount)` => `(uint256)`
+- `function mintGain(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount)` => `(uint256)`
+- `function mintCost(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount)` => `(uint256)`
+- `function burnGain(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount)` => `(uint256)`
+- `function burnCost(uint256 supply, uint256 balance, uint256 weight, uint256 weights, uint256 amount)` => `(uint256)`
+- `function swapGain(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount)` => `(uint256)`
+- `function swapCost(uint256 balance1, uint256 balance2, uint256 weight1, uint256 weight2, uint256 amount)` => `(uint256)`
 
-### Functionality
+Function `mintGain` calculates the amount of pool tokens returned in exchange for a specified amount of reserve tokens.
 
+Function `mintCost` calculates the amount of reserve tokens required in exchange for a specified amount of pool tokens.
+
+Function `burnGain` calculates the amount of reserve tokens returned in exchange for a specified amount of pool tokens.
+
+Function `burnCost` calculates the amount of pool tokens required in exchange for a specified amount of reserve tokens.
+
+Function `swapGain` calculates the amount of reserve2 tokens returned in exchange for a specified amount of reserve1 tokens.
+
+Function `swapCost` calculates the amount of reserve1 tokens required in exchange for a specified amount of reserve2 tokens.
+
+### Mathematical Model
+
+All functions in this module are based on the constant-product formula for weighted pools:
 ```
-|----------------------------|--------------------------------------------------|---------------------------------------------|
-| Function                   | Compute the return of                            | Formula                                     |
-|----------------------------|--------------------------------------------------|---------------------------------------------|
-| buy(s, b, w, x)            | buying pool tokens with reserve tokens           | s * ((1 + x / b) ^ (w / MAX_WEIGHT) - 1)    |
-| sell(s, b, w, x)           | selling pool tokens for reserve tokens           | b * (1 - (1 - x / s) ^ (MAX_WEIGHT / w))    |
-| convert(b1, w1, b2, w2, x) | converting reserve tokens of one type to another | b2 * (1 - (b1 / (b1 + x)) ^ (w1 / w2))      |
-| deposit(s, b, ws, x)       | depositing reserve tokens for pool tokens        | s * ((x / b + 1) ^ (ws / MAX_WEIGHT) - 1)   |
-| withdraw(s, b, ws, x)      | withdrawing reserve tokens with pool tokens      | b * (1 - ((s - x) / s) ^ (MAX_WEIGHT / ws)) |
-| invest(s, b, ws, x)        | investing reserve tokens for pool tokens         | b * (((s + x) / s) ^ (MAX_WEIGHT / ws) - 1) |
-|----------------------------|--------------------------------------------------|---------------------------------------------|
++-----------------------------+----------------------------------------+-------------------------------------+
+| Function                    | Formula                                | Note                                |
++-----------------------------+----------------------------------------+-------------------------------------+
+| mintGain(s, b, wn, wd, x)   | s * ((1 + x / b) ^ (wn / wd) - 1)      | never overestimates the true result |
+| mintCost(s, b, wn, wd, x)   | b * ((1 + x / s) ^ (wd / wn) - 1)      | might underestimate the true result |
+| burnGain(s, b, wn, wd, x)   | b * (1 - (1 - x / s) ^ (wd / wn))      | never overestimates the true result |
+| burnCost(s, b, wn, wd, x)   | s * (1 - (1 - x / b) ^ (wn / wd))      | might underestimate the true result |
+| swapGain(b1, b2, w1, w2, x) | b2 * (1 - (b1 / (b1 + x)) ^ (w1 / w2)) | never overestimates the true result |
+| swapCost(b1, b2, w1, w2, x) | b1 * ((b2 / (b2 - x)) ^ (w2 / w1) - 1) | might underestimate the true result |
++-----------------------------+----------------------------------------+-------------------------------------+
 ```
 
 The bonding-curve model was conceived by [Bancor](https://github.com/bancorprotocol).

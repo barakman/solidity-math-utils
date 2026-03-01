@@ -146,7 +146,7 @@ library IntegralMath {
     function mulShrC(uint256 x, uint256 y, uint8 s) internal pure returns (uint256) { unchecked {
         uint256 w = mulShrF(x, y, s);
         if (mulmod(x, y, 1 << s) > 0)
-            return safeAdd(w, 1);
+            return inc256(w);
         return w;
     }}
 
@@ -178,7 +178,7 @@ library IntegralMath {
     function mulDivC(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
         if (mulmod(x, y, z) > 0)
-            return safeAdd(w, 1);
+            return inc256(w);
         return w;
     }}
 
@@ -188,7 +188,7 @@ library IntegralMath {
     function mulDivR(uint256 x, uint256 y, uint256 z) internal pure returns (uint256) { unchecked {
         uint256 w = mulDivF(x, y, z);
         if (mulmod(x, y, z) > (z - 1) / 2)
-            return safeAdd(w, 1);
+            return inc256(w);
         return w;
     }}
 
@@ -230,14 +230,22 @@ library IntegralMath {
         (uint256 vzwlh, uint256 vzwll) = mul512(v, zwl);
         if (xyh == v * zwh + vzwlh && xyl == vzwll)
             return v;
-        return safeAdd(v, 1);
+        return inc256(v);
+    }}
+
+    /**
+      * @dev Compute the value of `x + 1`
+    */
+    function inc256(uint256 x) private pure returns (uint256) { unchecked {
+        require(x < type(uint256).max, Overflow());
+        return x + 1;
     }}
 
     /**
       * @dev Compute the value of `x * y`
     */
     function mul512(uint256 x, uint256 y) private pure returns (uint256, uint256) { unchecked {
-        uint256 p = mulModMax(x, y);
+        uint256 p = mulmod(x, y, type(uint256).max);
         uint256 q = unsafeMul(x, y);
         if (p >= q)
             return (p - q, q);

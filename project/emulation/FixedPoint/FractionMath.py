@@ -142,7 +142,7 @@ def reducedRatioCalc(n, d, cap):
     @return The normalized ratio denominator
 '''
 def normalizedRatioCalc(n, d, scale):
-    if (n > MAX_VAL - d):
+    if (n > bitwiseNot(d)):
         x = unsafeAdd(n, d) + 1;
         y = IntegralMath.mulDivF(x, n // 2, n // 2 + d // 2);
         n -= y;
