@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity ^0.8.34;
+pragma solidity ^0.8.38;
 
 import "../FractionMath.sol";
 
@@ -16,8 +16,8 @@ contract FractionMathUser {
         return FractionMath.productRatio(xn, yn, xd, yd);
     }
 
-    function reducedRatio(uint256 n, uint256 d, uint256 max) external pure returns (uint256, uint256) {
-        return FractionMath.reducedRatio(n, d, max);
+    function reducedRatio(uint256 n, uint256 d, uint256 cap) external pure returns (uint256, uint256) {
+        return FractionMath.reducedRatio(n, d, cap);
     }
 
     function normalizedRatio(uint256 n, uint256 d, uint256 scale) external pure returns (uint256, uint256) {

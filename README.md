@@ -38,6 +38,9 @@ This module implements the following interface:
 - `function floorCbrt(uint256 n)` => `(uint256)`
 - `function ceilCbrt(uint256 n)` => `(uint256)`
 - `function roundDiv(uint256 n, uint256 d)` => `(uint256)`
+- `function minFactor(uint256 x, uint256 y)` => `(uint256)`
+- `function mulShrF(uint256 x, uint256 y, uint8 s)` => `(uint256)`
+- `function mulShrC(uint256 x, uint256 y, uint8 s)` => `(uint256)`
 - `function mulDivF(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 - `function mulDivC(uint256 x, uint256 y, uint256 z)` => `(uint256)`
 - `function mulDivR(uint256 x, uint256 y, uint256 z)` => `(uint256)`
@@ -98,7 +101,7 @@ This module implements the following interface:
 - `function poweredRatioExact(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
 - `function poweredRatioQuick(uint256 n, uint256 d, uint256 exp)` => `(uint256, uint256)`
 - `function productRatio(uint256 xn, uint256 yn, uint256 xd, uint256 yd)` => `(uint256, uint256)`
-- `function reducedRatio(uint256 n, uint256 d, uint256 max)` => `(uint256, uint256)`
+- `function reducedRatio(uint256 n, uint256 d, uint256 cap)` => `(uint256, uint256)`
 - `function normalizedRatio(uint256 n, uint256 d, uint256 scale)` => `(uint256, uint256)`
 
 ### Powered Ratio
@@ -127,7 +130,7 @@ Note that function `reducedRatio` is not meant to replace GCD, nor does it striv
 
 GCD is not being used here, because the time-complexity of this method depends on the bit-length of the input.
 
-The worst case is when the two input valus are consecutive Fibonacci numbers, in the case of `uint256` - F369 and F370, which yield 367 iterations.
+The worst case is when the two input values are consecutive Fibonacci numbers, in the case of `uint256` - F369 and F370, which yield 367 iterations.
 
 Moreover, the main issue with using GCD for reducing an arbitrary ratio, is the fact that it doesn't even guarantee the desired reduction to begin with.
 
