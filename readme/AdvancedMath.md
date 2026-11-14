@@ -39,7 +39,7 @@ In order to handle the rest of the input domain, we split it into several sectio
 When opting for accuracy, we split the input domain $`z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}`$ into:
 
 ```math
-\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots\infty}
+\underbrace{-1/e\ldots0}_{}\bigg|\underbrace{0\ldots\infty}_{}
 ```
 
 ---
@@ -65,7 +65,7 @@ For $`0\leq{z}<\infty`$, we approximate $`W(z)`$ via the Newton-Raphson convergi
 When opting for performance, we split the input domain $`z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}`$ into:
 
 ```math
-\underbrace{-1/e\ldots0}\bigg|\underbrace{0\ldots1/e}\bigg|\underbrace{1/e\ldots24+1/e}\bigg|\underbrace{24+1/e\ldots\infty}
+\underbrace{-1/e\ldots0}_{}\bigg|\underbrace{0\ldots1/e}_{}\bigg|\underbrace{1/e\ldots24+1/e}_{}\bigg|\underbrace{24+1/e\ldots\infty}_{}
 ```
 
 ---
