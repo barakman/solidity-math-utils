@@ -213,7 +213,7 @@ Function `solveExact` opts for accuracy and function `solveQuick` opts for perfo
 
 Each one of these functions computes a value of x which satisfies the equation x * (a / b) ^ x = c / d.
 
-A detailed description of how each one of these functions works can be found [here](readme/AdvancedMath.pdf).
+A detailed description of how each one of these functions works can be found [here](readme/AdvancedMath.md).
 
 ### Module Customization
 
@@ -311,7 +311,7 @@ Output:
 - Return x / (x + 1) as the weight of the primary reserve token
 - Return 1 / (x + 1) as the weight of the secondary reserve token
 
-A detailed reasoning of this method can be found [here](readme/DynamicCurve.pdf).
+A detailed reasoning of this method can be found [here](readme/DynamicCurve.md).
 
 If the rate-provider provides the rates for a common unit, for example:
 - P = 2 ==> 2 primary reserve tokens = 1 ether
