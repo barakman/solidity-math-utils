@@ -44,7 +44,7 @@ When opting for accuracy, we split the input domain $`z=\log\big(\frac{a}{b}\big
 
 ---
 
-For $`-1/e\leq{z}<0`$, we approximate $`W(z)`$ via the Newton-Raphson converging sequence:
+For $`-1/e\leq{z}<0`$, we approximate $`-W(z)`$ via the Newton-Raphson converging sequence:
 
 ```math
 \large\begin{cases}y_0=-z\\y_{n+1}=\frac{y_n^2+e^{y_n}\cdot{z}}{y_n-1}\end{cases}
@@ -70,16 +70,16 @@ When opting for performance, we split the input domain $`z=\log\big(\frac{a}{b}\
 
 ---
 
-For $`-1/e\leq{z}\leq+1/e`$, you may observe that $`W(z)=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{\log\big(\frac{a}{b}\big)}=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}`$:
+For $`-1/e\leq{z}\leq+1/e`$, you may observe that $`x=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{\log\big(\frac{a}{b}\big)}=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}`$:
 
-- For $`-1/e\leq{z}\leq0`$, which implies that $`{a}\leq{b}`$, we compute $`W(z)=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n-1}`$
-- For $`0\leq{z}\leq+1/e`$, which implies that $`{a}\geq{b}`$, we compute $`W(z)=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}`$
+- For $`-1/e\leq{z}\leq0`$, which implies that $`{a}\leq{b}`$, we compute $`x=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n-1}`$
+- For $`0\leq{z}\leq+1/e`$, which implies that $`{a}\geq{b}`$, we compute $`x=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}`$
 
-As you can see, when $`a=b`$, both formulas can be reduced to $`W(z)=\frac{c}{d}`$.
+As you can see, when $`a=b`$, both formulas can be reduced to $`x=\frac{c}{d}`$.
 
-Note that as the value of $`z`$ approaches $`-1/e`$, the value of $`W(z)`$ approaches $`-1`$ but it never actually reaches there.
+Note that as the value of $`z`$ approaches $`-1/e`$, the function $`W(z)`$ becomes increasingly steep.
 
-The function becomes increasingly steep, making its approximation via the Taylor series above increasingly inaccurate.
+Approximating it via the Taylor series above thus becomes increasingly inaccurate.
 
 Hence for the smallest $`1\%`$ of the range $`-1/e\leq{z}\leq0`$:
 
