@@ -75,7 +75,7 @@ For $`-1/e\leq{z}\leq+1/e`$, you may observe that $`W(z)=\sum\limits_{n=1}^{\inf
 - For $`-1/e\leq{z}\leq0`$, which implies that $`{a}\leq{b}`$, we compute $`-W(z)=\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n}`$
 - For $`0\leq{z}\leq+1/e`$, which implies that $`{a}\geq{b}`$, we compute $`W(z)=\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n}`$
 
-As you can see, when $`z=0`$, which implies that $`a=b`$, both formulas reduce to $`W(z)=0`$.
+As you can see, for $`z=0`$, which implies that $`a=b`$, both formulas reduce to $`W(z)=0`$.
 
 Note that as the value of $`z`$ approaches $`-1/e`$, the function $`W(z)`$ becomes increasingly steep.
 
