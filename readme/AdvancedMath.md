@@ -70,12 +70,12 @@ When opting for performance, we split the input domain $`z=\log\big(\frac{a}{b}\
 
 ---
 
-For $`-1/e\leq{z}\leq+1/e`$, you may observe that $`x=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{\log\big(\frac{a}{b}\big)}=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}`$:
+For $`-1/e\leq{z}\leq+1/e`$, you may observe that $`W(z)=\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n}`$:
 
-- For $`-1/e\leq{z}\leq0`$, which implies that $`{a}\leq{b}`$, we compute $`x=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n-1}`$
-- For $`0\leq{z}\leq+1/e`$, which implies that $`{a}\geq{b}`$, we compute $`x=\frac{c}{d}\cdot\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n-1}`$
+- For $`-1/e\leq{z}\leq0`$, which implies that $`{a}\leq{b}`$, we compute $`-W(z)=\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n}`$
+- For $`0\leq{z}\leq+1/e`$, which implies that $`{a}\geq{b}`$, we compute $`W(z)=\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n}`$
 
-As you can see, when $`a=b`$, both formulas can be reduced to $`x=\frac{c}{d}`$.
+As you can see, when $`a=b`$, both formulas reduce to $`W(z)=0`$, while $`W(z)/z`$ approaches $`1`$.
 
 Note that as the value of $`z`$ approaches $`-1/e`$, the function $`W(z)`$ becomes increasingly steep.
 
