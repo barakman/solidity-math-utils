@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity ^0.8.34;
+pragma solidity ^0.8.38;
 
 import "./IntegralMath.sol";
 
@@ -57,8 +57,8 @@ library AnalyticMath {
       *   log(x) =
       *   log(x) + log(2 ^ k) - log(2 ^ k) =
       *   log(x) - log(2 ^ k) + log(2 ^ k) =
-      *   log(x / log(2 ^ k)) + log(2 ^ k) =
-      *   log(x / log(2 ^ k)) + k * log(2)
+      *   log(x / 2 ^ k) + log(2 ^ k) =
+      *   log(x / 2 ^ k) + k * log(2)
     */
     function fixedLog(uint256 x) internal pure returns (uint256) { unchecked {
         if (x < FIXED_1)

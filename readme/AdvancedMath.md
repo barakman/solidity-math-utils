@@ -1,0 +1,110 @@
+## Library Interface
+
+This library implements two different methods for solving the equation $`x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}`$:
+
+- Function `solveExact(a, b, c, d)`, which opts for accuracy over performance
+- Function `solveQuick(a, b, c, d)`, which opts for performance over accuracy
+
+---
+
+The solution to:
+
+```math
+x\cdot\big(\frac{a}{b}\big)^x=\frac{c}{d}
+```
+
+Can be computed via:
+
+```math
+x=\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{\log\big(\frac{a}{b}\big)}
+```
+
+Where $`W(z)`$ computes a value of $`x`$ which solves the equation $`x\cdot{e}^x=z`$.
+
+---
+
+The function $`f(x)=x\cdot{e}^x`$ reaches a global minimum at $`x=-1`$:
+
+- $`f'(x)=(x+1)\cdot{e}^x`$ hence $`f'(x)=0\iff{x=-1}`$
+- $`f''(x)=(x+2)\cdot{e}^x`$ hence $`f''(-1)=1/e>0`$
+
+Since $`f(-1)=-1/e`$, the equation $`x\cdot{e}^x=z`$ has no solution for $`z<-1/e`$.
+
+In order to handle the rest of the input domain, we split it into several sections.
+
+---
+
+## Opting For Accuracy
+
+When opting for accuracy, we split the input domain $`z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}`$ into:
+
+```math
+\underbrace{-1/e\ldots0}_{}\bigg|\underbrace{0\ldots\infty}_{}
+```
+
+---
+
+For $`-1/e\leq{z}<0`$, we approximate $`-W(z)`$ via the Newton-Raphson converging sequence:
+
+```math
+\large\begin{cases}y_0=-z\\y_{n+1}=\frac{y_n^2+e^{y_n}\cdot{z}}{y_n-1}\end{cases}
+```
+
+---
+
+For $`0\leq{z}<\infty`$, we approximate $`W(z)`$ via the Newton-Raphson converging sequence:
+
+```math
+\large\begin{cases}y_0=\small\begin{cases}z&z<1\\\log(z)&z\geq1\end{cases}\\y_{n+1}=\frac{y_n^2\cdot{e}^{y_n}+z}{(y_n+1)\cdot{e}^{y_n}}\end{cases}
+```
+
+---
+
+## Opting For Performance
+
+When opting for performance, we split the input domain $`z=\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}`$ into:
+
+```math
+\underbrace{-1/e\ldots0}_{}\bigg|\underbrace{0\ldots1/e}_{}\bigg|\underbrace{1/e\ldots24+1/e}_{}\bigg|\underbrace{24+1/e\ldots\infty}_{}
+```
+
+---
+
+For $`-1/e\leq{z}\leq+1/e`$, you may observe that $`W(z)=\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n}`$:
+
+- For $`-1/e\leq{z}\leq0`$, which implies that $`{a}\leq{b}`$, we compute $`-W(z)=\sum\limits_{n=1}^{\infty}\frac{(+n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{b}{a}\big)\cdot\frac{c}{d}\Big)^{n}`$
+- For $`0\leq{z}\leq+1/e`$, which implies that $`{a}\geq{b}`$, we compute $`W(z)=\sum\limits_{n=1}^{\infty}\frac{(-n)^{n-1}}{n!}\cdot\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)^{n}`$
+
+As you can see, for $`z=0`$, which implies that $`a=b`$, both formulas reduce to $`W(z)=0`$.
+
+Note that as the value of $`z`$ approaches $`-1/e`$, the function $`W(z)`$ becomes increasingly steep.
+
+Approximating it via the Taylor series above thus becomes increasingly inaccurate.
+
+Hence for the smallest $`1\%`$ of the range $`-1/e\leq{z}\leq0`$:
+
+- We precalculate a lookup table which maps $`16`$ uniformly distributed values of $`z`$ to values of $`W(z)`$
+- During runtime, we calculate $`W(z)`$ as the weighted-average of $`W(z_0)`$ and $`W(z_1)`$, where $`z_0\leq{z}<z_1`$
+
+---
+
+For $`1/e<z<24+1/e`$:
+
+- We precalculate a lookup table which maps $`128`$ uniformly distributed values of $`z`$ to values of $`W(z)`$
+- During runtime, we calculate $`W(z)`$ as the weighted-average of $`W(z_0)`$ and $`W(z_1)`$, where $`z_0\leq{z}<z_1`$
+
+---
+
+For $`z\geq24+1/e`$, we rely on the fact that $`W(z)\approx{p-q+\frac{q^2+2pq-2q}{2p^2}}`$, where $`p=\log(z)`$ and $`q=\log(p)`$.
+
+Since this method requires the calculation of $`\log(\log(z))`$, it is actually applicable for as low as $`z=e`$.
+
+However, for $`e\leq{z}<24+1/e`$, the previous method achieves better accuracy than this method.
+
+---
+
+## Implementation Notes
+
+Note that due to practical reasons, this library internally implements the calculation of $`W(z)/z`$ instead of $`W(z)`$.
+
+This means that instead of calculating $`\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{\log\big(\frac{a}{b}\big)}`$, it first calculates $`\frac{W\Big(\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}\Big)}{\log\big(\frac{a}{b}\big)\cdot\frac{c}{d}}`$, and then multiplies the result by $`\frac{c}{d}`$.

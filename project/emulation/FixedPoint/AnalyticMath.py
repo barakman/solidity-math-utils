@@ -47,8 +47,8 @@ def exp(a, b):
       log(x) =
       log(x) + log(2 ^ k) - log(2 ^ k) =
       log(x) - log(2 ^ k) + log(2 ^ k) =
-      log(x / log(2 ^ k)) + log(2 ^ k) =
-      log(x / log(2 ^ k)) + k * log(2)
+      log(x / 2 ^ k) + log(2 ^ k) =
+      log(x / 2 ^ k) + k * log(2)
 '''
 def fixedLog(x):
     if (x < FIXED_1):
